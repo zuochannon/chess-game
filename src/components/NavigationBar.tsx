@@ -19,9 +19,9 @@ function NavigationBar() {
             </div>
             <div className='bg-[#0f0f0f] overflow-auto whitespace-nowrap'>
                 {/* Display Navigation Items */}
-                <ul className='overflow-auto md:flex'>
+                <ul className='overflow-auto md:flex w-full'>
                     {navItems.map(item => (
-                        <li key={item.id} className='inline-block p-4 hover:bg-[#ffffff] rounded-xl m-0 cursor-pointer duration-300 hover:text-black text-center'>
+                        <li key={item.id} className='inline-block p-4 hover:bg-[#ffffff] rounded-xl m-2 cursor-pointer duration-300 hover:text-black text-center'>
                             <a href={item.url}>
                                 {item.text}
                             </a>

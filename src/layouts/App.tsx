@@ -9,6 +9,9 @@ function App() {
       <div>
         <img src={Mahjong_game} alt="Mahjong_Home" className='w-full object-cover' />
       </div>
+      <footer className='h-screen text-center bottom-2 bg-black'>
+        A CS160 Project
+      </footer>
     </main>
   )
 }
