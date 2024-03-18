@@ -1,12 +1,9 @@
 import './App.css'
 import NavigationBar from '../components/NavigationBar'
 import Mahjong_game from "../assets/Mahjong_game.jpg"
-import Hand from '../components/hand/Hand'
 
 function App() {
   return (
-      <>
-      <Hand />
     <main className='h-screen'>
       <NavigationBar />
       <div>
@@ -16,7 +13,6 @@ function App() {
         A CS160 Project
       </footer>
     </main>
-      </>
   )
 }
 
