@@ -1,18 +1,26 @@
 import './App.css'
-import NavigationBar from '../components/NavigationBar'
-import Mahjong_game from "../assets/Mahjong_game.jpg"
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import { Home } from '../pages/Home'
+import { RulesAndTutorial } from '../pages/RulesAndTutorial'
+import { CreateRoom } from '../pages/CreateRoom'
+import { JoinRoom } from '../pages/JoinRoom'
+import { Play } from '../pages/Play'
+import { Login } from '../pages/Login'
+import { SignUp } from '../pages/Signup'
 
 function App() {
   return (
-    <main className='h-screen'>
-      <NavigationBar />
-      <div>
-        <img src={Mahjong_game} alt="Mahjong_Home" className='w-full object-cover' />
-      </div>
-      <footer className='h-screen text-center bottom-2 bg-black'>
-        A CS160 Project
-      </footer>
-    </main>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/rulesandtutorial" element={<RulesAndTutorial/>}/>
+        <Route path="/createroom" element={<CreateRoom />}/>
+        <Route path="/joinroom" element ={<JoinRoom />}/>
+        <Route path="/play" element ={<Play />}/>
+        <Route path="/login" element = {<Login />}/>
+        <Route path="/signup" element = {<SignUp />}/>
+      </Routes>
+    </Router>
   )
 }
 
