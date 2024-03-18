@@ -6,7 +6,7 @@ import { CreateRoom } from '../pages/CreateRoom'
 import { JoinRoom } from '../pages/JoinRoom'
 import { Play } from '../pages/Play'
 import { Login } from '../pages/Login'
-import { SignUp } from '../pages/Signup'
+import { SignUp } from '../pages/SignUp'
 
 function App() {
   return (
