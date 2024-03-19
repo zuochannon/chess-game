@@ -1,12 +1,12 @@
-import './App.css'
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-import { Home } from '../pages/Home'
-import { RulesAndTutorial } from '../pages/RulesAndTutorial'
+import { Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { CreateRoom } from '../pages/CreateRoom'
+import { Home } from '../pages/Home'
 import { JoinRoom } from '../pages/JoinRoom'
-import { Play } from '../pages/Play'
 import { Login } from '../pages/Login'
+import { Play } from '../pages/Play'
+import { RulesAndTutorial } from '../pages/RulesAndTutorial'
 import { SignUp } from '../pages/SignUp'
+import './App.css'
 
 function App() {
   return (

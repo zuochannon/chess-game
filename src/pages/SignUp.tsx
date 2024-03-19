@@ -1,6 +1,21 @@
-import { NavigationBar } from '../components/NavigationBar'
+import React, { useState } from 'react';
+import { NavigationBar } from '../components/NavigationBar';
 
 export function SignUp() {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isRegistered, setIsRegistered] = useState(false);
+
+    const handleSignUp = () => {
+        // Checks for non-empty email, username, and password
+        if (username.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
+        setIsRegistered(true);
+        // TODO: Redirect the user to another page after successful registration 
+        } else {
+        alert('Please enter valid username, email, and password.');
+        }
+    };
 
     return (
         <main className = 'h-screen bg-black'>
@@ -8,9 +23,47 @@ export function SignUp() {
             <h1 className = 'bg-[#0f0f0f] text-center w-full text-3xl font-bold'>
                 Sign Up
             </h1>
-            <p>
-                PLACEHOLDER
-            </p>
+            <div>
+      {isRegistered ? (
+        <div>
+          <h2>Account Registered Successfully!</h2>
+          {/* TODO: Display a message or redirect to another page */}
+        </div>
+      ) : (
+        <div
+            style={{display: "flex", flexDirection: "column"}}>
+            <input
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                style={{margin: "10px auto", width: "50vw", padding: "10px"}}
+            />
+          <br />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{margin: "10px auto", width: "50vw", padding: "10px"}}
+          />
+          <br />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{margin: "10px auto", width: "50vw", padding: "10px"}}
+          />
+          <br />
+          <button
+           onClick={handleSignUp}
+           style={{margin: "10px auto", width: "50vw", padding: "10px"}}
+           >Sign Up</button>
+        </div>
+      )}
+    </div>
+
         </main>
     )
 }
