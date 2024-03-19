@@ -3,9 +3,9 @@ import { NavigationBar } from '../components/NavigationBar'
 export function CreateRoom() {
 
     return (
-        <main className = 'h-screen bg-[00ff00ff]'>
+        <main className = 'h-screen bg-black'>
             <NavigationBar />
-            <h1 className = 'bg-[#0f0f0f] text-center'>
+            <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
                 CREATE ROOM
             </h1>
             <p>

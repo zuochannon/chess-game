@@ -3,12 +3,12 @@ import '../layouts/RulesAndTutorial.css';
 export function RulesAndTutorial() {
 
     return (
-        <main className = 'h-auto bg-[#1e3a8a]'>
+        <main className = 'h-screen bg-[#1e3a8a]'>
             <NavigationBar />
-            <h1 className = 'p-2 bg-[#1e3a8a] text-center w-screen text-3xl font-bold'>
+            <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
                 MAHJONG RULES AND TUTORIAL
             </h1>
-            <div className ='p-2 w-auto bg-gradient-to-t from-blue-600 via-95% via-blue-900 to-100% to-[#1e3a8a] relative'>
+            <div className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
                 <div style={{margin: "10px auto", width: "50vw", padding: "10px"}}>
                     <h2 className='sectionTitle'>Objective:</h2>
                     <p>The objective of Mahjong is to build a complete hand by forming four sets (melds) and one pair (eyes) using the tiles.</p>
