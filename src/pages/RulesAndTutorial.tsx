@@ -24,11 +24,11 @@ export function RulesAndTutorial() {
                 </ol>
                 
                 <h2 className='sectionTitle'>Types of Melds:</h2>
-                <p>There are several types of melds that can be formed:</p>
+                <p>There are two types of melds that can be formed:</p>
                 <ul>
                     <li><strong>Pung:</strong> Three identical tiles.</li>
                     <li><strong>Chow:</strong> Three consecutive tiles in the same suit.</li>
-                    <li><strong>Special Combinations:</strong> Certain combinations of tiles, such as three identical dragon tiles or three identical wind tiles.</li>
+                    {/* <li><strong>Special Combinations:</strong> Certain combinations of tiles, such as three identical dragon tiles or three identical wind tiles.</li> */}
                 </ul>
                 
                 <h2 className='sectionTitle'>Winning:</h2>
