@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { NavigationBar } from '../components/NavigationBar';
+
 export function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -49,6 +51,9 @@ export function Login() {
             onClick={handleLogin}
             style={{margin: "10px auto", width: "50vw", padding: "10px"}}
             >Login</button>
+          <p
+            style={{margin: "10px auto", width: "50vw", padding: "10px"}}
+            >Don't have an account? <NavLink to="/signup">Sign up</NavLink></p>
         </div>
       )}
     </div>
