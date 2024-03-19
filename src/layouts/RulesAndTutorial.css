@@ -1,0 +1,9 @@
+.sectionTitle {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+li {
+    text-indent: -1em; 
+    padding-left: 1em;
+}
