@@ -1,6 +1,7 @@
-import { NavigationBar } from '../components/NavigationBar'
+import React from 'react'
 import Mahjong_game from "../assets/Mahjong_game.jpg"
 
+import { NavigationBar } from '../components/NavigationBar'
 export function Home() {
   return (
     <main className='h-screen bg-black'>
