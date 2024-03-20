@@ -2,6 +2,9 @@ import { HonorSuits, NumberedSuits } from "../../data/enums/TileSuits";
 import { Models } from "../../data/models/Tile";
 
 const numLimit : number = 9;
+const imageDir = `${import.meta.env.BASE_URL}src/assets/tiles`
+
+console.log(imageDir);
 
 export function getName(s : string, endIndex : number) : string {
     return s.substring(0, endIndex);
@@ -13,7 +16,8 @@ export function createNumberTiles(tileSuit : NumberedSuits, category : Models.Ti
             suit: tileSuit,
             number: i,
             name: `${i} ${tileSuit}`,
-            displayName: getName(`${i}${tileSuit}`, 2)
+            displayName: getName(`${i}${tileSuit}`, 2),
+            imageURL: `${imageDir}/${tileSuit}/${i}.png`
         })
     }
 }
@@ -35,7 +39,8 @@ export function createHonorTiles(honorSuit : HonorSuits, category : object) {
         category[t] = {
             suit: t,
             name: tileName,
-            displayName: getName(tileName, endIndex)
+            displayName: getName(tileName, endIndex),
+            imageURL: `${imageDir}/${honorSuit}/${t}.png`
         }
     }
 }

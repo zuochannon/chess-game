@@ -7,21 +7,24 @@ declare namespace Models{
             number: number
             name: string
             displayName: string
+            imageURL: string
         }
 
         declare type Dragon = {
             suit: DragonSuits
             name: string
             displayName: string
+            imageURL: string
         }
 
         declare type Wind = {
             suit: WindSuits
             name: string
             displayName: string
+            imageURL: string
         }
 
         declare type Honor = Dragon | Wind;
     }
-    declare type Tile = TileTypes.Numerical | TileTypes.Honor | TileTypes.Wind;
+    declare type Tile = TileTypes.Numerical | TileTypes.Honor;
 }
