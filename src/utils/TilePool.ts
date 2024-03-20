@@ -13,8 +13,6 @@ createNumberTiles(NumberedSuits.PIN, PIN);
 createNumberTiles(NumberedSuits.SOU, SOU);
 createNumberTiles(NumberedSuits.MAN, MAN);
 
-console.log(Object.keys(DragonSuits))
-
 for (const t in DRAGON) {
     const tileName = `${t}`;
     DRAGON[t] = {
