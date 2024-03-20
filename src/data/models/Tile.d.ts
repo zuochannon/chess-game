@@ -1,7 +1,7 @@
 import { HonorSuits, TileSuits } from "../enums/TileSuits"
 
 declare namespace Models{
-    declare namespace Tiles{
+    declare namespace TileTypes{
         declare type Numerical = {
             suit: TileSuits
             number: number
@@ -13,4 +13,6 @@ declare namespace Models{
             name: string
         }
     }
+
+    declare type Tile = Numerical | Honor
 }
