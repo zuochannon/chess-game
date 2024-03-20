@@ -1,11 +1,23 @@
-export enum TileSuits {
-    Man,
-    Pin,
-    Sou,
-    Honor
+export enum NumberedSuits {
+    MAN="MAN",
+    PIN="PIN",
+    SOU="SOU"
 }
 
 export enum HonorSuits {
-    Dragon,
-    Wind
+    DRAGON="DRAGON",
+    WIND="WIND"
+}
+
+export enum DragonSuits {
+    WHITE="WHITE",
+    GREEN="GREEN",
+    RED="RED"
+}
+
+export enum WindSuits {
+    EAST="EAST",
+    WEST="WEST",
+    NORTH="NORTH",
+    SOUTH="SOUTH"
 }

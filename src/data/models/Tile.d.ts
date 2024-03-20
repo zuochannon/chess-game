@@ -1,18 +1,27 @@
-import { HonorSuits, TileSuits } from "../enums/TileSuits"
+import { DragonSuits, NumberedSuits, WindSuits } from "../enums/TileSuits"
 
 declare namespace Models{
-    declare namespace TileTypes{
+    declare namespace TileTypes {
         declare type Numerical = {
-            suit: TileSuits
+            suit: NumberedSuits
             number: number
             name: string
+            displayName: string
         }
 
-        declare type Honor = {
-            type: HonorSuits
+        declare type Dragon = {
+            suit: DragonSuits
             name: string
+            displayName: string
         }
-    }
 
-    declare type Tile = Numerical | Honor
+        declare type Wind = {
+            suit: WindSuits
+            name: string
+            displayName: string
+        }
+
+        declare type Honor = Dragon | Wind;
+    }
+    declare type Tile = TileTypes.Numerical | TileTypes.Honor | TileTypes.Wind;
 }
