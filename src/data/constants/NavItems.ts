@@ -5,5 +5,6 @@ export const navItems = [
     {id: 4, text: 'Join Room', url: '/joinroom'},
     {id: 5, text: 'Play', url: '/play'},
     {id: 6, text: 'Login', url: '/login'},
-    {id: 7, text: 'Sign Up', url: '/signup'}
+    {id: 7, text: 'Sign Up', url: '/signup'},
+    {id: 8, text: 'Profile', url: '/profile'}
 ];
