@@ -11,32 +11,29 @@ export function RulesAndTutorial() {
             <div className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
                 <div style={{margin: "10px auto", width: "50vw", padding: "10px"}}>
                     <h2 className='sectionTitle'>Objective:</h2>
-                    <p>The objective of Mahjong is to build a complete hand by forming four sets (melds) and one pair (eyes) using the tiles.</p>
+                    <p>Chess is a two-player strategy board game played on an 8x8 grid known as a chessboard. </p>
                     
                     <h2 className='sectionTitle'>Setup:</h2>
-                    <p>The house starts with 14 tiles and the rest of the players begin with 13. The tiles are drawn from the wall of face-down tiles in the center.</p>
+                    <p>Each player starts with 16 pieces: one king, one queen, two rooks, two knights, two bishops, and eight pawns. The pieces are arranged on the first two rows (ranks) closest to each player.</p>
                     
-                    <h2 className='sectionTitle'>Gameplay:</h2>
-                    <ol>
-                        <li>- Players take turns drawing a tile from the wall or claiming a tile discarded by another player.</li>
-                        <li>- After drawing a tile, players can choose to form sets (melds) or discard a tile.</li>
-                        <li>- To win, a player must form four sets (melds) and one pair (eyes).</li>
-                        <li>- Once a player has a complete hand, they declare "Mahjong" and win the game.</li>
-                    </ol>
-                    
-                    <h2 className='sectionTitle'>Types of Melds:</h2>
-                    <p>There are two types of melds that can be formed:</p>
+                    <h2 className='sectionTitle'>Piece Movement:</h2>
                     <ul>
-                        <li><strong>Pung:</strong> Three identical tiles.</li>
-                        <li><strong>Chow:</strong> Three consecutive tiles in the same suit.</li>
-                        {/* <li><strong>Special Combinations:</strong> Certain combinations of tiles, such as three identical dragon tiles or three identical wind tiles.</li> */}
+                        <li><strong>King:</strong> Moves one square in any direction.</li>
+                        <li><strong>Queen:</strong> Moves any number of squares in any direction (horizontally, vertically, or diagonally).</li>
+                        <li><strong>Rook:</strong> Moves any number of squares horizontally or vertically.</li>
+                        <li><strong>Bishop:</strong> Moves any number of squares diagonally.</li>
+                        <li><strong>Knight:</strong> Moves in an L-shape, two squares in one direction and then one square perpendicular.</li>
+                        <li><strong>Pawn:</strong> Moves forward one square but captures diagonally.</li>
                     </ul>
                     
-                    <h2 className='sectionTitle'>Winning:</h2>
-                    <p>To win, a player's hand must consist of four melds (sets) and one pair (eyes). The winning tile must complete a valid winning combination.</p>
+                    <h2 className='sectionTitle'>Special Moves:</h2>
+                    <p>Castling and En passant are special moves in chess.</p>
                     
-                    <h2 className='sectionTitle'>Conclusion:</h2>
-                    <p>Congratulations! You now understand the basic rules of Mahjong. Practice playing with friends or online to improve your skills!</p>
+                    <h2 className='sectionTitle'>Check and Checkmate:</h2>
+                    <p> When a king is under threat of capture (in check), but has no legal move to escape, it is in checkmate, and the game ends.</p>
+                    
+                    <h2 className='sectionTitle'>Stalemate:</h2>
+                    <p> If a player's turn to move comes, but the player's king is not in check, and there are no legal moves to make, the game ends in a draw due to stalemate.</p>
                 </div>
             </div>
         </main>
