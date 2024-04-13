@@ -6,7 +6,7 @@ export function RulesAndTutorial() {
         <main className = 'h-screen bg-[#1e3a8a]'>
             <NavigationBar />
             <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
-                MAHJONG RULES AND TUTORIAL
+                CHESS RULES AND TUTORIAL
             </h1>
             <div className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
                 <div style={{margin: "10px auto", width: "50vw", padding: "10px"}}>
