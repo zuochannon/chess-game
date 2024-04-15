@@ -1,10 +1,10 @@
-import { BoardPosition } from "./ChessTypes";
+import { BoardPosition } from "../types/ChessTypes";
 
 // Set column value and enables splitting into individual letter column
 export const COLUMNS = "abcdefgh".split("");
 
 // Set row value
-export const ROWS = "87654321".split("");
+export const ROWS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 // Set starting positions of pieces on board
 export const START_POSITION: BoardPosition = {

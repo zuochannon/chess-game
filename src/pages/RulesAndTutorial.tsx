@@ -1,5 +1,5 @@
 import { NavigationBar } from '../components/NavigationBar';
-import '../layouts/RulesAndTutorial.css';
+import '../layouts/pages/RulesAndTutorial.css';
 export function RulesAndTutorial() {
 
     return (
