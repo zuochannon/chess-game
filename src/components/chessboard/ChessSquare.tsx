@@ -1,15 +1,23 @@
-import { useState, useMemo } from "react";
-import { Square, BoardCoordinates, Piece } from "../../data/types/ChessTypes";
+import "../../layouts/components/ChessSquare.css"
 
-export function ChessSquare() {
+interface Props {
+    image?: string
+    number: number
+}
 
-    // Initialize state variable 'states' with an empty object
-    // This represents positions of each square on the board
-    const [squares] = useState<{ [square in Square] ?: BoardCoordinates}>({});
+export default function ChessSquare( { image, number } : Props) {
 
-    return (
-        <div>
-
-        </div>
-    );
+    if (number % 2 === 0) {
+        return (
+            <div className="square dark-tile">
+                <img src={image} />
+            </div>
+        );
+    } else {
+        return (
+            <div className="square light-tile">
+                <img src={image} />
+            </div>
+        );
+    }
 }

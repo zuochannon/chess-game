@@ -1,0 +1,32 @@
+.square {
+    width: 100px;
+    height: 100px;
+}
+
+.dark-tile{
+    background-color: #363636;
+}
+
+.light-tile {
+    background-color: #595959;
+}
+
+.square .chess-piece {
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80px;
+}
+
+.square .chess-piece:hover {
+    cursor: grab;
+}
+
+.square .chess-piece:active {
+    cursor: grabbing;
+}
+
+.square img {
+    width: 80px;
+}
