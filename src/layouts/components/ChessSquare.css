@@ -1,6 +1,6 @@
 .square {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
 }
 
 .dark-tile{
@@ -12,11 +12,11 @@
 }
 
 .square .chess-piece {
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 80px;
+    background-size: 60px;
 }
 
 .square .chess-piece:hover {
@@ -28,5 +28,5 @@
 }
 
 .square img {
-    width: 80px;
+    width: 60px;
 }

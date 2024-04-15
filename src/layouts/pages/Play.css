@@ -1,6 +1,6 @@
 #play {
     display: grid;
     place-content: center;
-    height: 125vh;
+    height: fit-content;
     background-color: black;
 }

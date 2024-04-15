@@ -1,4 +1,4 @@
-import { Chessboard } from "../../components/chessboard/ChessBoard";
+import Chessboard from "../../components/chessboard/ChessBoard";
 
 function Game() {
     return (
