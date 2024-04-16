@@ -3,6 +3,7 @@ import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessC
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
 import ChessSquare from "./ChessSquare";
+import { NavigationBarHeight } from "../../data/constants/NavItems";
 
 interface Piece {
     image: string
@@ -36,31 +37,29 @@ export default function Chessboard() {
     const chessboardRef = useRef<HTMLDivElement>(null);
     const [pieces, setPieces] = useState<Piece[]>(initialBoard);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
-    const [grabPosition, setGrabPosition] = useState<Position>(new Position(-1,-1));
+    const [grabPosition, setGrabPosition] = useState<Position>(new Position(0,0));
 
     // Grabs Piece on board
-    function grabPiece(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
+    function grabPiece(e: React.MouseEvent) {
         const element = e.target as HTMLElement;
         const chessboard = chessboardRef.current;
 
         // Checks if element is chess piece
         if (element.classList.contains("chess-piece") && chessboard) {
-            console.log(e);
 
             // Set grab position
             const grabX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
-            const grabY = Math.abs(
-                Math.ceil((e.clientY - chessboard.offsetTop - FULL_SIZE) / GRID_SIZE)
-            );
+            const grabY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop  - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
             setGrabPosition(new Position (grabX, grabY));
 
             // Set element position to center of mouse position
             const x = e.clientX - (GRID_SIZE / 2);
-            const y = e.clientY - (GRID_SIZE * 2);
+            const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight;
             element.style.position = "absolute";
             element.style.left = `${x}px`;
             element.style.top = `${y}px`;
             
+            // Set active piece
             setActivePiece(element);
         }
     }
@@ -71,18 +70,17 @@ export default function Chessboard() {
 
         // Checks if activePiece and chessboard is not null
         if (activePiece && chessboard) {
-            console.log(e);
 
             // Set element position to center of mouse position
             // Prevents pieces from moving out of board
             const minX = chessboard.offsetLeft - (GRID_SIZE / 4);
-            const minY = chessboard.offsetTop - (GRID_SIZE / 4);
+            const minY = chessboard.offsetTop - NavigationBarHeight - (GRID_SIZE / 4);
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - ((GRID_SIZE / 4) * 3);
-            const maxY = chessboard.offsetTop + chessboard.clientHeight -  ((GRID_SIZE / 4) * 3);
+            const maxY = chessboard.offsetTop + chessboard.clientHeight - ((GRID_SIZE / 4) * 3);
             const x = e.clientX - (GRID_SIZE / 2);
-            const y = e.clientY - (GRID_SIZE * 2);
+            const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight;
             activePiece.style.position = "absolute";
-
+ 
             // Logs chessboard
             console.log(chessboard);
 
@@ -114,11 +112,20 @@ export default function Chessboard() {
         // Checks if there is a piece and chessboard
         if (activePiece && chessboard) {
             const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
-            const y = Math.floor((FULL_SIZE - (e.clientY - chessboard.offsetTop)) / GRID_SIZE);
+            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
+            console.log(x,y);
 
-            const currentPiece = pieces.find((p) =>
-                p.position.samePosition(grabPosition)
-            );
+            setPieces((value) => { 
+                const pieces = value.map((p) => {
+                    console.log(p.position.x, p.position.y);
+                    if (p.position.x === grabPosition.x && p.position.y === grabPosition.y) {
+                        p.position.x = x;
+                        p.position.y = y;
+                    }
+                    return p;
+                });
+                return pieces;
+            });
 
             // Set active piece to null
             setActivePiece(null);

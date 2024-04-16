@@ -11,7 +11,7 @@ export function NavigationBar() {
     };
 
     return (
-        <div className='w-screen'>
+        <div className='w-screen h-31'>
             <div className='bg-black justify-between items-center h-12 max-w-screen-2xl mx-auto px-4 text-white bg-fixed'>
                 {/* LOGO */}
                 <h1 className='w-full text-3xl font-bold text-[#6495ed] text-center'>
