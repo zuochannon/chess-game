@@ -4,33 +4,38 @@ import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
 import ChessSquare from "./ChessSquare";
 import { NavigationBarHeight } from "../../data/constants/NavItems";
+import ChessRulesController from "./ChessRulesController";
+import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 
-interface Piece {
+export interface Piece {
     image: string
     position: Position
+    type: PieceType
+    color: ColorTeam
 }
 const initialBoard: Piece[] = [];
 
 for (let p = 0; p < 2; p++) {
-    const type = (p === 0) ? "b" : "w";
+    const team = (p === 0) ? ColorTeam.BLACK : ColorTeam.WHITE;
+    const type = (team === ColorTeam.BLACK) ? "b" : "w";
     const y = (p === 0) ? 7 : 0;
 
-    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(0, y)});
-    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(1, y)});
-    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(2, y)});
-    initialBoard.push({image: `src/assets/chess/${type}K.png`, position: new Position(3, y)});
-    initialBoard.push({image: `src/assets/chess/${type}Q.png`, position: new Position(4, y)});
-    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(5, y)});
-    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(6, y)});
-    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(7, y)});
+    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(0, y), type: PieceType.ROOK, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(1, y), type: PieceType.KNIGHT, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(2, y), type: PieceType.BISHOP, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}K.png`, position: new Position(3, y), type: PieceType.KING, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}Q.png`, position: new Position(4, y), type: PieceType.QUEEN, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(5, y), type: PieceType.BISHOP, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(6, y), type: PieceType.KNIGHT, color: team});
+    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(7, y), type: PieceType.ROOK, color: team});
 }
 
 for (let i = 0; i < 8; i++) {
-    initialBoard.push({image: "src/assets/chess/bP.png", position: new Position(i, 6)});
+    initialBoard.push({image: "src/assets/chess/bP.png", position: new Position(i, 6), type: PieceType.PAWN, color: ColorTeam.BLACK});
 }
 
 for (let i = 0; i < 8; i++) {
-    initialBoard.push({image: "src/assets/chess/wP.png", position: new Position(i, 1)});
+    initialBoard.push({image: "src/assets/chess/wP.png", position: new Position(i, 1), type: PieceType.PAWN, color: ColorTeam.WHITE});
 }
 
 export default function Chessboard() {
@@ -38,6 +43,7 @@ export default function Chessboard() {
     const [pieces, setPieces] = useState<Piece[]>(initialBoard);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = useState<Position>(new Position(0,0));
+    const rules = new ChessRulesController();
 
     // Grabs Piece on board
     function grabPiece(e: React.MouseEvent) {
@@ -74,15 +80,12 @@ export default function Chessboard() {
             // Set element position to center of mouse position
             // Prevents pieces from moving out of board
             const minX = chessboard.offsetLeft - (GRID_SIZE / 4);
-            const minY = chessboard.offsetTop - NavigationBarHeight - (GRID_SIZE / 4);
+            const minY = chessboard.offsetTop - (GRID_SIZE / 4);
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - ((GRID_SIZE / 4) * 3);
             const maxY = chessboard.offsetTop + chessboard.clientHeight - ((GRID_SIZE / 4) * 3);
             const x = e.clientX - (GRID_SIZE / 2);
             const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight;
             activePiece.style.position = "absolute";
- 
-            // Logs chessboard
-            console.log(chessboard);
 
             // Set x-position of piece inside board and along mouse cursor
             if (x < minX) {
@@ -113,14 +116,21 @@ export default function Chessboard() {
         if (activePiece && chessboard) {
             const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
-            console.log(x,y);
 
+            // Updates piece position
             setPieces((value) => { 
                 const pieces = value.map((p) => {
-                    console.log(p.position.x, p.position.y);
                     if (p.position.x === grabPosition.x && p.position.y === grabPosition.y) {
-                        p.position.x = x;
-                        p.position.y = y;
+                        const validMove = rules.isValidMove(grabPosition, new Position(x,y), p.type, p.color, value);
+
+                        if (validMove) {
+                            p.position.x = x;
+                            p.position.y = y;
+                        } else {
+                            activePiece.style.position = "relative";
+                            activePiece.style.removeProperty('top');
+                            activePiece.style.removeProperty('left');
+                        }
                     }
                     return p;
                 });

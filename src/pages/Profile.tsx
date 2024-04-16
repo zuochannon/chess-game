@@ -10,7 +10,7 @@ export function Profile() {
     };
 
     return (
-        <main className='h-screen bg-black pt-20'>
+        <main className='h-screen bg-black'>
             <NavigationBar />
             <div className="profile-container" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>

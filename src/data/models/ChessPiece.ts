@@ -1,4 +1,4 @@
-import { PieceType, ColorTeam } from "../enums/ChessPieceType";
+import { PieceType, ColorTeam } from "../enums/ChessEnums";
 import { Position } from "./Position";
 
 export class ChessPiece {
@@ -6,16 +6,15 @@ export class ChessPiece {
     position: Position;
     type: PieceType
     color: ColorTeam;
-    possibleMoves?: Position[];
-    hasMoved: boolean;
+    //possibleMoves?: Position[];
+    //hasMoved: boolean;
 
-    constructor(position: Position, type: PieceType, color: ColorTeam, hasMoved: boolean, possibleMoves: Position[] = []) {
-        this.image = `src/assets/${ColorTeam}.${type}.png`;
+    constructor(position: Position, type: PieceType, color: ColorTeam) {
+        this.image = `src/assets/${ColorTeam}${type}.png`;
         this.position = position;
         this.type = type;
         this.color = color;
-        this.possibleMoves = possibleMoves;
-        this.hasMoved = hasMoved;
+        
     }
 
     // Check if type is pawn
@@ -25,27 +24,27 @@ export class ChessPiece {
 
     // Checks if type is rook
     get isRook() : boolean {
-        return this.type === PieceType.ROOK
+        return this.type === PieceType.ROOK;
     }
 
     // Checks if type is knight
     get isKnight() : boolean {
-        return this.type === PieceType.KNIGHT
+        return this.type === PieceType.KNIGHT;
     }
 
     // Checks if type is bishop
     get isBishop() : boolean {
-        return this.type === PieceType.BISHOP
+        return this.type === PieceType.BISHOP;
     }
 
     // Checks if type is king
     get isKing() : boolean {
-        return this.type === PieceType.KING
+        return this.type === PieceType.KING;
     }
 
     // Checks if type is queen
     get isQueen() : boolean {
-        return this.type === PieceType.QUEEN
+        return this.type === PieceType.QUEEN;
     }
 
     samePiecePosition(otherPiece: ChessPiece) : boolean {
@@ -56,9 +55,11 @@ export class ChessPiece {
         return this.position.samePosition(otherPosition);
     }
 
+    /*
     clone(): ChessPiece {
         return new ChessPiece(this.position.clone(),
              this.type, this.color, this.hasMoved,
              this.possibleMoves?.map(m => m.clone()));
     }
+    */
 }
