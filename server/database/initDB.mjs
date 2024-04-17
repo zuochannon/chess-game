@@ -1,7 +1,6 @@
 import { client } from "./connection.mjs";
 import CONSTANTS from "./constants.mjs"
 import initData from "./initData.mjs";
-import createStrokes from "./models/strokes/strokes.mjs"
 import createUserInfo from "./models/users/users.mjs";
 
 const createKeyspace = async () => {
@@ -13,7 +12,6 @@ const createKeyspace = async () => {
 
 const createTables = async () => {
     await Promise.all([
-        createStrokes(),
         createUserInfo()
     ])
 }

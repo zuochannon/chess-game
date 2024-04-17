@@ -7,6 +7,7 @@ const createUserInfo = async () => {
         userID int,
         username text,
         email text,
+        password text,
         PRIMARY KEY(userID)
     );`
     await client.execute(query);
