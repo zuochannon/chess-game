@@ -1,5 +1,5 @@
 import express from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { client } from "../database/connection.mjs";
 import constants from "../database/constants.mjs";
 

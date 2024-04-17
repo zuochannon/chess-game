@@ -17,13 +17,11 @@ services:
   #   volumes:
   #     - ./server:/usr/src/app
   #     - /usr/src/app/node_modules
-  server:
-    image: node:18-alpine
-    depends_on:
-      - cassandra
-    restart: always
-    volumes:
-      - ./server:/usr/src/app
-    ports:
-      - 3000:3000
-    command: npm run docker:server
+  # server:
+  #   image: node:18-alpine
+  #   depends_on:
+  #     - cassandra
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   command: npm run docker:server
