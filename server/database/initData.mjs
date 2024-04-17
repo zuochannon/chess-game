@@ -5,15 +5,15 @@ const initUserData = async () => {
     BEGIN BATCH
 
     INSERT INTO Users (userID, username, email, password) VALUES
-    (1, 'john_doe', 'john@example.com', 'password123');
+    (uuid(), 'john_doe', 'john@example.com', '$2b$10$KWRETRRvAeAjChRilT.VOOQ3gGPbH8nRwFqANXWaLW0tmoyllryGq');
     INSERT INTO Users (userID, username, email, password) VALUES
-    (2, 'jane_doe', 'jane@example.com', 'letmein');
+    (uuid(), 'jane_doe', 'jane@example.com', '$2b$10$rIlWsRb9nE9j4BnIRlfiguETFlStzxPULjLBW8dsK.Baf6YKVgwYW');
     INSERT INTO Users (userID, username, email, password) VALUES
-    (3, 'bob_smith', 'bob@example.com', 'securepassword');
+    (uuid(), 'bob_smith', 'bob@example.com', '$2b$10$cBR6G.vCch6q95P8haF8KOQgAnsOnjCuqTbVfHGCgUdsGW7o9BL1S');
     INSERT INTO Users (userID, username, email, password) VALUES
-    (4, 'alice_wonderland', 'alice@example.com', 'pa$$w0rd');
+    (uuid(), 'alice_wonderland', 'alice@example.com', '$2b$10$P6.opQM1nMR8x0JNusfeWOGk/rKtswnzowCwzeODQA6lasTXU8hi6');
     INSERT INTO Users (userID, username, email, password) VALUES
-    (5, 'charlie_brown', 'charlie@example.com', '12345678');
+    (uuid(), 'charlie_brown', 'charlie@example.com', '$2b$10$PkV/Pdlw1YMH0C3EzLqC5Okkb4AeRH6d15G/6FNrjS.3HgdUkK0Hu');
 
     APPLY BATCH;`;
 

@@ -10,7 +10,25 @@ export function SignUp() {
     const handleSignUp = () => {
         // Checks for non-empty email, username, and password
         if (username.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
-        setIsRegistered(true);
+            fetch(`${import.meta.env.VITE_SERVER}/signup`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({username, email, password}),
+              }).then(response => {
+                if (!response.ok) {
+                  throw new Error('Network response was not ok');
+                }
+                return response.json();
+              })
+              .then(data => {
+                console.log(data);
+                setIsRegistered(true);
+              })
+              .catch(error => {
+                console.error('There was a problem with the login request:', error);
+              });
         // TODO: Redirect the user to another page after successful registration 
         } else {
         alert('Please enter valid username, email, and password.');
