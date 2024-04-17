@@ -10,7 +10,7 @@ export function Login() {
   const handleLogin = () => {
     // Check if user and password are not empty
     if (username.trim() !== "" && password.trim() !== "") {
-      fetch(`${import.meta.env.VITE_SERVER}/login`, {
+      fetch(`${import.meta.env.VITE_SERVER}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
