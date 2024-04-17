@@ -10,7 +10,7 @@ export class Position {
     }
 
     // Checks if position is the same position
-    samePosition(otherPosition: Position): boolean {
+    equalsTo(otherPosition: Position): boolean {
         return this.x === otherPosition.x && this.y === otherPosition.y;
     }
 

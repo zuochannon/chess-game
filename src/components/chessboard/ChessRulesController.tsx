@@ -35,4 +35,22 @@ export default class ChessRulesController {
         return valid;
     }
 
+    isEnPassantMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam, boardState: Piece[]) {
+        const pawnDirection = (color === ColorTeam.WHITE) ? 1 : -1;
+
+        if (type === PieceType.PAWN) {
+            if ((newPosition.x - initialPosition.x === -1 || newPosition.x - initialPosition.x === 1) &&
+                newPosition.y - initialPosition.y === pawnDirection) {
+                const piece = boardState.find(
+                    (p) => p.position.x === newPosition.x && p.position.y === newPosition.y - pawnDirection && p.enPassant
+                );
+
+                if (piece) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

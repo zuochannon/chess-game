@@ -8,10 +8,11 @@ import ChessRulesController from "./ChessRulesController";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 
 export interface Piece {
-    image: string
-    position: Position
-    type: PieceType
-    color: ColorTeam
+    image: string;
+    position: Position;
+    type: PieceType;
+    color: ColorTeam;
+    enPassant?: boolean;
 }
 const initialBoard: Piece[] = [];
 
@@ -117,25 +118,65 @@ export default function Chessboard() {
             const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
 
-            // Updates piece position
-            setPieces((value) => { 
-                const pieces = value.map((p) => {
-                    if (p.position.x === grabPosition.x && p.position.y === grabPosition.y) {
-                        const validMove = rules.isValidMove(grabPosition, new Position(x,y), p.type, p.color, value);
+            // Gets the current piece
+            const currentPiece = pieces.find((p) => p.position.equalsTo(grabPosition));
+            
+            // Checks if current piece is valid
+            if (currentPiece) {
+                const validMove = rules.isValidMove(grabPosition, new Position(x,y), currentPiece.type, currentPiece.color, pieces);
+                const enPassant = rules.isEnPassantMove(grabPosition, new Position(x, y), currentPiece.type, currentPiece.color, pieces);
 
-                        if (validMove) {
-                            p.position.x = x;
-                            p.position.y = y;
-                        } else {
-                            activePiece.style.position = "relative";
-                            activePiece.style.removeProperty('top');
-                            activePiece.style.removeProperty('left');
+                const pawnDir = (currentPiece.color === ColorTeam.WHITE) ? 1 : -1;
+
+                if (enPassant) {
+                    const updatedPieces = pieces.reduce((results, piece) => {
+                        if (piece.position.equalsTo(grabPosition)) {
+                            piece.enPassant = false;
+                            piece.position = new Position(x,y);
+                            results.push(piece);
+                        } else if (!(piece.position.equalsTo(new Position(x,y - pawnDir)))) {
+                            if (piece.type === PieceType.PAWN) {
+                                piece.enPassant = false;
+                            }
+                            results.push(piece);
                         }
-                    }
-                    return p;
-                });
-                return pieces;
-            });
+
+                        return results;
+                    }, [] as Piece[]);
+
+                    setPieces(updatedPieces);
+                }
+                // Checks for valid move
+                else if (validMove) {
+                    // Handles removing piece when attack is successful
+                    const updatedPieces = pieces.reduce((results, piece) => {
+                        if (piece.position.equalsTo(grabPosition)) {
+                            if (Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN) {
+                                piece.enPassant = true;
+                            } else {
+                                piece.enPassant = false;
+                            }
+                            
+                            piece.position = new Position(x,y);
+                            results.push(piece);
+                        } else if (!(piece.position.equalsTo(new Position(x,y)))) {
+                            if (piece.type === PieceType.PAWN) {
+                                piece.enPassant = false;
+                            }
+                            results.push(piece);
+                        }
+
+                        return results;
+                    }, [] as Piece[]);
+
+                    setPieces(updatedPieces);
+
+                } else { /* Reset Piece Position */
+                    activePiece.style.position = "relative";
+                    activePiece.style.removeProperty('top');
+                    activePiece.style.removeProperty('left');
+                }
+            }
 
             // Set active piece to null
             setActivePiece(null);
@@ -150,7 +191,7 @@ export default function Chessboard() {
             const number = j + i + 2;
             let image = undefined;
 
-            initialBoard.forEach(p => {
+            pieces.forEach(p => {
                 if (p.position.x === i && p.position.y === j) {
                     image = p.image;
                 }

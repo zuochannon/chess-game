@@ -1,7 +1,7 @@
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
 import { Piece } from "../chessboard/ChessBoard";
-import { isSquareOccupied } from "./General";
+import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./General";
 
 
 export const pawnMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: Piece[]) : boolean => {
@@ -22,6 +22,19 @@ export const pawnMove = (initialPosition: Position, newPosition: Position, color
         }
     }
 
-    //
+    // Handles Pawn Attack Logic
+    // Pawn can capture piece if piece is in upper corners relative to pawn piece
+    else if (newPosition.x - initialPosition.x === -1 && newPosition.y - initialPosition.y === pawnDir) {
+        if (isSquareOccupiedByOppositeColor(newPosition, boardState, color)) {
+            return true;
+        }
+    } else if (newPosition.x - initialPosition.x === 1 && newPosition.y - initialPosition.y === pawnDir) {
+        if (isSquareOccupiedByOppositeColor(newPosition, boardState, color)) {
+            return true;
+        }
+    }
+
+
+    // Return false for invalid pawn move
     return false;
 }
