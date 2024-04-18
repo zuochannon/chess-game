@@ -1,7 +1,11 @@
+import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
-import { pawnMove } from "../chessrules/Pawn";
-import { Piece } from "./ChessBoard";
+import { bishopMove } from "../chessrules/BishopLogic";
+import { knightMove } from "../chessrules/KnightLogic";
+import { pawnMove } from "../chessrules/PawnLogic";
+import { queenMove } from "../chessrules/QueenLogic";
+import { rookMove } from "../chessrules/RookLogic";
 
 // Responsible for handling valid chess moves
 export default class ChessRulesController {
@@ -16,16 +20,16 @@ export default class ChessRulesController {
                 valid = pawnMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.KNIGHT:
-                valid;
+                valid = knightMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.BISHOP:
-                valid;
+                valid = bishopMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.ROOK:
-                valid;
+                valid = rookMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.QUEEN:
-                valid;
+                valid = queenMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.KING:
                 valid;
@@ -42,7 +46,7 @@ export default class ChessRulesController {
             if ((newPosition.x - initialPosition.x === -1 || newPosition.x - initialPosition.x === 1) &&
                 newPosition.y - initialPosition.y === pawnDirection) {
                 const piece = boardState.find(
-                    (p) => p.position.x === newPosition.x && p.position.y === newPosition.y - pawnDirection && p.enPassant
+                    (p) => p.chessPiece.position.x === newPosition.x && p.chessPiece.position.y === newPosition.y - pawnDirection && p.enPassant
                 );
 
                 if (piece) {

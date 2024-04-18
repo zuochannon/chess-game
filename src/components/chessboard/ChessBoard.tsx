@@ -1,43 +1,11 @@
 import { useRef, useState } from "react";
-import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessConstants";
+import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE, Piece, initialBoard } from "../../data/constants/ChessConstants";
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
 import ChessSquare from "./ChessSquare";
 import { NavigationBarHeight } from "../../data/constants/NavItems";
 import ChessRulesController from "./ChessRulesController";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
-
-export interface Piece {
-    image: string;
-    position: Position;
-    type: PieceType;
-    color: ColorTeam;
-    enPassant?: boolean;
-}
-const initialBoard: Piece[] = [];
-
-for (let p = 0; p < 2; p++) {
-    const team = (p === 0) ? ColorTeam.BLACK : ColorTeam.WHITE;
-    const type = (team === ColorTeam.BLACK) ? "b" : "w";
-    const y = (p === 0) ? 7 : 0;
-
-    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(0, y), type: PieceType.ROOK, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(1, y), type: PieceType.KNIGHT, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(2, y), type: PieceType.BISHOP, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}K.png`, position: new Position(3, y), type: PieceType.KING, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}Q.png`, position: new Position(4, y), type: PieceType.QUEEN, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}B.png`, position: new Position(5, y), type: PieceType.BISHOP, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}N.png`, position: new Position(6, y), type: PieceType.KNIGHT, color: team});
-    initialBoard.push({image: `src/assets/chess/${type}R.png`, position: new Position(7, y), type: PieceType.ROOK, color: team});
-}
-
-for (let i = 0; i < 8; i++) {
-    initialBoard.push({image: "src/assets/chess/bP.png", position: new Position(i, 6), type: PieceType.PAWN, color: ColorTeam.BLACK});
-}
-
-for (let i = 0; i < 8; i++) {
-    initialBoard.push({image: "src/assets/chess/wP.png", position: new Position(i, 1), type: PieceType.PAWN, color: ColorTeam.WHITE});
-}
 
 export default function Chessboard() {
     const chessboardRef = useRef<HTMLDivElement>(null);
@@ -119,23 +87,23 @@ export default function Chessboard() {
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
 
             // Gets the current piece
-            const currentPiece = pieces.find((p) => p.position.equalsTo(grabPosition));
+            const currentPiece = pieces.find((p) => p.chessPiece.position.equalsTo(grabPosition));
             
             // Checks if current piece is valid
             if (currentPiece) {
-                const validMove = rules.isValidMove(grabPosition, new Position(x,y), currentPiece.type, currentPiece.color, pieces);
-                const enPassant = rules.isEnPassantMove(grabPosition, new Position(x, y), currentPiece.type, currentPiece.color, pieces);
+                const validMove = rules.isValidMove(grabPosition, new Position(x,y), currentPiece.chessPiece.type, currentPiece.chessPiece.color, pieces);
+                const enPassant = rules.isEnPassantMove(grabPosition, new Position(x, y), currentPiece.chessPiece.type, currentPiece.chessPiece.color, pieces);
 
-                const pawnDir = (currentPiece.color === ColorTeam.WHITE) ? 1 : -1;
+                const pawnDir = (currentPiece.chessPiece.color === ColorTeam.WHITE) ? 1 : -1;
 
                 if (enPassant) {
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.position.equalsTo(grabPosition)) {
+                        if (piece.chessPiece.position.equalsTo(grabPosition)) {
                             piece.enPassant = false;
-                            piece.position = new Position(x,y);
+                            piece.chessPiece.position = new Position(x,y);
                             results.push(piece);
-                        } else if (!(piece.position.equalsTo(new Position(x,y - pawnDir)))) {
-                            if (piece.type === PieceType.PAWN) {
+                        } else if (!(piece.chessPiece.position.equalsTo(new Position(x,y - pawnDir)))) {
+                            if (piece.chessPiece.type === PieceType.PAWN) {
                                 piece.enPassant = false;
                             }
                             results.push(piece);
@@ -150,17 +118,14 @@ export default function Chessboard() {
                 else if (validMove) {
                     // Handles removing piece when attack is successful
                     const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.position.equalsTo(grabPosition)) {
-                            if (Math.abs(grabPosition.y - y) === 2 && piece.type === PieceType.PAWN) {
-                                piece.enPassant = true;
-                            } else {
-                                piece.enPassant = false;
-                            }
+                        if (piece.chessPiece.position.equalsTo(grabPosition)) {
                             
-                            piece.position = new Position(x,y);
+                            // Checks if it can perform en passant move
+                            piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.chessPiece.type === PieceType.PAWN;
+                            piece.chessPiece.position = new Position(x,y);
                             results.push(piece);
-                        } else if (!(piece.position.equalsTo(new Position(x,y)))) {
-                            if (piece.type === PieceType.PAWN) {
+                        } else if (!(piece.chessPiece.position.equalsTo(new Position(x,y)))) {
+                            if (piece.chessPiece.type === PieceType.PAWN) {
                                 piece.enPassant = false;
                             }
                             results.push(piece);
@@ -185,17 +150,12 @@ export default function Chessboard() {
 
     let board = [];
 
-    // Draw the board
+    // Render the chess pieces on the board
     for (let j = ROWS.length - 1; j >= 0; j--) {
         for (let i = 0; i < COLUMNS.length; i++) {
             const number = j + i + 2;
-            let image = undefined;
-
-            pieces.forEach(p => {
-                if (p.position.x === i && p.position.y === j) {
-                    image = p.image;
-                }
-            })
+            const piece = pieces.find(p => p.chessPiece.position.equalsTo(new Position(i, j)));
+            let image = piece ? piece.chessPiece.image : undefined;
 
             board.push(<ChessSquare key={`${j},${i}`} image={image} number = {number} />);
 

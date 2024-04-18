@@ -1,7 +1,8 @@
+import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
-import { Piece } from "../chessboard/ChessBoard";
-import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./General";
+
+import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 
 export const pawnMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: Piece[]) : boolean => {
