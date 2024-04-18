@@ -10,7 +10,7 @@ export class ChessPiece {
     //hasMoved: boolean;
 
     constructor(position: Position, type: PieceType, color: ColorTeam) {
-        this.image = `src/assets/${ColorTeam}${type}.png`;
+        this.image = `src/assets/chess/${color}${type}.png`;
         this.position = position;
         this.type = type;
         this.color = color;
@@ -47,12 +47,12 @@ export class ChessPiece {
         return this.type === PieceType.QUEEN;
     }
 
-    samePiecePosition(otherPiece: ChessPiece) : boolean {
-        return this.position.samePosition(otherPiece.position);
+    hasSamePiecePositionAs(otherPiece: ChessPiece) : boolean {
+        return this.position.equalsTo(otherPiece.position);
     }
 
-    samePosition(otherPosition: Position) : boolean {
-        return this.position.samePosition(otherPosition);
+    hasSamePositionAs(otherPosition: Position) : boolean {
+        return this.position.equalsTo(otherPosition);
     }
 
     /*
