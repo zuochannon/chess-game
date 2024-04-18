@@ -2,6 +2,7 @@ import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
 import { bishopMove } from "../chessrules/BishopLogic";
+import { kingMove } from "../chessrules/KingLogic";
 import { knightMove } from "../chessrules/KnightLogic";
 import { pawnMove } from "../chessrules/PawnLogic";
 import { queenMove } from "../chessrules/QueenLogic";
@@ -32,7 +33,7 @@ export default class ChessRulesController {
                 valid = queenMove(initialPosition, newPosition, color, boardState);
                 break;
             case PieceType.KING:
-                valid;
+                valid = kingMove(initialPosition, newPosition, color, boardState);
                 break;
         }
 

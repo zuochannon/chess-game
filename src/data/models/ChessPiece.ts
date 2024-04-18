@@ -47,11 +47,11 @@ export class ChessPiece {
         return this.type === PieceType.QUEEN;
     }
 
-    samePiecePosition(otherPiece: ChessPiece) : boolean {
+    hasSamePiecePositionAs(otherPiece: ChessPiece) : boolean {
         return this.position.equalsTo(otherPiece.position);
     }
 
-    samePosition(otherPosition: Position) : boolean {
+    hasSamePositionAs(otherPosition: Position) : boolean {
         return this.position.equalsTo(otherPosition);
     }
 

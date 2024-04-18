@@ -28,10 +28,10 @@ export const initialBoard: Piece[] = [
         chessPiece: new ChessPiece(new Position(2, 7), PieceType.BISHOP, ColorTeam.BLACK)
     },
     {
-        chessPiece: new ChessPiece(new Position(3, 7), PieceType.KING, ColorTeam.BLACK)
+        chessPiece: new ChessPiece(new Position(4, 7), PieceType.KING, ColorTeam.BLACK)
     },
     {
-        chessPiece: new ChessPiece(new Position(4, 7), PieceType.QUEEN, ColorTeam.BLACK)
+        chessPiece: new ChessPiece(new Position(3, 7), PieceType.QUEEN, ColorTeam.BLACK)
     },
     {
         chessPiece: new ChessPiece(new Position(5, 7), PieceType.BISHOP, ColorTeam.BLACK)
@@ -52,10 +52,10 @@ export const initialBoard: Piece[] = [
         chessPiece: new ChessPiece(new Position(2, 0), PieceType.BISHOP, ColorTeam.WHITE)
     },
     {
-        chessPiece: new ChessPiece(new Position(3, 0), PieceType.KING, ColorTeam.WHITE)
+        chessPiece: new ChessPiece(new Position(4, 0), PieceType.KING, ColorTeam.WHITE)
     },
     {
-        chessPiece: new ChessPiece(new Position(4, 0), PieceType.QUEEN, ColorTeam.WHITE)
+        chessPiece: new ChessPiece(new Position(3, 0), PieceType.QUEEN, ColorTeam.WHITE)
     },
     {
         chessPiece: new ChessPiece(new Position(5, 0), PieceType.BISHOP, ColorTeam.WHITE)
