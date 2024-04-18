@@ -12,6 +12,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.15.15",
+    "@mui/material": "^5.15.15",
     "bcryptjs": "^2.4.3",
     "boardgame.io": "^0.50.2",
     "cassandra-driver": "^4.7.2",
