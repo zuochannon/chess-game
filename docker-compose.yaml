@@ -1,0 +1,27 @@
+version: '1'
+services:
+  cassandra:
+    image: cassandra:latest
+    container_name: cassandra
+    ports: 
+      - 9042:9042
+    restart: always
+  
+  # server:
+  #   depends_on:
+  #     - cassandra
+  #   build: ./server
+  #   container_name: server
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./server:/usr/src/app
+  #     - /usr/src/app/node_modules
+  # server:
+  #   image: node:18-alpine
+  #   depends_on:
+  #     - cassandra
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   command: npm run docker:server
