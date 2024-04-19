@@ -2,6 +2,8 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import { client } from "../database/connection.mjs";
 import constants from "../database/constants.mjs";
+import jwt from "jsonwebtoken"
+
 
 const router = express.Router();
 const saltRounds = 10;
@@ -21,25 +23,20 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = `SELECT password FROM ${constants.KEYSPACE}.Users WHERE username='${username}' ALLOW FILTERING;`;
+    const query = `SELECT userID, password FROM ${constants.KEYSPACE}.Users WHERE username='${username}' ALLOW FILTERING;`;
     const result = await client.execute(query);
 
     if (!result.rows.length)
       return res.status(401).json({ error: "User not found, please sign up." });
 
-    const passwordMatch = await bcrypt.compare(
-      password,
-      result.rows[0].password
-    );
-
-    if (passwordMatch) res.json({ message: "Login successful" });
+    if (await bcrypt.compare(password, result.rows[0].password))
+      res.json({ message: "Login successful", token: jwt.sign({ userID: result.rows[0].userID }, 'temporarytest', { expiresIn: '1h' }) });
     else res.status(401).json({ error: "Incorrect password." });
   } catch (error) {
     console.error("Error executing Cassandra query:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
