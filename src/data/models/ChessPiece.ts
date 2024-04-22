@@ -58,9 +58,8 @@ export class ChessPiece {
 
     // Get board position of chess piece
     get boardPosition(): string {
-
-        const letter = COLUMNS[this.position.y];
-        const number = ROWS[this.position.x];
+        const letter = COLUMNS[this.position.x];
+        const number = ROWS[this.position.y];
 
         return `${letter}${number}`;
     }
