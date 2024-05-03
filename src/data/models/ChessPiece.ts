@@ -1,3 +1,4 @@
+import { COLUMNS, ROWS } from "../constants/ChessConstants";
 import { PieceType, ColorTeam } from "../enums/ChessEnums";
 import { Position } from "./Position";
 
@@ -53,6 +54,14 @@ export class ChessPiece {
 
     hasSamePositionAs(otherPosition: Position) : boolean {
         return this.position.equalsTo(otherPosition);
+    }
+
+    // Get board position of chess piece
+    get boardPosition(): string {
+        const letter = COLUMNS[this.position.x];
+        const number = ROWS[this.position.y];
+
+        return `${letter}${number}`;
     }
 
     /*

@@ -159,6 +159,8 @@ export default function Chessboard() {
 
             board.push(<ChessSquare key={`${j},${i}`} image={image} number = {number} />);
 
+            console.log(piece?.chessPiece.color, piece?.chessPiece.type, piece?.chessPiece.boardPosition);
+
         }
     }
 
