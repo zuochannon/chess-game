@@ -1,5 +1,5 @@
-import { client } from "../../connection.mjs"
-import constants from "../../constants.mjs";
+import { cassandraClient } from "../../../connection.mjs"
+import constants from "../../../constants.mjs";
 
 const createUserInfo = async () => {
 
@@ -7,10 +7,9 @@ const createUserInfo = async () => {
         userID UUID,
         username text,
         email text,
-        password text,
-        PRIMARY KEY(userID)
+        PRIMARY KEY(username)
     );`
-    await client.execute(query);
+    await cassandraClient.execute(query);
     console.log("created user table");
 }
 

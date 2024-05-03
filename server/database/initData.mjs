@@ -1,4 +1,4 @@
-import { client } from "./connection.mjs";
+import { cassandraClient } from "./connection.mjs";
 
 const initUserData = async () => {
     const query = `
@@ -17,7 +17,7 @@ const initUserData = async () => {
 
     APPLY BATCH;`;
 
-    client.execute(query);
+    cassandraClient.execute(query);
 };
 
 const initData = async () => {
