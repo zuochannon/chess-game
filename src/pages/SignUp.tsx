@@ -10,7 +10,7 @@ export function SignUp() {
     const handleSignUp = () => {
         // Checks for non-empty email, username, and password
         if (username.trim() !== '' && email.trim() !== '' && password.trim() !== '') {
-            fetch(`${import.meta.env.VITE_SERVER}/users/signup`, {
+            fetch(`${import.meta.env.VITE_SERVER}/auth/signup`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
