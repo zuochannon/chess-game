@@ -1,10 +1,10 @@
-import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam } from "../../data/enums/ChessEnums";
+import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 // Moves the rook piece
-export const rookMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: Piece[]) : boolean => {
+export const rookMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
     
     // Case: Moves along a column (top and bottom)
     if (newPosition.y === initialPosition.y) {
@@ -49,4 +49,44 @@ export const rookMove = (initialPosition: Position, newPosition: Position, color
     }
 
     return false;
+}
+
+// Export all possible rook moves
+export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[]): Position[] => {
+    // Stores all possible pawn moves
+    const possibleMoves: Position[] = [];
+
+    const directions = [
+        { dx: 0, dy: 1 },  // Top
+        { dx: 0, dy: -1 }, // Bottom
+        { dx: -1, dy: 0 }, // Left
+        { dx: 1, dy: 0 },  // Right
+    ];
+      
+    for (const { dx, dy } of directions) {
+        for (let i = 1; i < 8; i++) {
+            const newX = rook.position.x + dx * i;
+            const newY = rook.position.y + dy * i;
+          
+            // Prevent off-the-board moves from being stored
+            if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
+      
+            const destination = new Position(newX, newY);
+
+            // Check if square is unoccupied for move to be possible
+            if (!isSquareOccupied(destination, board)) {
+                possibleMoves.push(destination);
+            } 
+            // Check if opponent occupies square to put as possible move
+            else if (isSquareOccupiedByOppositeColor(destination, board, rook.color)) {
+                possibleMoves.push(destination);
+                break;
+            } else {
+                break;
+            }
+        }
+    }
+      
+
+    return possibleMoves;
 }

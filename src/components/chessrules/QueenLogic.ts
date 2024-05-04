@@ -1,10 +1,10 @@
-import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam } from "../../data/enums/ChessEnums";
+import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 // Moves the Queen piece
-export const queenMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: Piece[]) : boolean => {
+export const queenMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
     
     // Handles Movement where the piece can move diagonally
     for (let i = 1; i < 8; i++) { /* Individually checks all passed squares if a piece occupies a square in its path */
@@ -30,3 +30,45 @@ export const queenMove = (initialPosition: Position, newPosition: Position, colo
 
     return false;
 }
+
+// Export all possible queen moves
+export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[]): Position[] => {
+    // Store all possible moves for the queen piece
+    const possibleMoves: Position[] = [];
+    
+    const directions = [
+      { dx: 0, dy: 1 },   // Top
+      { dx: 0, dy: -1 },  // Bottom
+      { dx: -1, dy: 0 },  // Left
+      { dx: 1, dy: 0 },   // Right
+      { dx: 1, dy: 1 },   // Upper right
+      { dx: 1, dy: -1 },  // Bottom right
+      { dx: -1, dy: -1 }, // Bottom left
+      { dx: -1, dy: 1 },  // Top left
+    ];
+  
+    // Goes through all possible moves of queen piece
+    for (const { dx, dy } of directions) {
+      for (let i = 1; i < 8; i++) {
+        const newX = queen.position.x + dx * i;
+        const newY = queen.position.y + dy * i;
+        
+        // Prevent out-of-board moves from being included
+        if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
+  
+        const destination = new Position(newX, newY);
+  
+        if (!isSquareOccupied(destination, board)) {
+            possibleMoves.push(destination);
+        } else if (isSquareOccupiedByOppositeColor(destination, board, queen.color)) {
+            possibleMoves.push(destination);
+             break;
+        } else {
+            break;
+        }
+      }
+    }
+  
+    return possibleMoves;
+  }
+  

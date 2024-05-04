@@ -1,18 +1,20 @@
 import { useRef, useState } from "react";
-import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE, Piece, initialBoard } from "../../data/constants/ChessConstants";
+import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessConstants";
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
-import ChessSquare from "./ChessSquare";
 import { NavigationBarHeight } from "../../data/constants/NavItems";
-import ChessRulesController from "./ChessRulesController";
-import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
+import ChessSquare from "./ChessSquare";
+import { ChessPiece } from "../../data/models/ChessPiece";
 
-export default function Chessboard() {
+interface Props {
+    playMove: (piece: ChessPiece, position: Position) => boolean;
+    pieces: ChessPiece[];
+}
+
+export default function Chessboard({playMove, pieces} : Props) {
     const chessboardRef = useRef<HTMLDivElement>(null);
-    const [pieces, setPieces] = useState<Piece[]>(initialBoard);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
-    const [grabPosition, setGrabPosition] = useState<Position>(new Position(0,0));
-    const rules = new ChessRulesController();
+    const [grabPosition, setGrabPosition] = useState<Position>(new Position(-1,-1));
 
     // Grabs Piece on board
     function grabPiece(e: React.MouseEvent) {
@@ -87,56 +89,16 @@ export default function Chessboard() {
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
 
             // Gets the current piece
-            const currentPiece = pieces.find((p) => p.chessPiece.position.equalsTo(grabPosition));
+            const currentPiece = pieces.find((p) => p.hasSamePositionAs(grabPosition));
             
             // Checks if current piece is valid
             if (currentPiece) {
-                const validMove = rules.isValidMove(grabPosition, new Position(x,y), currentPiece.chessPiece.type, currentPiece.chessPiece.color, pieces);
-                const enPassant = rules.isEnPassantMove(grabPosition, new Position(x, y), currentPiece.chessPiece.type, currentPiece.chessPiece.color, pieces);
 
-                const pawnDir = (currentPiece.chessPiece.color === ColorTeam.WHITE) ? 1 : -1;
+                console.log(currentPiece);
 
-                if (enPassant) {
-                    const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.chessPiece.position.equalsTo(grabPosition)) {
-                            piece.enPassant = false;
-                            piece.chessPiece.position = new Position(x,y);
-                            results.push(piece);
-                        } else if (!(piece.chessPiece.position.equalsTo(new Position(x,y - pawnDir)))) {
-                            if (piece.chessPiece.type === PieceType.PAWN) {
-                                piece.enPassant = false;
-                            }
-                            results.push(piece);
-                        }
-
-                        return results;
-                    }, [] as Piece[]);
-
-                    setPieces(updatedPieces);
-                }
-                // Checks for valid move
-                else if (validMove) {
-                    // Handles removing piece when attack is successful
-                    const updatedPieces = pieces.reduce((results, piece) => {
-                        if (piece.chessPiece.position.equalsTo(grabPosition)) {
-                            
-                            // Checks if it can perform en passant move
-                            piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.chessPiece.type === PieceType.PAWN;
-                            piece.chessPiece.position = new Position(x,y);
-                            results.push(piece);
-                        } else if (!(piece.chessPiece.position.equalsTo(new Position(x,y)))) {
-                            if (piece.chessPiece.type === PieceType.PAWN) {
-                                piece.enPassant = false;
-                            }
-                            results.push(piece);
-                        }
-
-                        return results;
-                    }, [] as Piece[]);
-
-                    setPieces(updatedPieces);
-
-                } else { /* Reset Piece Position */
+                var successfulMove = playMove(currentPiece.clone(), new Position(x,y));
+                
+                if (!successfulMove) { /* Reset Piece Position */
                     activePiece.style.position = "relative";
                     activePiece.style.removeProperty('top');
                     activePiece.style.removeProperty('left');
@@ -154,25 +116,27 @@ export default function Chessboard() {
     for (let j = ROWS.length - 1; j >= 0; j--) {
         for (let i = 0; i < COLUMNS.length; i++) {
             const number = j + i + 2;
-            const piece = pieces.find(p => p.chessPiece.position.equalsTo(new Position(i, j)));
-            let image = piece ? piece.chessPiece.image : undefined;
+            const piece = pieces.find(p => p.hasSamePositionAs(new Position(i, j)));
+            let image = piece ? piece.image : undefined;
 
-            board.push(<ChessSquare key={`${j},${i}`} image={image} number = {number} />);
-
-            console.log(piece?.chessPiece.color, piece?.chessPiece.type, piece?.chessPiece.boardPosition);
-
+            let currentPiece = activePiece != null ? pieces.find(p => p.hasSamePositionAs(grabPosition)) : undefined;
+            let highlight = currentPiece?.possibleMoves ? currentPiece.possibleMoves.some(p => p.equalsTo(new Position(i, j))) : false;
+      
+            board.push(<ChessSquare key={`${j},${i}`} image={image} number = {number} highlight = {highlight} />);
         }
     }
 
     return (
-        <div 
-            onMouseDown={(e) => grabPiece(e)}  
-            onMouseMove={(e) => movePiece(e)} 
-            onMouseUp={(e) => dropPiece(e)} 
-            id="chessboard"
-            ref = {chessboardRef}
-        >
-            {board}
-        </div>
+        <>
+            <div 
+                onMouseDown={(e) => grabPiece(e)}  
+                onMouseMove={(e) => movePiece(e)} 
+                onMouseUp={(e) => dropPiece(e)} 
+                id="chessboard"
+                ref = {chessboardRef}
+            >
+                {board}
+            </div>
+        </>
     );
 }

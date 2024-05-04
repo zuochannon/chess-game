@@ -7,15 +7,16 @@ export class ChessPiece {
     position: Position;
     type: PieceType
     color: ColorTeam;
-    //possibleMoves?: Position[];
-    //hasMoved: boolean;
+    possibleMoves?: Position[];
+    hasMoved: boolean;
 
-    constructor(position: Position, type: PieceType, color: ColorTeam) {
+    constructor(position: Position, type: PieceType, color: ColorTeam, hasMoved: boolean, possibleMoves: Position[] = []) {
         this.image = `src/assets/chess/${color}${type}.png`;
         this.position = position;
         this.type = type;
         this.color = color;
-        
+        this.possibleMoves = possibleMoves;
+        this.hasMoved = hasMoved;
     }
 
     // Check if type is pawn
@@ -64,11 +65,23 @@ export class ChessPiece {
         return `${letter}${number}`;
     }
 
-    /*
     clone(): ChessPiece {
         return new ChessPiece(this.position.clone(),
              this.type, this.color, this.hasMoved,
              this.possibleMoves?.map(m => m.clone()));
     }
-    */
+}
+
+// Export Pawn Class extension that handles en passant
+export class Pawn extends ChessPiece {
+    enPassant?: boolean;
+
+    constructor(position: Position, color: ColorTeam, hasMoved: boolean, enPassant?: boolean, possibleMoves: Position[] = []) {
+        super(position, PieceType.PAWN, color, hasMoved, possibleMoves);
+        this.enPassant = enPassant;
+    }
+
+    clone(): Pawn {
+        return new Pawn(this.position.clone(), this.color, this.hasMoved, this.enPassant, this.possibleMoves?.map(m => m.clone()))
+    }
 }
