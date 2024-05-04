@@ -6,6 +6,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  console.error('JWT secret is not defined. Set the JWT_SECRET environment variable.');
+  process.exit(1);
+}
+
 initDB();
 
 app.use("/users/", userRoutes);
