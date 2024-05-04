@@ -45,24 +45,25 @@ export default function ChessRulesController() {
 
     // Boolean function to check if move was valid
     function playMove(playedPiece: ChessPiece, dest: Position): boolean {
+        let isValidMove = false;
 
         // Check if the piece has possible moves to play
         if (playedPiece.possibleMoves === undefined)
-            return false;
+            return isValidMove;
 
         // White and black switch turns
-        if (playedPiece.color === ColorTeam.WHITE && board.totalTurns % 2 === 0)
-            return false;
-        if (playedPiece.color === ColorTeam.WHITE && board.totalTurns % 2 === 1)
-            return false;
-
-        let isValidMove = false;
+        if (playedPiece.color === ColorTeam.WHITE && board.totalTurns % 2 === 0) 
+            return isValidMove;
+        if (playedPiece.color === ColorTeam.BLACK && board.totalTurns % 2 === 1)
+            return isValidMove;
 
         // Check if desired position is a possible move for the piece being played
         const validMove = playedPiece.possibleMoves?.some(m => m.equalsTo(dest));
-        if (!validMove) return false;
+        if (!validMove) return isValidMove;
 
         const enPassantMove = isEnPassantMove(playedPiece.position, dest, playedPiece.type, playedPiece.color);
+
+        //console.log(board.totalTurns);
 
         // Update chessboard to include all move changes 
         setBoard(() => {
@@ -76,6 +77,9 @@ export default function ChessRulesController() {
             if (clonedChessboard.winningTeam !== undefined) {
                 checkmateModalRef.current?.classList.remove("hidden");
             }
+
+            //console.log("hello");
+            //console.log(clonedChessboard.totalTurns);
 
             return clonedChessboard;
         });
@@ -174,16 +178,16 @@ export default function ChessRulesController() {
         <>
             <div className="modal hidden" ref={modalRef}>
                 <div className="modal-body">
-                    <img onClick={() => promotePawn(PieceType.ROOK)} src={`/assets/chess/${promotionTeamType()}R.png`} />
-                    <img onClick={() => promotePawn(PieceType.BISHOP)} src={`/assets/chess/${promotionTeamType()}B.png`} />
-                    <img onClick={() => promotePawn(PieceType.KNIGHT)} src={`/assets/chess/${promotionTeamType()}N.png`} />
-                    <img onClick={() => promotePawn(PieceType.QUEEN)} src={`/assets/chess/${promotionTeamType()}Q.png`} />
+                    <img onClick={() => promotePawn(PieceType.ROOK)} src={`src/assets/chess/${promotionTeamType()}R.png`} />
+                    <img onClick={() => promotePawn(PieceType.BISHOP)} src={`src/assets/chess/${promotionTeamType()}B.png`} />
+                    <img onClick={() => promotePawn(PieceType.KNIGHT)} src={`src/assets/chess/${promotionTeamType()}N.png`} />
+                    <img onClick={() => promotePawn(PieceType.QUEEN)} src={`src/assets/chess/${promotionTeamType()}Q.png`} />
                 </div>
             </div>
             <div className = "modal hidden" ref={checkmateModalRef}>
                 <div className = "modal-body">
                     <div className= "checkmate-body">
-                        <span> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
+                        <span className="content-center"> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
                         <button onClick={restartGame}> Play Again </button>
                     </div>
                 </div>

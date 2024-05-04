@@ -42,8 +42,8 @@
 .square-highlight.chess-piece-square::before {
     position: absolute;
     content: " ";
-    width: 65px;
-    height: 65px;
+    width: 75px;
+    height: 75px;
     border: 5px solid rgba(0,0,0,0.4);
     border-radius: 50%;
 }

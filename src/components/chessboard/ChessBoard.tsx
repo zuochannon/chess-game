@@ -94,6 +94,8 @@ export default function Chessboard({playMove, pieces} : Props) {
             // Checks if current piece is valid
             if (currentPiece) {
 
+                console.log(currentPiece);
+
                 var successfulMove = playMove(currentPiece.clone(), new Position(x,y));
                 
                 if (!successfulMove) { /* Reset Piece Position */

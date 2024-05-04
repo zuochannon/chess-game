@@ -77,7 +77,6 @@ export class Pawn extends ChessPiece {
     enPassant?: boolean;
 
     constructor(position: Position, color: ColorTeam, hasMoved: boolean, enPassant?: boolean, possibleMoves: Position[] = []) {
-        console.log("hello");
         super(position, PieceType.PAWN, color, hasMoved, possibleMoves);
         this.enPassant = enPassant;
     }

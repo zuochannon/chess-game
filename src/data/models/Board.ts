@@ -201,6 +201,8 @@ export class Board {
 
                 return results;
             }, [] as ChessPiece[]);
+
+            this.processAllPossibleMoves();
         }
         else {
             return false;
