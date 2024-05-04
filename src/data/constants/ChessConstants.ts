@@ -1,6 +1,6 @@
 import { PieceType, ColorTeam } from "../enums/ChessEnums";
 import { ChessPiece } from "../models/ChessPiece";
-import { Chessboard } from "../models/Chessboard";
+import { Board } from "../models/Board";
 import { Pawn } from "../models/Pawn";
 import { Position } from "../models/Position";
 
@@ -15,7 +15,7 @@ export const FULL_SIZE = 600;
 export const GRID_SIZE = FULL_SIZE / 8;
 
 // Set initial board positions
-export const initialBoard: Chessboard = new Chessboard([
+export const initialBoard: Board = new Board([
     new ChessPiece(new Position(0, 7), PieceType.ROOK, ColorTeam.BLACK, false),
     new ChessPiece(new Position(1, 7), PieceType.KNIGHT, ColorTeam.BLACK, false),
     new ChessPiece(new Position(2, 7), PieceType.BISHOP, ColorTeam.BLACK, false),

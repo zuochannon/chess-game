@@ -5,7 +5,7 @@ import { Pawn } from "./Pawn";
 import { Position } from "./Position";
 
 // Handles chessboard moves, such as possible moves that each piece can do
-export class Chessboard {
+export class Board {
     pieces: ChessPiece[];
     totalTurns: number;
     winningTeam ?: ColorTeam;
@@ -138,6 +138,7 @@ export class Chessboard {
             // Set new king position in terms of x-position
             const newKingPosition = playedPiece.position.x + dir * 2;
 
+            // Updates the play field to reflect castling
             this.pieces = this.pieces.map(p => {
                 if (p.hasSamePiecePositionAs(playedPiece)) {
                     p.position.x = newKingPosition;
@@ -145,17 +146,18 @@ export class Chessboard {
                 else if (p.hasSamePiecePositionAs(destPiece)) {
                     p.position.x = newKingPosition - dir;
                 }
+                return p;
             });
 
             this.processAllPossibleMoves();
             return true;
         }
 
-        // Special Case: En Passant
+        // Special Case: En Passant; Checks moves made for en passant to occur
         if (enPassantMove) {
             this.pieces = this.pieces.reduce((results, piece) => {
 
-                //
+                // Check if the played piece has same position as piece
                 if (piece.hasSamePiecePositionAs(playedPiece)) {
                     if (piece.isPawn)
                         (piece as Pawn).enPassant = false;
@@ -164,18 +166,53 @@ export class Chessboard {
                     piece.hasMoved = true;
                     results.push(piece);
                 }
+                else if (!piece.hasSamePositionAs(new Position(dest.x, dest.y - pawnDir))) {
+                    if (piece.isPawn)
+                        (piece as Pawn).enPassant = false;
+                    results.push(piece);
+                }
 
                 return results;
-            }), [] as ChessPiece[];
-        }
+            }, [] as ChessPiece[]);
 
+            this.processAllPossibleMoves();
+        }
+        // Case: Non-special moves 
+        else if (validMove) {
+            // Update position of piece
+            this.pieces = this.pieces.reduce((results, piece) => {
+
+                // Refers to piece being moved by player
+                if (piece.hasSamePiecePositionAs(playedPiece)) {
+
+                    // Special Move: En Passant
+                    if (piece.isPawn)
+                        (piece as Pawn).enPassant = Math.abs(playedPiece.position.y - dest.y) === 2;
+                
+                    piece.position = dest;
+                    piece.hasMoved = true;
+                    results.push(piece);
+                } 
+                // Check if piece is not same position as destination of played piece
+                else if (!piece.hasSamePositionAs(dest)) {
+                    if (piece.isPawn)
+                        (piece as Pawn).enPassant = false;
+                    results.push(piece);
+                }
+
+                return results;
+            }, [] as ChessPiece[]);
+        }
+        else {
+            return false;
+        }
 
         return true;
     }
 
     // Clone the chessboard
-    clone(): Chessboard {
-        return new Chessboard(this.pieces.map(p => p.clone()),
+    clone(): Board {
+        return new Board(this.pieces.map(p => p.clone()),
             this.totalTurns);
     }
 }
