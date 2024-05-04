@@ -1,5 +1,5 @@
-import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
+import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { bishopMove } from "../chessrules/BishopLogic";
 import { kingMove } from "../chessrules/KingLogic";
@@ -11,8 +11,13 @@ import { rookMove } from "../chessrules/RookLogic";
 // Responsible for handling valid chess moves
 export default class ChessRulesController {
 
+    const [board, setBoard] = useState<Chessboard>(initialBoard.clone());
+    const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
+    const modalRef = useRef<HTMLDivElement>(null);
+    const checkmateModalRef = useRef<HTMLDivElement>(null);
+
     // Checks if it is a valid move by that particular piece
-    isValidMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam, boardState: Piece[]) {
+    isValidMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam) {
         let valid = false;
 
         // Check by piece type
@@ -40,22 +45,18 @@ export default class ChessRulesController {
         return valid;
     }
 
-    isEnPassantMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam, boardState: Piece[]) {
-        const pawnDirection = (color === ColorTeam.WHITE) ? 1 : -1;
-
-        if (type === PieceType.PAWN) {
-            if ((newPosition.x - initialPosition.x === -1 || newPosition.x - initialPosition.x === 1) &&
-                newPosition.y - initialPosition.y === pawnDirection) {
-                const piece = boardState.find(
-                    (p) => p.chessPiece.position.x === newPosition.x && p.chessPiece.position.y === newPosition.y - pawnDirection && p.enPassant
-                );
-
-                if (piece) {
-                    return true;
-                }
-            }
+    // Handles pawn promotion
+    function promotePawn(pieceType: PieceType) {
+        // Check if pawn promotion is possible
+        if (promotionPawn === undefined) {
+            return;
         }
 
-        return false;
+        setBoard((prevBoard) => {
+            const clonedChessboard = board.clone();
+            clonedChessboard.pieces = clonedChessboard.pieces.reduce((results, piece) => {
+                if (piece.)
+            }, [] as ChessPiece[])
+        });
     }
 }

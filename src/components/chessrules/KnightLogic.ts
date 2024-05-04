@@ -1,10 +1,9 @@
-import { Piece } from "../../data/constants/ChessConstants";
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
 import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 // Moves the knight piece
-export const knightMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: Piece[]) : boolean => {
+export const knightMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
 
     // Handles Movement of Knight Piece (performs L shape movement)
     for (let i = -1; i < 2; i+=2) { /* i handles the stem of the L (the long part which is 2 squares long) */

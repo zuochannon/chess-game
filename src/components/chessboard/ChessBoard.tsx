@@ -123,6 +123,8 @@ export default function Chessboard() {
                             // Checks if it can perform en passant move
                             piece.enPassant = Math.abs(grabPosition.y - y) === 2 && piece.chessPiece.type === PieceType.PAWN;
                             piece.chessPiece.position = new Position(x,y);
+
+                            let promotionRow = (piece.chessPiece.color === ColorTeam.WHITE) ? 7 : 0;
                             results.push(piece);
                         } else if (!(piece.chessPiece.position.equalsTo(new Position(x,y)))) {
                             if (piece.chessPiece.type === PieceType.PAWN) {
@@ -165,14 +167,19 @@ export default function Chessboard() {
     }
 
     return (
-        <div 
-            onMouseDown={(e) => grabPiece(e)}  
-            onMouseMove={(e) => movePiece(e)} 
-            onMouseUp={(e) => dropPiece(e)} 
-            id="chessboard"
-            ref = {chessboardRef}
-        >
-            {board}
-        </div>
+        <>
+            <div id="pawn-promotion-model">
+                Pawn Promotion
+            </div>
+            <div 
+                onMouseDown={(e) => grabPiece(e)}  
+                onMouseMove={(e) => movePiece(e)} 
+                onMouseUp={(e) => dropPiece(e)} 
+                id="chessboard"
+                ref = {chessboardRef}
+            >
+                {board}
+            </div>
+        </>
     );
 }
