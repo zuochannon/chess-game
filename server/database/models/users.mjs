@@ -23,3 +23,8 @@ export const insertUser = async (username, email, password) => {
 
     return uuid;
 }
+
+export const getUser = async (username) => {
+    const query = `SELECT username, email FROM ${constants.KEYSPACE}.Users WHERE username = ?;`;
+    return await cassandraClient.execute(query, [username], { prepare: true });
+}

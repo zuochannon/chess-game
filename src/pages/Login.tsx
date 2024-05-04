@@ -1,35 +1,49 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { NavigationBar } from "../components/NavigationBar";
+import { useAuthToken } from "../hooks/useAuthToken";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleLogin = () => {
+  // useAuthToken(token);
+
+
+  const handleLogin = async () => {
     // Check if user and password are not empty
     if (username.trim() !== "" && password.trim() !== "") {
-      fetch(`${import.meta.env.VITE_SERVER}/users/login`, {
+      const response = await fetch(`${import.meta.env.VITE_SERVER}/users/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({username, password}),
-      }).then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data);
-        setIsLoggedIn(true);
-      })
-      .catch(error => {
-        console.error('There was a problem with the login request:', error);
+        credentials: 'include'
       });
-      // TODO: Successful login page
+
+      if (response.ok) {
+        // const { token } = await response.json();
+        setIsLoggedIn(true);
+        // localStorage.setItem('token', token);
+        // console.log(localStorage.getItem("token"));
+      }
+      
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Network response was not ok');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+    //     console.log(data);
+    //     setIsLoggedIn(true);
+    //   })
+    //   .catch(error => {
+    //     console.error('There was a problem with the login request:', error);
+    //   });
+    //   // TODO: Successful login page
     } else {
       alert("Please enter valid username and password.");
     }
