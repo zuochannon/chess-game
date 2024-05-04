@@ -34,7 +34,7 @@ export const knightMove = (initialPosition: Position, newPosition: Position, col
 }
 
 // Export all possible knight moves from the selected knight piece
-const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[]): Position[] => {
     // Stores all possible knight moves by piece
     const possibleMoves: Position[] = [];
 
