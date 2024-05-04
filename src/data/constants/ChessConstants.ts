@@ -1,7 +1,6 @@
 import { PieceType, ColorTeam } from "../enums/ChessEnums";
-import { ChessPiece } from "../models/ChessPiece";
 import { Board } from "../models/Board";
-import { Pawn } from "../models/Pawn";
+import { ChessPiece, Pawn } from "../models/ChessPiece";
 import { Position } from "../models/Position";
 
 // Set column value and enables splitting into individual letter column

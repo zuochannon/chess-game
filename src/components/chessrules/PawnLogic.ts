@@ -1,6 +1,5 @@
 import { ColorTeam } from "../../data/enums/ChessEnums";
-import { ChessPiece } from "../../data/models/ChessPiece";
-import { Pawn } from "../../data/models/Pawn";
+import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 

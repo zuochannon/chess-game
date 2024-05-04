@@ -71,3 +71,18 @@ export class ChessPiece {
              this.possibleMoves?.map(m => m.clone()));
     }
 }
+
+// Export Pawn Class extension that handles en passant
+export class Pawn extends ChessPiece {
+    enPassant?: boolean;
+
+    constructor(position: Position, color: ColorTeam, hasMoved: boolean, enPassant?: boolean, possibleMoves: Position[] = []) {
+        console.log("hello");
+        super(position, PieceType.PAWN, color, hasMoved, possibleMoves);
+        this.enPassant = enPassant;
+    }
+
+    clone(): Pawn {
+        return new Pawn(this.position.clone(), this.color, this.hasMoved, this.enPassant, this.possibleMoves?.map(m => m.clone()))
+    }
+}

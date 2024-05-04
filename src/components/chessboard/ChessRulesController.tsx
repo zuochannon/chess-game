@@ -1,12 +1,11 @@
 import { useState, useRef } from "react";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
-import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { Board } from "../../data/models/Board";
 import { pawnMove, knightMove, bishopMove, rookMove, queenMove, kingMove } from "../chessrules";
 import Chessboard from "./ChessBoard";
 import { initialBoard } from "../../data/constants/ChessConstants";
-import { Pawn } from "../../data/models/Pawn";
+import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
 
 // Responsible for handling valid chess moves
 export default function ChessRulesController() {

@@ -3,8 +3,8 @@ import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessC
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
 import { NavigationBarHeight } from "../../data/constants/NavItems";
-import { ChessPiece } from "../../data/models/ChessPiece";
 import ChessSquare from "./ChessSquare";
+import { ChessPiece } from "../../data/models/ChessPiece";
 
 interface Props {
     playMove: (piece: ChessPiece, position: Position) => boolean;

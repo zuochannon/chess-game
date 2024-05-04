@@ -1,7 +1,6 @@
 import { getCastlingMoves, getPossibleBishopMoves, getPossibleKingMoves, getPossibleKnightMoves, getPossiblePawnMoves, getPossibleQueenMoves, getPossibleRookMoves } from "../../components/chessrules";
 import { ColorTeam, PieceType } from "../enums/ChessEnums";
-import { ChessPiece } from "./ChessPiece";
-import { Pawn } from "./Pawn";
+import { ChessPiece, Pawn } from "./ChessPiece";
 import { Position } from "./Position";
 
 // Handles chessboard moves, such as possible moves that each piece can do
