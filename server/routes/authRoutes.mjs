@@ -10,15 +10,15 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = `SELECT userID, password FROM Users WHERE username=$1;`;
+    const query = `SELECT username, email, password FROM Users WHERE username=$1;`;
     const result = await pool.query(query, [username]);
 
     if (!result.rows.length)
       return res.status(401).json({ error: "User not found, please sign up." });
 
     if (await bcrypt.compare(password, result.rows[0].password)) {
-      const token = jwt.sign(
-        { userID: result.rows[0].userID },
+      const token = await jwt.sign(
+        { username: result.rows[0].username, email: result.rows[0].email },
         process.env.JWT_SECRET,
         {
           expiresIn: "1h",

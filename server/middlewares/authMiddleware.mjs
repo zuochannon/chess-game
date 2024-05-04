@@ -6,6 +6,6 @@ export const verifyToken = (req, res, next) => {
         req.user = jwt.verify(token, process.env.JWT_SECRET);
         next();
     } 
-    // else 
-    //     return res.status(401).json({error: "Unauthorized: Token unavailable or invalid."})
+    else 
+        return res.status(401).json({error: "Unauthorized: Token unavailable or invalid."})
 }
