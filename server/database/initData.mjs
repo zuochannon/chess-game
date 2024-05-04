@@ -1,4 +1,4 @@
-import { cassandraClient, sql } from "./connection.mjs";
+import { cassandraClient, pool } from "./connection.mjs";
 
 const initUserData = async () => {
     const query = `
@@ -21,7 +21,7 @@ const initUserData = async () => {
 };
 
 const initUserAuthData = async () => {
-    await sql`INSERT INTO Users
+    await pool.query(`INSERT INTO Users
     (username, email, password)
     VALUES
     ('john_doe', 'john@example.com', '$2b$10$KWRETRRvAeAjChRilT.VOOQ3gGPbH8nRwFqANXWaLW0tmoyllryGq'),
@@ -29,7 +29,7 @@ const initUserAuthData = async () => {
     ('bob_smith', 'bob@example.com', '$2b$10$cBR6G.vCch6q95P8haF8KOQgAnsOnjCuqTbVfHGCgUdsGW7o9BL1S'),
     ('alice_wonderland', 'alice@example.com', '$2b$10$P6.opQM1nMR8x0JNusfeWOGk/rKtswnzowCwzeODQA6lasTXU8hi6'),
     ('charlie_brown', 'charlie@example.com', '$2b$10$PkV/Pdlw1YMH0C3EzLqC5Okkb4AeRH6d15G/6FNrjS.3HgdUkK0Hu');
-  `;
+  `);
 }
 
 const initCassandraData = async () => {

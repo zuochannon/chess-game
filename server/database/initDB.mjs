@@ -1,4 +1,5 @@
-import { cassandraClient, sql } from "./connection.mjs";
+import { cassandraClient, pool } from "./connection.mjs";
+import constants from "./constants.mjs";
 import CONSTANTS from "./constants.mjs";
 import initData from "./initData.mjs";
 import createUserInfo from "./models/cassandra/users/users.mjs";
@@ -11,12 +12,19 @@ const createKeyspace = async () => {
   console.log("keyspace created");
 };
 
+const createDatabase = async () => {
+  const result = await pool.query(`SELECT datname FROM pg_catalog.pg_database WHERE datname = $1;`, [constants.POSTGRES_DB]);
+
+  if (result.rowCount === 0) 
+    await pool.query(`CREATE DATABASE ${constants.POSTGRES_DB}`);
+};
+
 const createColumnFamilies = async () => {
   await Promise.all([createUserInfo()]);
 };
 
 const createTables = async () => {
-  await createUserTable(sql);
+  await createUserTable(pool);
 };
 
 const initCassandra = async () => {
@@ -25,7 +33,8 @@ const initCassandra = async () => {
 };
 
 const initPostgres = async () => {
-  await createTables(sql);
+  await createDatabase();
+  await createTables(pool);
 };
 
 export async function initDB() {
