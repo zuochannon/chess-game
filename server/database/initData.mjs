@@ -5,27 +5,27 @@ const initUsers = async () => {
     insertUser(
       "john_doe",
       "john@example.com",
-      "$2b$10$KWRETRRvAeAjChRilT.VOOQ3gGPbH8nRwFqANXWaLW0tmoyllryGq"
+      "password123"
     ),
     insertUser(
       "jane_doe",
       "jane@example.com",
-      "$2b$10$rIlWsRb9nE9j4BnIRlfiguETFlStzxPULjLBW8dsK.Baf6YKVgwYW"
+      "jane"
     ),
     insertUser(
       "bob_smith",
       "bob@example.com",
-      "$2b$10$cBR6G.vCch6q95P8haF8KOQgAnsOnjCuqTbVfHGCgUdsGW7o9BL1S"
+      "bob"
     ),
     insertUser(
       "alice_wonderland",
       "alice@example.com",
-      "$2b$10$P6.opQM1nMR8x0JNusfeWOGk/rKtswnzowCwzeODQA6lasTXU8hi6"
+      "alice"
     ),
     insertUser(
       "charlie_brown",
       "charlie@example.com",
-      "$2b$10$PkV/Pdlw1YMH0C3EzLqC5Okkb4AeRH6d15G/6FNrjS.3HgdUkK0Hu"
+      "charlie"
     ),
   ]);
 };
