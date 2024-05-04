@@ -10,21 +10,20 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const query = `SELECT username, email, password FROM Users WHERE username=$1;`;
+    const query = `SELECT userID, username, email, password FROM Users WHERE username=$1;`;
     const result = await pool.query(query, [username]);
 
     if (!result.rows.length)
       return res.status(401).json({ error: "User not found, please sign up." });
 
     if (await bcrypt.compare(password, result.rows[0].password)) {
-      const token = await jwt.sign(
-        { username: result.rows[0].username, email: result.rows[0].email },
+      const token = jwt.sign(
+        { userID: result.rows[0].userid, username: result.rows[0].username, email: result.rows[0].email },
         process.env.JWT_SECRET,
         {
           expiresIn: "1h",
         }
       );
-      
 
       res.cookie('token', token, {
         maxAge: 36000000,
@@ -39,6 +38,8 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// TODO add token to signup
 
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;

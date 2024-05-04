@@ -1,25 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import profileImage from "../assets/default_pfp.png"; // Importing the profile image
 import { NavigationBar } from "../components/NavigationBar";
 
 export function Profile() {
-    const [username, setUsername] = useState("Guest");
-    const [email, setEmail] = useState("GuestEmail");
-//   const user = {
-//     displayName: "JohnDoe",
-//     firstName: "John",
-//     lastName: "Doe",
-//   };
+  const [username, setUsername] = useState("Guest");
+  const [email, setEmail] = useState("GuestEmail");
 
-  fetch(`${import.meta.env.VITE_SERVER}/whoami`, {
-    method: "GET",
-    credentials: "include"
-  })
-    .then((response) => response.json())
-    .then((data) => {
-        setUsername(data.user.username),
-        setEmail(data.user.email);
-    });
+  useEffect(() => {
+    const whoami = JSON.parse(sessionStorage.getItem("whoami")!);
+    console.log(whoami);
+    setUsername(whoami.username);
+    setEmail(whoami.email);
+  }, []);
 
   return (
     <main className="h-screen bg-black">

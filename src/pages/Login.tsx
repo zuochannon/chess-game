@@ -1,49 +1,47 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { NavigationBar } from "../components/NavigationBar";
-import { useAuthToken } from "../hooks/useAuthToken";
+import useWhoAmI from "../hooks/useWhoAmI";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // useAuthToken(token);
-
+  const { saveWhoAmI } = useWhoAmI();
 
   const handleLogin = async () => {
     // Check if user and password are not empty
     if (username.trim() !== "" && password.trim() !== "") {
-      const response = await fetch(`${import.meta.env.VITE_SERVER}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({username, password}),
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password }),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
-        // const { token } = await response.json();
+        await fetch(`${import.meta.env.VITE_SERVER}/whoami`, {
+          method: "GET",
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            saveWhoAmI(data.user);
+          });
+          
         setIsLoggedIn(true);
-        // localStorage.setItem('token', token);
-        // console.log(localStorage.getItem("token"));
       }
-      
-    //   .then(response => {
-    //     if (!response.ok) {
-    //       throw new Error('Network response was not ok');
-    //     }
-    //     return response.json();
-    //   })
-    //   .then(data => {
-    //     console.log(data);
-    //     setIsLoggedIn(true);
-    //   })
-    //   .catch(error => {
-    //     console.error('There was a problem with the login request:', error);
-    //   });
-    //   // TODO: Successful login page
+
+      //   .catch(error => {
+      //     console.error('There was a problem with the login request:', error);
+      //   });
+      //   // TODO: Successful login page
     } else {
       alert("Please enter valid username and password.");
     }
