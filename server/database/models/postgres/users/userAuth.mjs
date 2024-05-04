@@ -2,7 +2,7 @@ import { pool } from "../../../connection.mjs";
 
 const createUserTable = async () => {
   const query = `CREATE TABLE IF NOT EXISTS Users (
-    userID SERIAL PRIMARY KEY,
+    userID UUID PRIMARY KEY,
     username TEXT NOT NULL UNIQUE,
     email TEXT,
     password TEXT

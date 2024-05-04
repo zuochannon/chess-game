@@ -2,7 +2,7 @@ import { cassandraClient, pool } from "./connection.mjs";
 import constants from "./constants.mjs";
 import CONSTANTS from "./constants.mjs";
 import initData from "./initData.mjs";
-import createUserInfo from "./models/cassandra/users/users.mjs";
+import createUserInfo from "./models/cassandra/users/userInfo.mjs";
 import createUserTable from "./models/postgres/users/userAuth.mjs";
 
 const createKeyspace = async () => {
@@ -19,6 +19,10 @@ const createDatabase = async () => {
     await pool.query(`CREATE DATABASE ${constants.POSTGRES_DB}`);
 };
 
+const createExtension = async () => {
+  await pool.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+}
+
 const createColumnFamilies = async () => {
   await Promise.all([createUserInfo()]);
 };
@@ -34,6 +38,7 @@ const initCassandra = async () => {
 
 const initPostgres = async () => {
   await createDatabase();
+  await createExtension();
   await createTables(pool);
 };
 

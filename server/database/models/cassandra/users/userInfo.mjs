@@ -11,6 +11,6 @@ const createUserInfo = async () => {
     );`
     await cassandraClient.execute(query);
     console.log("created user table");
-}
+};
 
 export default createUserInfo;
