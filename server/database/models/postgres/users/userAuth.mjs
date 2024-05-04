@@ -1,16 +1,17 @@
-const createUserTable = async (sql) => {
+import { sql } from "../../../connection.mjs";
+
+const createUserTable = async () => {
   await sql`
     CREATE TABLE IF NOT EXISTS Users (
-        userID UUID PRIMARY KEY,
+        userID SERIAL PRIMARY KEY,
         username TEXT NOT NULL UNIQUE,
-        email TEXT,
         email TEXT,
         password TEXT
         CONSTRAINT username_min_len CHECK (LENGTH(username) >= 3)
     );
   `;
 
-  await sql`CREATE INDEX idx_username ON Users (username);`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_username ON Users (username);`;
   console.log("created postgres user table");
 };
 
