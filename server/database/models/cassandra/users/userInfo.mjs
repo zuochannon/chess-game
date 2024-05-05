@@ -7,7 +7,7 @@ const createUserInfo = async () => {
         userID UUID,
         username text,
         email text,
-        PRIMARY KEY(username)
+        PRIMARY KEY(userID)
     );`
     await cassandraClient.execute(query);
     console.log("created user table");
