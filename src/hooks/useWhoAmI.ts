@@ -1,14 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const useWhoAmI = () => {
-  const [whoAmI, setWhoAmI] = useState(null);
-
-  useEffect(() => {
+  const [whoAmI, setWhoAmI] = useState(() => {
     const storedWhoAmI = sessionStorage.getItem('whoami');
-    if (storedWhoAmI) {
-      setWhoAmI(JSON.parse(storedWhoAmI));
-    }
-  }, []);
+    return storedWhoAmI ? JSON.parse(storedWhoAmI) : null;
+  });
 
   const saveWhoAmI = (data) => {
     sessionStorage.setItem('whoami', JSON.stringify(data));

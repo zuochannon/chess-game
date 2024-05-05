@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { NavigationBar } from "../components/NavigationBar";
-import useWhoAmI from "../hooks/useWhoAmI";
+import { useWhoAmIContext } from "../context/WhoAmIContext";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { saveWhoAmI } = useWhoAmI();
+  const { saveWhoAmI } = useWhoAmIContext();
 
   const handleLogin = async () => {
     // Check if user and password are not empty

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import profileImage from "../assets/default_pfp.png"; // Importing the profile image
 import { NavigationBar } from "../components/NavigationBar";
+import { useWhoAmIContext } from "../context/WhoAmIContext";
 
 export function Profile() {
   const [username, setUsername] = useState("Guest");
   const [email, setEmail] = useState("GuestEmail");
 
+  const { whoAmI } = useWhoAmIContext();
+
   useEffect(() => {
-    const whoami = JSON.parse(sessionStorage.getItem("whoami")!);
-    console.log(whoami);
-    setUsername(whoami.username);
-    setEmail(whoami.email);
+    setUsername(whoAmI.username);
+    setEmail(whoAmI.email);
   }, []);
 
   return (
