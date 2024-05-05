@@ -1,12 +1,9 @@
 import {createContext,useContext} from 'react';
 
+const AppContext = createContext();
 
-
-interface ChessboardContext {
-    // Props from user
-
+export function useAppContext() {
+    return useContext(AppContext);
 }
 
-export const ChessContext = createContext({} as ChessboardContext);
-
-export const useChessboard = () => useContext(ChessContext);
+export default AppContext;

@@ -6,11 +6,13 @@ import { pawnMove, knightMove, bishopMove, rookMove, queenMove, kingMove } from 
 import Chessboard from "./ChessBoard";
 import { initialBoard } from "../../data/constants/ChessConstants";
 import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
+import { generateMoveNotation } from "../ChessNotation/ChessNotation";
 
 // Responsible for handling valid chess moves
 export default function ChessRulesController() {
     const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
+    const [moveHistory, setMoveHistory] = useState<string[]>([]);
     const modalRef = useRef<HTMLDivElement>(null);
     const checkmateModalRef = useRef<HTMLDivElement>(null);
 
@@ -173,6 +175,11 @@ export default function ChessRulesController() {
         setBoard(initialBoard.clone());
     }
 
+    // Update move history
+    function updateMoveHistory(move: string) {
+        setMoveHistory(prevHistory => [...prevHistory, move]);
+    }
+
     // Return Promotion Prompt
     return (
         <>
@@ -192,7 +199,23 @@ export default function ChessRulesController() {
                     </div>
                 </div>
             </div>
-            <Chessboard playMove={playMove} pieces={board.pieces} />
+            <Chessboard playMove={(piece, dest) => {
+                const isValidMove = playMove(piece, dest);
+                if (isValidMove) {
+                    // Add move to history if it's valid
+                    const notation = generateMoveNotation(piece, dest);
+                    updateMoveHistory(notation);
+                }
+                return isValidMove;
+            }} pieces={board.pieces} />
+            <div className="move-history">
+                <h3>Move History</h3>
+                <ul>
+                    {moveHistory.map((move, index) => (
+                        <li key={index}>{move}</li>
+                    ))}
+                </ul>
+            </div>
         </>
     );
 }
