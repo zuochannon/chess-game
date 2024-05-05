@@ -6,13 +6,22 @@ import { useWhoAmIContext } from "../context/WhoAmIContext";
 export function Profile() {
   const [username, setUsername] = useState("Guest");
   const [email, setEmail] = useState("GuestEmail");
+  const [gamesPlayed, setGamesPlayed] = useState([]);
 
   const { whoAmI } = useWhoAmIContext();
 
   useEffect(() => {
     setUsername(whoAmI.username);
     setEmail(whoAmI.email);
+
+    fetch(`${import.meta.env.VITE_SERVER}/gamelog/summary`, {
+      method: "GET",
+      credentials: "include",
+    })
+    .then(response => response.json())
+    .then(data => setGamesPlayed(data));
   }, []);
+
 
   return (
     <main className="h-screen bg-black">
@@ -60,6 +69,7 @@ export function Profile() {
           </div>
         </div>
       </div>
+      {gamesPlayed.map(el => <p>{JSON.stringify(el)}</p>)}
     </main>
   );
 }

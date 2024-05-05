@@ -3,31 +3,11 @@ import { insertUser } from "./models/users.mjs";
 
 const initUsers = async () => {
   await Promise.all([
-    insertUser(
-      "john_doe",
-      "john@example.com",
-      "password123"
-    ),
-    insertUser(
-      "jane_doe",
-      "jane@example.com",
-      "jane"
-    ),
-    insertUser(
-      "bob_smith",
-      "bob@example.com",
-      "bob"
-    ),
-    insertUser(
-      "alice_wonderland",
-      "alice@example.com",
-      "alice"
-    ),
-    insertUser(
-      "charlie_brown",
-      "charlie@example.com",
-      "charlie"
-    ),
+    insertUser("john_doe", "john@example.com", "password123"),
+    insertUser("jane_doe", "jane@example.com", "jane"),
+    insertUser("bob_smith", "bob@example.com", "bob"),
+    insertUser("alice_wonderland", "alice@example.com", "alice"),
+    insertUser("charlie_brown", "charlie@example.com", "charlie"),
   ]);
 };
 
@@ -61,24 +41,20 @@ VALUES (c8e067c1-bba5-43f6-9674-3f53e82c3b18, {78179895-c18d-4454-817b-706f09b7d
   APPLY BATCH;
   `;
   cassandraClient.execute(query);
-}
+};
 
 const initCassandraData = async () => {
-//   Promise.all([initUserData()]);
-  Promise.all([
-    initGameHistory()
-  ]);
+  //   Promise.all([initUserData()]);
+  Promise.all([initGameHistory()]);
 };
 
 const initPostgresData = async (sql) => {
-//   Promise.all([initUserAuthData(sql)]);
+  //   Promise.all([initUserAuthData(sql)]);
 };
 
 const initData = async (sql) => {
   console.log("inserting data");
-  Promise.all([
-    initUsers()
-  ]);
+  Promise.all([initUsers()]);
   Promise.all([initCassandraData(), initPostgresData(sql)]);
 };
 
