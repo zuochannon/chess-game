@@ -1,19 +1,18 @@
 import { Position } from "../../data/models/Position";
 import { PieceType } from "../../data/enums/ChessEnums";
-import { COLUMNS, ROWS } from "../../data/constants/ChessConstants";
 import { ChessPiece } from "../../data/models/ChessPiece";
+import { COLUMNS, ROWS } from "../../data/constants/ChessConstants";
 
 // Function to generate algebraic notation for a position (e.g., [0, 0] -> "a1")
 export function getPositionAlgebraicNotation(position: Position): string {
-    const column = COLUMNS[position.x];
-    const row = ROWS[position.y];
+    const column = COLUMNS[position.x - 1];
+    const row = ROWS[position.y - 1];
     return `${column}${row}`;
 }
 
 // Function to generate notation for a move
-export function generateMoveNotation(piece: ChessPiece, dest: Position): string {
+export function generateMoveNotation(piece: ChessPiece, dest: Position, check: boolean, checkmate: boolean): string {
     const pieceType = piece.type;
-    const startPosition = getPositionAlgebraicNotation(piece.position);
     const endPosition = getPositionAlgebraicNotation(dest);
 
     let notation = "";
@@ -41,7 +40,13 @@ export function generateMoveNotation(piece: ChessPiece, dest: Position): string 
             notation = ""; // Default case, shouldn't happen
     }
 
-    // Optionally, you can append additional information such as captures, checks, etc.
+    // Append additional information
+    if (checkmate) {
+        notation += "#"; // Checkmate symbol
+    } else if (check) {
+        console.log("hi");
+        notation += "+"; // Check symbol
+    }
 
     return notation;
 }

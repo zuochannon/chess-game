@@ -25,12 +25,12 @@ export default function Chessboard({playMove, pieces} : Props) {
         if (element.classList.contains("chess-piece") && chessboard) {
 
             // Set grab position
-            const grabX = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
+            const grabX = Math.floor((e.clientX - chessboard.offsetLeft + window.scrollX) / GRID_SIZE);
             const grabY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
             setGrabPosition(new Position (grabX, grabY));
 
             // Set element position to center of mouse position
-            const x = e.clientX - (GRID_SIZE / 2);
+            const x = e.clientX - (GRID_SIZE / 2) + window.scrollX;
             const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight + window.scrollY;
             element.style.position = "absolute";
             element.style.left = `${x}px`;
@@ -50,11 +50,11 @@ export default function Chessboard({playMove, pieces} : Props) {
 
             // Set element position to center of mouse position
             // Prevents pieces from moving out of board
-            const minX = chessboard.offsetLeft - (GRID_SIZE / 4);
+            const minX = chessboard.offsetLeft - window.scrollX - (GRID_SIZE / 4);
             const minY = chessboard.offsetTop - window.scrollY - (GRID_SIZE / 4);
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - ((GRID_SIZE / 4) * 3);
             const maxY = chessboard.offsetTop + chessboard.clientHeight - ((GRID_SIZE / 4) * 3);
-            const x = e.clientX - (GRID_SIZE / 2);
+            const x = e.clientX - (GRID_SIZE / 2) + window.scrollX;
             const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight + window.scrollY;
             activePiece.style.position = "absolute";
 
@@ -85,23 +85,17 @@ export default function Chessboard({playMove, pieces} : Props) {
 
         // Checks if there is a piece and chessboard
         if (activePiece && chessboard) {
-            const x = Math.floor((e.clientX - chessboard.offsetLeft) / GRID_SIZE);
+            const x = Math.floor((e.clientX - chessboard.offsetLeft + window.scrollX) / GRID_SIZE);
             const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
-
-            console.log(x, y);
 
             // Gets the current piece
             const currentPiece = pieces.find((p) => p.hasSamePositionAs(grabPosition));
             
             // Checks if current piece is valid
             if (currentPiece) {
-
-                console.log(currentPiece);
-
                 var successfulMove = playMove(currentPiece.clone(), new Position(x,y));
                 
                 if (!successfulMove) { /* Reset Piece Position */
-                    console.log("fail");
                     activePiece.style.position = "relative";
                     activePiece.style.removeProperty('top');
                     activePiece.style.removeProperty('left');

@@ -8,10 +8,14 @@ export class Board {
     pieces: ChessPiece[];
     totalTurns: number;
     winningTeam ?: ColorTeam;
+    private kingCheck: boolean;
+    private checkmate: boolean;
 
     constructor(pieces: ChessPiece[], totalTurns: number) {
         this.pieces = pieces;
         this.totalTurns = totalTurns;
+        this.kingCheck = false;
+        this.checkmate = false;
     }
 
     // Check whose turn it is
@@ -44,10 +48,18 @@ export class Board {
         }
 
         // Check if playing team has any moves left (Checkmate condition)
-        if (this.pieces.filter(p => p.color === this.currentTeam).some(p => p.possibleMoves !== undefined && p.possibleMoves.length > 0))
+        if (this.pieces.filter(p => p.color === this.currentTeam).some(p => p.possibleMoves !== undefined && p.possibleMoves.length > 0)) {
+            this.checkmate = false;
             return;
+        }
 
+        this.checkmate = true;
         this.winningTeam = (this.currentTeam === ColorTeam.WHITE) ? ColorTeam.BLACK : ColorTeam.WHITE;
+    }
+
+    // Return if checkmate occurs
+    isCheckmate() {
+        return this.checkmate;
     }
 
     // Get valid moves of the piece type
@@ -79,6 +91,8 @@ export class Board {
             // Check if piece has possible moves
             if (piece.possibleMoves === undefined) continue;
 
+            var pieceHasCheck = false;
+
             // Get every possible move of each piece on the playing team
             for (const move of piece.possibleMoves) {
                 const sBoard = this.clone();
@@ -106,12 +120,22 @@ export class Board {
                         // Checks if pawn has at least one possible move that has the opposite king in danger
                         if (opponent.possibleMoves.some(m => m.x !== opponent.position.x && m.equalsTo(cKing.position))) {
                             piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(move));
+                            this.kingCheck = true;
+                            pieceHasCheck = true;
+                        }
+                        else if (!pieceHasCheck) {
+                            this.kingCheck = false;
                         }
                     }
                     else {
                         // Checks if non-pawn opponent pieces has the playing king in its pathway
                         if (opponent.possibleMoves.some(m => m.equalsTo(cKing.position))) {
                             piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(move));
+                            pieceHasCheck = true;
+                            this.kingCheck = true;
+                        }
+                        else if (!pieceHasCheck) {
+                            this.kingCheck = false;
                         }
                     }
                 }
@@ -120,6 +144,11 @@ export class Board {
 
         }
 
+    }
+
+    // Return if king is in check
+    isKingInCheck() {
+        return this.kingCheck;
     }
 
     // Check if move is valid
@@ -209,6 +238,11 @@ export class Board {
         }
 
         return true;
+    }
+
+    // Get the chess piece at a specific position on the board
+    getPieceAtPosition(position: Position): ChessPiece | undefined {
+        return this.pieces.find(piece => piece.position.equalsTo(position));
     }
 
     // Clone the chessboard

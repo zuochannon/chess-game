@@ -80,8 +80,13 @@ export default function ChessRulesController() {
                 checkmateModalRef.current?.classList.remove("hidden");
             }
 
-            //console.log("hello");
-            //console.log(clonedChessboard.totalTurns);
+            // Determine if the move results in check or checkmate
+            const isCheck = clonedChessboard.isKingInCheck();
+            const isCheckmate = clonedChessboard.isCheckmate();
+
+            // Append move to move history
+            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate);
+            updateMoveHistory(moveNotation);
 
             return clonedChessboard;
         });
@@ -173,6 +178,7 @@ export default function ChessRulesController() {
     function restartGame() {
         checkmateModalRef.current?.classList.add("hidden");
         setBoard(initialBoard.clone());
+        setMoveHistory([]);
     }
 
     // Update move history
@@ -194,30 +200,22 @@ export default function ChessRulesController() {
             <div className = "modal hidden" ref={checkmateModalRef}>
                 <div className = "modal-body">
                     <div className= "checkmate-body">
-                        <span className="content-center"> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
+                        <span className="text-center"> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
                         <button onClick={restartGame}> Play Again </button>
                     </div>
                 </div>
             </div>
-            <Chessboard playMove={(piece, dest) => {
-                const isValidMove = playMove(piece, dest);
-                if (isValidMove) {
-                    // Add move to history if it's valid
-                    const notation = generateMoveNotation(piece, dest);
-                    updateMoveHistory(notation);
-                }
-                return isValidMove;
-            }} pieces={board.pieces} />
+            <Chessboard playMove={playMove} pieces={board.pieces} />
             <div className="move-history">
                 <h3>Move History</h3>
                 <div className="moves-container">
                     {moveHistory.map((move, index) => (
                         (index % 2 === 0) ? (
                             // Display both White and Black moves on the same line
-                            <div key={index} className="move-pair">
+                            <span key={index} className="move-pair">
                                 <span>{Math.floor(index / 2) + 1}. {move}</span>
-                                {moveHistory[index + 1] && <span> {moveHistory[index + 1]}</span>}
-                            </div>
+                                {moveHistory[index + 1] && <span>{moveHistory[index + 1]}</span>}
+                            </span>
                         ) : null
                     ))}
                 </div>
