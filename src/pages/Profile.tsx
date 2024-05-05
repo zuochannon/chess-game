@@ -4,22 +4,30 @@ import { NavigationBar } from "../components/NavigationBar";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 
 export function Profile() {
-  const [username, setUsername] = useState("Guest");
-  const [email, setEmail] = useState("GuestEmail");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [gamesPlayed, setGamesPlayed] = useState([]);
 
   const { whoAmI } = useWhoAmIContext();
 
   useEffect(() => {
-    setUsername(whoAmI.username);
-    setEmail(whoAmI.email);
+    setUsername(whoAmI?.username ?? "Guest");
+    setEmail(whoAmI?.email ?? "GuestEmail");
 
     fetch(`${import.meta.env.VITE_SERVER}/gamelog/summary`, {
       method: "GET",
       credentials: "include",
     })
-    .then(response => response.json())
-    .then(data => setGamesPlayed(data));
+    .then(response => {
+      if (response.ok)
+        return response.json();
+
+      throw new Error('Not logged in. No game history available.');
+    })
+    .then(data => setGamesPlayed(data ?? []))
+    .catch(error => {
+      console.error('Error fetching data:', error);
+    });
   }, []);
 
 
