@@ -207,14 +207,14 @@ export default function ChessRulesController() {
             </div>
             <Chessboard playMove={playMove} pieces={board.pieces} />
             <div className="move-history">
-                <h3>Move History</h3>
+                <h3 className="text-center text-white p-2">PGN</h3>
                 <div className="moves-container">
                     {moveHistory.map((move, index) => (
                         (index % 2 === 0) ? (
                             // Display both White and Black moves on the same line
                             <span key={index} className="move-pair">
                                 <span>{Math.floor(index / 2) + 1}. {move}</span>
-                                {moveHistory[index + 1] && <span>{moveHistory[index + 1]}</span>}
+                                {moveHistory[index + 1] && <span className="black-move"> {moveHistory[index + 1]}</span>}
                             </span>
                         ) : null
                     ))}

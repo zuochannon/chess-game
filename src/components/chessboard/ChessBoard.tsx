@@ -118,7 +118,7 @@ export default function Chessboard({playMove, pieces} : Props) {
 
             let currentPiece = activePiece != null ? pieces.find(p => p.hasSamePositionAs(grabPosition)) : undefined;
             let highlight = currentPiece?.possibleMoves ? currentPiece.possibleMoves.some(p => p.equalsTo(new Position(i, j))) : false;
-      
+
             board.push(<ChessSquare key={`${j},${i}`} image={image} number = {number} highlight = {highlight} />);
         }
     }

@@ -26,7 +26,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    height: 300px;
+    height: 200px;
     width: 600px;
     background-color: rgba(127, 127, 127, 0.8);
 }
@@ -66,26 +66,26 @@
 }
 
 .move-history {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 5px;
+    position: relative;
+    max-width: 600px; /* Limit the width to match the width of the chessboard */
+    max-height: 200px; /* Limit the height to 200px */
+    margin-top: 10px; /* Add some space between the board and the move history */
+    color: black; /* Set text color to black */
+    overflow: auto; /* Add scrollbar if content exceeds max-width or max-height */
 }
 
 .moves-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    background-color: rgba(255, 255, 255, 0.8); /* Add background color */
+    padding: 10px; /* Add some padding */
+    text-align: center; /* Align moves to the center */
 }
 
 .move-pair {
     display: inline-block; /* Display move pairs in a row */
-    margin-bottom: 5px; /* Add some margin between move pairs */
+    margin-right: 10px; /* Add some margin between move pairs */
 }
 
-.move-pair span {
-    display: block; /* Display moves on separate lines */
+.move-pair:last-child {
+    margin-right: 0; /* Remove margin for the last move pair */
 }
 
