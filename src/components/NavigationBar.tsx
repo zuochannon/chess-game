@@ -18,7 +18,7 @@ export function NavigationBar() {
                     CHESS
                 </h1>
             </div>
-            <div className='bg-[#0f0f0f] overflow-auto whitespace-nowrap'>
+            <div className=' overflow-auto whitespace-nowrap'>
                 {/* Display Navigation Items */}
                 <ul className='overflow-auto md:flex w-full p-0.5'>
                     {navItems.map(item => (

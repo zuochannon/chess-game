@@ -1,6 +1,6 @@
 import { Route, HashRouter as Router, Routes } from 'react-router-dom'
 import { CreateRoom } from '../../pages/CreateRoom'
-import { Home } from '../../pages/Home'
+import Home from '../../pages/Home';
 import { JoinRoom } from '../../pages/JoinRoom'
 import { Login } from '../../pages/Login'
 import { Play } from '../../pages/Play'

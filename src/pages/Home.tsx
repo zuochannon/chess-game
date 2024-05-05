@@ -1,7 +1,7 @@
 import chess from "../assets/chess.jpg"
 import { NavigationBar } from '../components/NavigationBar'
 
-export function Home() {
+const Home = () => {
   return (
     <main className='h-screen bg-black'>
       <NavigationBar />
@@ -23,3 +23,5 @@ export function Home() {
     </main>
   )
 }
+
+export default Home
