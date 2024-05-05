@@ -64,3 +64,23 @@
 .modal > .modal-body > .checkmate-body > button:hover {
     cursor: pointer;
 }
+
+.move-history {
+    position: absolute;
+    top: 0;
+    right: 10px; /* Adjust this value as needed */
+    width: 200px; /* Adjust the width as needed */
+}
+
+.moves-container {
+    background-color: rgba(255, 255, 255, 0.8); /* Add background color */
+    padding: 10px; /* Add some padding */
+}
+
+.move-pair {
+    margin-bottom: 5px; /* Add some margin between move pairs */
+}
+
+.move-pair span {
+    display: block; /* Display moves on separate lines */
+}
