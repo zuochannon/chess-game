@@ -1,17 +1,52 @@
-import { ReactNode } from 'react';
-import '../../layouts/components/ChessNotation.css';
+import { Position } from "../../data/models/Position";
+import { PieceType } from "../../data/enums/ChessEnums";
+import { ChessPiece } from "../../data/models/ChessPiece";
+import { COLUMNS, ROWS } from "../../data/constants/ChessConstants";
 
-interface ChessNotationProps {
-    children: ReactNode;
+// Function to generate algebraic notation for a position (e.g., [0, 0] -> "a1")
+export function getPositionAlgebraicNotation(position: Position): string {
+    const column = COLUMNS[position.x - 1];
+    const row = ROWS[position.y - 1];
+    return `${column}${row}`;
 }
 
-const ChessNotation = ({children}:ChessNotationProps) => {
+// Function to generate notation for a move
+export function generateMoveNotation(piece: ChessPiece, dest: Position, check: boolean, checkmate: boolean): string {
+    const pieceType = piece.type;
+    const endPosition = getPositionAlgebraicNotation(dest);
 
-    return (
-        <div className='chess-notation'>
-            {children}
-        </div>
-    );
+    let notation = "";
+
+    switch (pieceType) {
+        case PieceType.PAWN:
+            notation = endPosition;
+            break;
+        case PieceType.KNIGHT:
+            notation = `N${endPosition}`;
+            break;
+        case PieceType.BISHOP:
+            notation = `B${endPosition}`;
+            break;
+        case PieceType.ROOK:
+            notation = `R${endPosition}`;
+            break;
+        case PieceType.QUEEN:
+            notation = `Q${endPosition}`;
+            break;
+        case PieceType.KING:
+            notation = `K${endPosition}`;
+            break;
+        default:
+            notation = ""; // Default case, shouldn't happen
+    }
+
+    // Append additional information
+    if (checkmate) {
+        notation += "#"; // Checkmate symbol
+    } else if (check) {
+        console.log("hi");
+        notation += "+"; // Check symbol
+    }
+
+    return notation;
 }
-
-export default ChessNotation;
