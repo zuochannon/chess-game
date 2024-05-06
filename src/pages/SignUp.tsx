@@ -65,7 +65,7 @@ export function SignUp() {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">Password</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="text"
