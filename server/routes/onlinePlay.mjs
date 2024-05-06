@@ -1,4 +1,5 @@
 import express from "express";
+import { verifyToken } from "../middlewares/authMiddleware.mjs";
 
 class GameInfo {
   constructor(whiteIP) {
@@ -6,14 +7,16 @@ class GameInfo {
     this.blackIP = -1;
     this.moves = [];
     this.lastMove = new Date(); 
+    this.canJoin = () => !(this.whiteIP && this.blackIP) // if set both to null as default, so users can join
+    // players with maxiumum of 2, every new other player is just spectator (cant move)
   }
 }
 const router = express.Router();
 const gameMap = new Map(); // Tracks all the running games with room id. Can be replaced with DB later
                            // RoomID:[white player IP, black player  IP, List of moves]
 
-router.get("/createRoom", async (req, res) => {
-  let roomid = Math.floor(Math.random() * 1_000_000) // random room id
+router.get("/createRoom", verifyToken, async (req, res) => {
+  let roomid = Math.floor(Math.random() * 1_000_000) // random room id; maybe use UUID
   gameMap.set(roomid, new GameInfo(req.ip)) // setting creator to white
   res.json({roomid: roomid})
   console.log("created room: " + roomid)
