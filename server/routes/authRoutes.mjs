@@ -39,6 +39,12 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post('/logout', async (req, res) => {
+  res.clearCookie('token');
+  res.status(200).json('User Logged out');
+});
+
+
 // TODO add token to signup
 
 router.post("/signup", async (req, res) => {

@@ -31,7 +31,12 @@ const NavigationBar = () => {
   const { whoAmI, clearWhoAmI } = useWhoAmIContext();
 
   const signOut = () => {
-    clearWhoAmI();
+    fetch(`${import.meta.env.VITE_SERVER}/auth/logout`, { method: 'POST', credentials: 'include' })
+      .then( (_response) => {  
+        clearWhoAmI();
+        navigate("/");
+      })
+      .catch (err => console.warn("Sign out procedure failed", err));
   };
 
   return (
@@ -75,7 +80,7 @@ const NavigationBar = () => {
 
                 <div className="border-gray-500  border-t-2 my-1"></div>
 
-                <NavbarItem href="/" title="Sign out" onClick={signOut} />
+                <Button onClick={signOut} className="bg-blue-100" variant="link" >Sign Out</Button>
               </NavigationMenuContent>
             </NavigationMenuItem>
           ) : (
