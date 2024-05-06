@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { NavigationBar } from '../components/NavigationBar'
 import Game from '../layouts/game/Game'
 import "../layouts/pages/Play.css"
 export function OnlinePlay() {
@@ -24,7 +23,6 @@ export function OnlinePlay() {
         // Player waiting for opponent to join
         return (
             <main className = 'h-screen bg-black'>
-            <NavigationBar />
             <h1 style={{color:'white', fontWeight:"bold", textAlign:'center', fontSize:"50px"}}>Loading...</h1>
             </main>
         )
@@ -33,7 +31,6 @@ export function OnlinePlay() {
         // Unauthorized access
         return (
             <main className = 'h-screen bg-black'>
-            <NavigationBar />
             <h1 style={{color:'white', fontWeight:"bold", textAlign:'center', fontSize:"50px"}}>
                 {response.message}</h1>
             </main>
@@ -43,7 +40,6 @@ export function OnlinePlay() {
         return (
             // Display chess board
             <main className = 'h-screen bg-black'>
-                <NavigationBar />
                 <h1 style={{color:'white', fontWeight:"bold", textAlign:'center'}}>room: {roomid}</h1>
                 <div id="play" className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
                     <Game />

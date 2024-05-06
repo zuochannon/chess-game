@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NavigationBar } from '../components/NavigationBar';
 
 export function JoinRoom() { 
     let navigate = useNavigate();
@@ -17,7 +16,6 @@ export function JoinRoom() {
 
     return (
         <main className='h-screen bg-black'>
-            <NavigationBar />
             <h1 className='p-2 bg-black text-center w-screen text-3xl font-bold'>
                 JOIN ROOM
             </h1>

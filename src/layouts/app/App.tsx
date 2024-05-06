@@ -9,6 +9,7 @@ import { Profile } from "../../pages/Profile";
 import { RulesAndTutorial } from "../../pages/RulesAndTutorial";
 import { SignUp } from "../../pages/SignUp";
 import "./App.css";
+import MainLayout from "../main/MainLayout";
 
 function App() {
   return (

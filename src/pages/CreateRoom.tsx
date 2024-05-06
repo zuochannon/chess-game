@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NavigationBar } from '../components/NavigationBar';
 export function CreateRoom() {
     let navigate = useNavigate()
     const [roomid, setRoomid] = useState(-1)
