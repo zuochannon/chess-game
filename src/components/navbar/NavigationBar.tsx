@@ -68,7 +68,7 @@ const NavigationBar = () => {
               <NavigationMenuTrigger>
                 Hello, &nbsp; <b> {whoAmI.username} </b>{" "}
               </NavigationMenuTrigger>
-              <NavigationMenuContent className="min-w-fit px-4 py-2 bg-white">
+              <NavigationMenuContent className="min-w-fit px-4 py-2 bg-gradient-to-b from-white to-blue-200 border-gray-400 border-2 border-r-4 border-b-4">
                 {navUserItems.map((item) => (
                   <NavbarItem href={item.url} title={item.text} />
                 ))}
