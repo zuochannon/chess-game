@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import profileImage from "../assets/default_pfp.png"; // Importing the profile image
-import { NavigationBar } from "../components/NavigationBar";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 
 export function Profile() {
@@ -32,8 +31,7 @@ export function Profile() {
 
 
   return (
-    <main className="h-screen bg-black">
-      <NavigationBar />
+    <main className="h-screen ">
       <div
         className="profile-container"
         style={{

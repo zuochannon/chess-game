@@ -1,10 +1,8 @@
 import chess from "../assets/chess.jpg"
-import { NavigationBar } from '../components/NavigationBar'
 
 const Home = () => {
   return (
     <main className='h-screen bg-black'>
-      <NavigationBar />
       <div>
         <img src={chess} alt="Chess_Home" className='w-full object-cover' />
       </div>

@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
-import { NavigationBar } from "../components/NavigationBar";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
-import { Button } from "../components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
+import { Button } from "../components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import landscape from "/landscape.png";
 import chessLogo from "/chess.svg";
 

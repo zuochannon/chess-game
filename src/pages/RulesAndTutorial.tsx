@@ -1,10 +1,8 @@
-import { NavigationBar } from '../components/NavigationBar';
 import '../layouts/pages/RulesAndTutorial.css';
 export function RulesAndTutorial() {
 
     return (
         <main className = 'h-screen bg-[#1e3a8a]'>
-            <NavigationBar />
             <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
                 CHESS RULES AND TUTORIAL
             </h1>

@@ -15,18 +15,15 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-
-          <Route index element = { <Home /> } />
-
-        <Route path="/rulesandtutorial" element={<RulesAndTutorial />} />
-        <Route path="/createroom" element={<CreateRoom />} />
-        <Route path="/joinroom" element={<JoinRoom />} />
-        <Route path="/play" element={<Play />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/profile" element={<Profile />} />
+          <Route index element={<Home />} />
+          <Route path="/rulesandtutorial" element={<RulesAndTutorial />} />
+          <Route path="/createroom" element={<CreateRoom />} />
+          <Route path="/joinroom" element={<JoinRoom />} />
+          <Route path="/play" element={<Play />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
         </Route>
-
       </Routes>
     </Router>
   );

@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { NavigationBar } from "../components/NavigationBar";
-import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
-import GoogleIcon from "@mui/icons-material/Google";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 
 export function SignUp() {
@@ -69,7 +67,6 @@ export function SignUp() {
                 <Input
                   id="email"
                   type="text"
-
                   placeholder="Enter email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
