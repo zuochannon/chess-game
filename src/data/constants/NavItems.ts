@@ -9,4 +9,4 @@ export const navItems = [
     {id: 8, text: 'Profile', url: '/profile'}
 ];
 
-export const NavigationBarHeight = 112;
+export const NavigationBarHeight = 76;
