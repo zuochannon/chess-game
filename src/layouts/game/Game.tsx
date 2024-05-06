@@ -1,46 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Chessboard from 'chessboardjsx';
-const Chess = require('chess.js');
+import { Chess } from "chess.js"
 
-interface Move {
-  from: string;
-  to: string;
-  promotion?: string;
+import { Socket } from 'socket.io-client';
+
+
+interface GameProps {
+ socket: Socket;
 }
 
-const Game = () => {
-  const [game] = useState(new Chess());
-  const [fen, setFen] = useState('start');
 
-  useEffect(() => {
-    console.log("FEN updated:", fen);  // Log FEN updates to track changes
-  }, [fen]);
+const Game: React.FC<GameProps> = ({ socket }) => {
+ const [game, setGame] = useState(new Chess());
+ const [fen, setFen] = useState('start');
 
-  const handleMove = ({ from, to, promotion = 'q' }: Move) => {
-    const move = { from, to, promotion };
-    console.log("Attempting move:", move);
-    const result = game.move(move);
 
-    if (!result) {
-      console.error("Illegal move", move);
-      return;
-    }
+ useEffect(() => {
+   console.log('Component mounted or updated');
+   const moveHandler = (move: { from: string, to: string, promotion?: string }) => {
+     console.log('Move received:', move);
+     const newGame = new Chess(fen);  // Create a new game instance based on current FEN
+     newGame.move(move);
+     setGame(newGame);
+     setFen(newGame.fen());
+   };
 
-    setFen(game.fen());  // Update FEN from the current game state
-  };
 
-  console.log("Rendering Chessboard with FEN:", fen);  // Confirm that this log appears when expected
-  return (
-    <div className="game-container">
-      <Chessboard
-        width={400}
-        position={fen}
-        onDrop={({ sourceSquare, targetSquare }) => {
-          handleMove({ from: sourceSquare, to: targetSquare });
-        }}
-      />
-    </div>
-  );
+   socket?.on('move', moveHandler);
+
+
+   return () => {
+     socket?.off('move', moveHandler);
+   };
+ }, [socket, fen]);  // Use fen instead of game to reduce dependency complexity
+
+
+ const handleMove = (move: { from: string, to: string, promotion?: string }) => {
+   console.log('Handling move:', move);
+   let newGame = new Chess(fen);  // Again, create a new instance using fen
+   const result = newGame.move(move);
+
+
+   if (result === null) return; // Illegal move
+
+
+   setGame(newGame);
+   setFen(newGame.fen());
+   socket.emit('move', move);
+ };
+
+
+ return (
+   <div className="game-container">
+     <Chessboard
+       width={400}
+       position={fen}
+       onDrop={({ sourceSquare, targetSquare }) =>
+         handleMove({ from: sourceSquare, to: targetSquare, promotion: 'q' })
+       }
+     />
+   </div>
+ );
 };
+
 
 export default Game;
