@@ -2,16 +2,16 @@ import { useEffect, useRef, useState } from "react";
 import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessConstants";
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
-import { NavigationBarHeight } from "../../data/constants/NavItems";
 import ChessSquare from "./ChessSquare";
 import { ChessPiece } from "../../data/models/ChessPiece";
 
 interface Props {
     playMove: (piece: ChessPiece, position: Position) => boolean;
     pieces: ChessPiece[];
+    offset: number;
 }
 
-export default function Chessboard({playMove, pieces} : Props) {
+export default function Chessboard({playMove, pieces, offset } : Props) {
     const chessboardRef = useRef<HTMLDivElement>(null);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = useState<Position>(new Position(-1,-1));
@@ -19,6 +19,7 @@ export default function Chessboard({playMove, pieces} : Props) {
     useEffect(() => {
         // Add event listener to handle mouse release anywhere on the page
         const handleMouseUp = (e: MouseEvent) => {
+
             if (activePiece && chessboardRef.current) {
                 const isOutsideBoard = !chessboardRef.current.contains(e.target as Node);
                 if (isOutsideBoard) {
@@ -29,6 +30,7 @@ export default function Chessboard({playMove, pieces} : Props) {
         };
 
         document.addEventListener("mouseup", handleMouseUp);
+
 
         return () => {
             // Clean up the event listener when the component unmounts
@@ -46,12 +48,12 @@ export default function Chessboard({playMove, pieces} : Props) {
 
             // Set grab position
             const grabX = Math.floor((e.clientX - chessboard.offsetLeft + window.scrollX) / GRID_SIZE);
-            const grabY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
+            const grabY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - offset - FULL_SIZE) / GRID_SIZE));
             setGrabPosition(new Position (grabX, grabY));
 
             // Set element position to center of mouse position
             const x = e.clientX - (GRID_SIZE / 2) + window.scrollX;
-            const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight + window.scrollY;
+            const y = e.clientY - (GRID_SIZE / 2) - offset + window.scrollY;
             element.style.position = "absolute";
             element.style.left = `${x}px`;
             element.style.top = `${y}px`;
@@ -75,7 +77,7 @@ export default function Chessboard({playMove, pieces} : Props) {
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - ((GRID_SIZE / 4) * 3);
             const maxY = chessboard.offsetTop + chessboard.clientHeight - ((GRID_SIZE / 4) * 3);
             const x = e.clientX - (GRID_SIZE / 2) + window.scrollX;
-            const y = e.clientY - (GRID_SIZE / 2) - NavigationBarHeight + window.scrollY;
+            const y = e.clientY - (GRID_SIZE / 2) - offset + window.scrollY;
             activePiece.style.position = "absolute";
 
             // Set x-position of piece inside board and along mouse cursor
@@ -106,7 +108,7 @@ export default function Chessboard({playMove, pieces} : Props) {
         // Checks if there is a piece and chessboard
         if (activePiece && chessboard) {
             const x = Math.floor((e.clientX - chessboard.offsetLeft + window.scrollX) / GRID_SIZE);
-            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - NavigationBarHeight - FULL_SIZE) / GRID_SIZE));
+            const y = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop + window.scrollY - offset - FULL_SIZE) / GRID_SIZE));
 
             // Gets the current piece
             const currentPiece = pieces.find((p) => p.hasSamePositionAs(grabPosition));
@@ -159,6 +161,7 @@ export default function Chessboard({playMove, pieces} : Props) {
                 onMouseDown={(e) => grabPiece(e)}  
                 onMouseMove={(e) => movePiece(e)} 
                 onMouseUp={(e) => dropPiece(e)} 
+                onContextMenu={(e) => e.preventDefault()} // Prevents right-click menu
                 id="chessboard"
                 ref = {chessboardRef}
             >
