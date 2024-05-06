@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessConstants";
 import "../../layouts/components/Chessboard.css"
 import { Position } from "../../data/models/Position";
@@ -15,6 +15,26 @@ export default function Chessboard({playMove, pieces} : Props) {
     const chessboardRef = useRef<HTMLDivElement>(null);
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
     const [grabPosition, setGrabPosition] = useState<Position>(new Position(-1,-1));
+
+    useEffect(() => {
+        // Add event listener to handle mouse release anywhere on the page
+        const handleMouseUp = (e: MouseEvent) => {
+            if (activePiece && chessboardRef.current) {
+                const isOutsideBoard = !chessboardRef.current.contains(e.target as Node);
+                if (isOutsideBoard) {
+                    // Reset the position of the active piece if dropped outside the board
+                    resetPiecePosition();
+                }
+            }
+        };
+
+        document.addEventListener("mouseup", handleMouseUp);
+
+        return () => {
+            // Clean up the event listener when the component unmounts
+            document.removeEventListener("mouseup", handleMouseUp);
+        };
+    }, [activePiece]);
 
     // Grabs Piece on board
     function grabPiece(e: React.MouseEvent) {
@@ -103,6 +123,16 @@ export default function Chessboard({playMove, pieces} : Props) {
             }
 
             // Set active piece to null
+            setActivePiece(null);
+        }
+    }
+
+    // Reset position of the active piece
+    function resetPiecePosition() {
+        if (activePiece) {
+            activePiece.style.position = "relative";
+            activePiece.style.removeProperty('top');
+            activePiece.style.removeProperty('left');
             setActivePiece(null);
         }
     }
