@@ -3,7 +3,6 @@ import { CreateRoom } from '../../pages/CreateRoom';
 import Home from '../../pages/Home';
 import { JoinRoom } from '../../pages/JoinRoom';
 import { Login } from '../../pages/Login';
-import { OnlinePlay } from '../../pages/OnlinePlay';
 import { Play } from '../../pages/Play';
 import { Profile } from "../../pages/Profile";
 import { RulesAndTutorial } from '../../pages/RulesAndTutorial';
@@ -22,10 +21,9 @@ function App() {
         <Route path="/login" element = {<Login />}/>
         <Route path="/signup" element = {<SignUp />}/>
         <Route path="/profile" element = {<Profile />}/>
-        <Route path="/onlineplay/:roomid" element = {<OnlinePlay />}/>
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
