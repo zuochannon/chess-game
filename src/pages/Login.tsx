@@ -52,11 +52,7 @@ export function Login() {
     }
   };
   return (
-    <main className="h-screen">
-      <NavigationBar />
-      <h1 className="bg-[#0f0f0f0f] text-center w-full text-3xl font-bold">
-        Login
-      </h1>
+    <>
       <div>
         {isLoggedIn ? (
           <div>
@@ -104,7 +100,7 @@ export function Login() {
                   </div>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="/signup" className="underline">
+                    <a href="/#/signup" className="underline">
                       Sign up
                     </a>
                   </div>
@@ -132,6 +128,6 @@ export function Login() {
           </>
         )}
       </div>
-    </main>
+    </>
   );
 }
