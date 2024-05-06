@@ -5,11 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import landscape from "/landscape.png";
 import chessLogo from "/chess.svg";
+import Error from "@/components/alerts/Error";
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [error, setError] = useState("");
+  const [alertKey, setAlertKey] = useState(0);
 
   const { saveWhoAmI } = useWhoAmIContext();
 
@@ -36,18 +39,18 @@ export function Login() {
           .then((response) => response.json())
           .then((data) => {
             saveWhoAmI(data.user);
+            setError("");
           });
 
         setIsLoggedIn(true);
       }
-
-      //   .catch(error => {
-      //     console.error('There was a problem with the login request:', error);
-      //   });
-      //   // TODO: Successful login page
+      else {
+        setError("Invalid username or password.");
+      }
     } else {
-      alert("Please enter valid username and password.");
+      setError("Please enter valid username and password."); // Set error message
     }
+    setAlertKey(prevKey => prevKey + 1); // Update error key
   };
   return (
     <>
@@ -60,6 +63,9 @@ export function Login() {
         ) : (
           <>
             <div className="min-h-screen grid lg:grid-cols-2">
+              {error &&
+              <Error key={alertKey} desc={error} />
+              }
               <div className="flex items-center justify-center py-12 bg-gradient-to-br from-blue-100  to-blue-50">
                 <div className="mx-auto grid w-[350px] gap-6">
                   <div className="grid gap-2 text-center">
