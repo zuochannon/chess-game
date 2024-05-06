@@ -1,6 +1,7 @@
 import express from "express";
-import { v4 as uuidv4 } from "uuid";
 import { verifyToken } from "../middlewares/authMiddleware.mjs";
+import { nanoid } from 'nanoid'
+
 class GameInfo {
   constructor(whiteIP) {
     this.whiteIP = whiteIP;
@@ -17,7 +18,7 @@ const gameMap = new Map(); // Tracks all the running games with room id. Can be 
 
 router.get("/createRoom", verifyToken, async (req, res) => {
   // need to be logged in in order to create a room
-  let roomid = uuidv4()
+  let roomid = nanoid(10); // check out stats from this site https://zelark.github.io/nano-id-cc/
   gameMap.set(roomid, new GameInfo(req.ip)) // setting creator to white
   res.json({roomid: roomid})
   console.log("created room: " + roomid)
