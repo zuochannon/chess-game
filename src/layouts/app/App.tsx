@@ -1,13 +1,14 @@
-import { Route, HashRouter as Router, Routes } from 'react-router-dom'
-import { CreateRoom } from '../../pages/CreateRoom'
+import { Route, HashRouter as Router, Routes } from 'react-router-dom';
+import { CreateRoom } from '../../pages/CreateRoom';
 import Home from '../../pages/Home';
-import { JoinRoom } from '../../pages/JoinRoom'
-import { Login } from '../../pages/Login'
-import { Play } from '../../pages/Play'
-import { Profile } from "../../pages/Profile"
-import { RulesAndTutorial } from '../../pages/RulesAndTutorial'
-import { SignUp } from '../../pages/SignUp'
-import './App.css'
+import { JoinRoom } from '../../pages/JoinRoom';
+import { Login } from '../../pages/Login';
+import { OnlinePlay } from '../../pages/OnlinePlay';
+import { Play } from '../../pages/Play';
+import { Profile } from "../../pages/Profile";
+import { RulesAndTutorial } from '../../pages/RulesAndTutorial';
+import { SignUp } from '../../pages/SignUp';
+import './App.css';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/login" element = {<Login />}/>
         <Route path="/signup" element = {<SignUp />}/>
         <Route path="/profile" element = {<Profile />}/>
+        <Route path="/onlineplay/:roomid" element = {<OnlinePlay />}/>
       </Routes>
     </Router>
   )
