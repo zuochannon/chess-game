@@ -98,7 +98,7 @@ export function Login() {
                   </div>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="/#/signup" className="underline">
+                    <a href="/signup" className="underline">
                       Sign up
                     </a>
                   </div>

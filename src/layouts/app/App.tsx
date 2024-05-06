@@ -1,5 +1,5 @@
 import { OnlinePlay } from "@/pages/OnlinePlay";
-import { Route, HashRouter as Router, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { CreateRoom } from "../../pages/CreateRoom";
 import Home from "../../pages/Home";
 import { JoinRoom } from "../../pages/JoinRoom";
