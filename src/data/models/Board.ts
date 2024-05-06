@@ -147,9 +147,25 @@ export class Board {
     }
 
     // Return if king is in check
-    isKingInCheck() {
+    getKingCheck() {
         return this.kingCheck;
     }
+
+    isKingInCheck(kingPosition: Position): boolean {
+        // Find all opponent pieces
+        const opponentColor = (this.totalTurns % 2 === 0) ? ColorTeam.BLACK : ColorTeam.WHITE;
+        const opponentPieces = this.pieces.filter(piece => piece.color === opponentColor);
+    
+        // Check if any opponent piece has a possible move to the king's position
+        for (const piece of opponentPieces) {
+            if (piece.possibleMoves && piece.possibleMoves.some(move => move.equalsTo(kingPosition))) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
 
     // Check if move is valid
     playMove(enPassantMove: boolean, validMove: boolean, playedPiece: ChessPiece, dest: Position): boolean {

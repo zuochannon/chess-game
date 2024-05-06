@@ -45,6 +45,25 @@ export default function ChessRulesController() {
         return valid;
     }
 
+    function isStalemate() {
+        // Check if the current player has no legal moves
+        const currentPlayerColor = (board.totalTurns % 2 === 0) ? ColorTeam.WHITE : ColorTeam.BLACK;
+        const currentPlayerPieces = board.pieces.filter(piece => piece.color === currentPlayerColor);
+    
+        const noLegalMoves = currentPlayerPieces.every(piece => {
+            return piece.possibleMoves?.length === 0;
+        });
+    
+        // Check if the current player's king is not in check
+        const currentPlayerKing = board.pieces.find(piece => piece.color === currentPlayerColor && piece.type === PieceType.KING);
+        const isKingInCheck = board.isKingInCheck(currentPlayerKing?.position || new Position(-1, -1));
+    
+        console.log(noLegalMoves && !isKingInCheck);
+
+        return noLegalMoves && !isKingInCheck;
+    }
+    
+
     // Boolean function to check if move was valid
     function playMove(playedPiece: ChessPiece, dest: Position): boolean {
         let isValidMove = false;
@@ -68,8 +87,9 @@ export default function ChessRulesController() {
         //console.log(board.totalTurns);
 
         // Update chessboard to include all move changes 
-        setBoard(() => {
-            const clonedChessboard = board.clone();
+        // Update chessboard to include all move changes 
+        setBoard(prevBoard => {
+            const clonedChessboard = prevBoard.clone();
             clonedChessboard.totalTurns += 1; // Increase turn count
 
             // Plays the moves of the player
@@ -80,16 +100,18 @@ export default function ChessRulesController() {
                 checkmateModalRef.current?.classList.remove("hidden");
             }
 
-            // Determine if the move results in check or checkmate
-            const isCheck = clonedChessboard.isKingInCheck();
+            // Determine if the move results in check, checkmate, or stalemate
+            const isCheck = clonedChessboard.getKingCheck();
             const isCheckmate = clonedChessboard.isCheckmate();
+            const stalemate = isStalemate();
 
             // Append move to move history
-            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate);
+            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate, stalemate);
             updateMoveHistory(moveNotation);
 
             return clonedChessboard;
         });
+
 
         // Designates rows for pawns to reach for promotion
         let promotionRow = (playedPiece.color === ColorTeam.WHITE) ? 7 : 0;
