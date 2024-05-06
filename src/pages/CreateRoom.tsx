@@ -13,7 +13,7 @@ export function CreateRoom() {
             }
           );
         console.log(response)
-        setRoomid(parseInt((await response.json())['roomid']));
+        setRoomid((await response.json())['roomid']);
     }
     if (roomid != -1) {
         navigate('/onlinePlay/'+ roomid, {replace: true});
@@ -21,7 +21,8 @@ export function CreateRoom() {
     return (
         <main className = 'h-screen bg-black'>
             <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
-                <button style={{backgroundColor:'white'}} onClick={handleButton}>CREATE ROOM</button>
+                <button className="block mx-auto p-2 bg-gray-800 text-white rounded-md"
+                 onClick={handleButton}>CREATE ROOM</button>
             </h1>
         </main>
     )
