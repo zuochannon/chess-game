@@ -1,15 +1,15 @@
-import { NavigationBar } from '../components/NavigationBar'
-import Game from '../layouts/game/Game'
-import "../layouts/pages/Play.css"
+// Import necessary modules from react and socket.io-client
+import React from 'react';
+import Game from "../layouts/game/Game";
 
-export function Play() {
+const Play = () => {
+  return (
+    <main className='h-screen bg-black'>
+      <div id="play" className='p-2 w-auto bg-gradient-to-t from-blue-700 via-blue-850 to-black relative'>
+        <Game />
+      </div>
+    </main>
+  );
+};
 
-    return (
-        <main className = 'h-screen bg-black'>
-            <NavigationBar />
-            <div id="play" className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
-                <Game />
-            </div>
-        </main>
-    )
-}
+export default Play;

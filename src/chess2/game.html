@@ -1,0 +1,22 @@
+<html>
+    <head>
+        {{> head}}
+    </head>
+    <body>
+
+        <div id="white-timer" class="timer">15:00</div>
+        <div id="myBoard" style="width: 700px"></div>
+        <div id="black-timer" class="timer">15:00</div>
+        <label>Status:</label>
+        <div id="status"></div>
+        <label>PGN:</label>
+        <div id="pgn"></div>
+
+        <script>
+            let playerColor = '{{color}}';
+            console.log('Playing as ' + playerColor);
+        </script>
+        <script src="/public/js/index.js"></script>
+
+    </body>
+</html>
