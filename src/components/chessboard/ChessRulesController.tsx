@@ -8,8 +8,12 @@ import { initialBoard } from "../../data/constants/ChessConstants";
 import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
 import { generateMoveNotation } from "../ChessNotation/ChessNotation";
 
+interface Props {
+    offset: number;
+}
+
 // Responsible for handling valid chess moves
-export default function ChessRulesController() {
+export default function ChessRulesController({ offset }: Props) {
     const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
@@ -205,7 +209,7 @@ export default function ChessRulesController() {
                     </div>
                 </div>
             </div>
-            <Chessboard playMove={playMove} pieces={board.pieces} />
+            <Chessboard playMove={playMove} pieces={board.pieces} offset = {offset} />
             <div className="move-history">
                 <h3 className="text-center text-white p-2">PGN</h3>
                 <div className="moves-container">

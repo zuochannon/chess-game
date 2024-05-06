@@ -1,12 +1,14 @@
 import ChessRulesController from "../../components/chessboard/ChessRulesController";
 import "../pages/Play.css"
-//import ChessNotation from "../../components/ChessNotation/ChessNotation";
-//import MovesList from "../../components/ChessNotation/MovesList";
 
-function Game() {
+interface Props {
+    offset: number;
+}
+
+function Game({ offset } : Props) {
     return (
         <div id = "play" className="content-center">
-            <ChessRulesController />
+            <ChessRulesController offset= {offset}/>
         </div>
     )
 }

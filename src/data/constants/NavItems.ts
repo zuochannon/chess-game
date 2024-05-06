@@ -15,3 +15,4 @@ export const navUserItems = [
 ];
 
 export const NavigationBarHeight = 76;
+export const ButtonOffset = 50;
