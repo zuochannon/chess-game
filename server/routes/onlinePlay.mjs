@@ -1,6 +1,6 @@
 import express from "express";
+import { v4 as uuidv4 } from "uuid";
 import { verifyToken } from "../middlewares/authMiddleware.mjs";
-
 class GameInfo {
   constructor(whiteIP) {
     this.whiteIP = whiteIP;
@@ -16,16 +16,18 @@ const gameMap = new Map(); // Tracks all the running games with room id. Can be 
                            // RoomID:[white player IP, black player  IP, List of moves]
 
 router.get("/createRoom", verifyToken, async (req, res) => {
-  let roomid = Math.floor(Math.random() * 1_000_000) // random room id; maybe use UUID
+  // need to be logged in in order to create a room
+  let roomid = uuidv4()
   gameMap.set(roomid, new GameInfo(req.ip)) // setting creator to white
   res.json({roomid: roomid})
   console.log("created room: " + roomid)
 })
 
 router.get("/:roomid/joinRoom", async (req, res) => {
-  let roomid = parseInt(req.params.roomid)
+  // does not need to be logged in in order to join a room
+  let roomid = req.params.roomid
   console.log(gameMap)
-  console.log("Trying to join room: " + roomid + " " + gameMap.has(roomid))
+  console.log("Trying to join room: " + roomid + " |" + gameMap.has(roomid))
   if (gameMap.has(roomid)) {
     let gameInfo = gameMap.get(roomid)
 

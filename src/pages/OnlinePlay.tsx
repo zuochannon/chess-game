@@ -18,6 +18,11 @@ export function OnlinePlay() {
             ).then(async response => {console.log(response); 
                     setResponse({status: response.status, message: await response.text()})})
         },[roomid])
+
+    const copyRoomIdToClipboard = () => {
+        navigator.clipboard.writeText(roomid);
+        alert("Room ID copied to clipboard!");
+    };
         
     if (response.status == -1) {
         // Player waiting for opponent to join
@@ -41,6 +46,8 @@ export function OnlinePlay() {
             // Display chess board
             <main className = 'h-screen bg-black'>
                 <h1 style={{color:'white', fontWeight:"bold", textAlign:'center'}}>room: {roomid}</h1>
+                <button className="block mx-auto my-5 bg-gray-800 text-white px-4 py-2 rounded-md" 
+                onClick={copyRoomIdToClipboard}>Copy Room ID</button>
                 <div id="play" className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
                     <Game />
                 </div>
