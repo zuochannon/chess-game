@@ -10,6 +10,7 @@ import { RulesAndTutorial } from "../../pages/RulesAndTutorial";
 import { SignUp } from "../../pages/SignUp";
 import "./App.css";
 import MainLayout from "../main/MainLayout";
+import Dev from "@/pages/Dev";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/onlineplay/:roomid" element={<OnlinePlay />} />
+          <Route path="/dev" element={<Dev />} />
         </Route>
       </Routes>
     </Router>
