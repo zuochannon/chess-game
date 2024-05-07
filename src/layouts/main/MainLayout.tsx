@@ -6,7 +6,7 @@ const MainLayout = () => {
     <>
       <NavigationBar />
 
-      <div className="h-screen w-screen bg-gradient-to-br from-blue-100  to-blue-50">
+      <div className="h-full w-full bg-gradient-to-br from-blue-100  to-blue-50">
         <Outlet />
       </div>
     </>

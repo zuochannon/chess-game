@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import profileImage from "../assets/default_pfp.png"; // Importing the profile image
 import { useWhoAmIContext } from "../context/WhoAmIContext";
-import { getGameHistorySummary, getGameSummary } from "@/services/UserService";
+import { getGameHistorySummary } from "@/services/UserService";
 
 export function Profile() {
   const [username, setUsername] = useState("");
