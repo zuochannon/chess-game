@@ -40,7 +40,7 @@ const NavigationBar = () => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-blue-300 to-90% via-blue-200 to-white border-gray-400 border-b-2 flex flex-row justify-between">
+    <div className="overflow-auto bg-gradient-to-br from-blue-300 to-90% via-blue-200 to-white border-gray-400 border-b-2 flex flex-row justify-between">
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>

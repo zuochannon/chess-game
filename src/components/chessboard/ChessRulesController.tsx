@@ -10,10 +10,11 @@ import { generateMoveNotation } from "../ChessNotation/ChessNotation";
 
 interface Props {
     offset: number;
+    boardOrientation: ColorTeam;
 }
 
 // Responsible for handling valid chess moves
-export default function ChessRulesController({ offset }: Props) {
+export default function ChessRulesController({ offset, boardOrientation }: Props) {
     const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
@@ -209,7 +210,9 @@ export default function ChessRulesController({ offset }: Props) {
                     </div>
                 </div>
             </div>
-            <Chessboard playMove={playMove} pieces={board.pieces} offset = {offset} />
+            <div className="overflow-auto">
+                <Chessboard playMove={playMove} pieces={board.pieces} offset = {offset} boardOrientation = {boardOrientation}/>
+            </div>
             <div className="move-history">
                 <h3 className="text-center text-white p-2">PGN</h3>
                 <div className="moves-container">

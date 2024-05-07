@@ -1,10 +1,10 @@
-import { Separator } from "@/components/ui/separator";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Separator } from "@/components/ui/separator";
 
 const Dev = () => {
   return (
@@ -78,9 +78,15 @@ const Dev = () => {
       <AccordionItem value="5">
         <AccordionTrigger>Sockets</AccordionTrigger>
         <AccordionContent>
-
           <ul className="accordion">
-            <li>Test</li>
+            <li>Private rooms use a NanoID</li>
+            <li>Game rooms are stored in a map</li>
+            <ul>
+              <li>Key: NanoID</li>
+              <li>Values: P1, P2, Move History, Room Creation Time stamp</li>
+            </ul>
+            <li>Log in to create a room</li>
+            <li>Guests can join a room</li>
           </ul>
 
         </AccordionContent>
