@@ -1,29 +1,47 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useWhoAmIContext } from "../context/WhoAmIContext";
+
 export function CreateRoom() {
-    let navigate = useNavigate()
-    const [roomid, setRoomid] = useState(-1)
+    let navigate = useNavigate();
+    const [roomid, setRoomid] = useState(-1);
+    const { whoAmI } = useWhoAmIContext();
+    const [displayErrorMessage, setErrorMessage] = useState(false);
+
     async function handleButton() {
-        console.log("Clicked")
+        if (!whoAmI) {
+            // Checks if player is signed in to create a room
+            setErrorMessage(true);
+            return;
+        }
         const response = await fetch(
             `${import.meta.env.VITE_SERVER}/onlinePlay/createRoom`,
             {
-              method: "GET",
-              credentials: "include",
+                method: "GET",
+                credentials: "include",
             }
-          );
-        console.log(response)
+        );
+        console.log(response);
         setRoomid((await response.json())['roomid']);
     }
-    if (roomid != -1) {
+
+    if (roomid !== -1) {
         navigate('/onlinePlay/'+ roomid, {replace: true});
     }
+
     return (
-        <main className = 'h-screen bg-black'>
-            <h1 className = 'p-2 bg-black text-center w-screen text-3xl font-bold'>
-                <button className="block mx-auto p-2 bg-gray-800 text-white rounded-md"
-                 onClick={handleButton}>CREATE ROOM</button>
-            </h1>
+        <main className='h-screen bg-black flex flex-col justify-center items-center'>
+            <div className="flex justify-center">
+                <h1 className='p-2 bg-black text-center w-screen text-3xl font-bold'>
+                    <button className="p-2 bg-gray-800 text-white rounded-md"
+                            onClick={handleButton}>CREATE ROOM</button>
+                </h1>
+            </div>
+            {displayErrorMessage && (
+                <div className="error-message text-white mt-4">
+                    Please log in to create a game.
+                </div>
+            )}
         </main>
-    )
+    );
 }
