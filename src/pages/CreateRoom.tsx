@@ -30,7 +30,7 @@ export function CreateRoom() {
     }
 
     return (
-        <main className='h-screen bg-black flex flex-col justify-center items-center'>
+        <main className='h-screen bg-black flex flex-col items-center' style={{ paddingTop: '50px' }}>
             <div className="flex justify-center">
                 <h1 className='p-2 bg-black text-center w-screen text-3xl font-bold'>
                     <button className="p-2 bg-gray-800 text-white rounded-md"
