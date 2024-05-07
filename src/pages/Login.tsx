@@ -6,9 +6,8 @@ import { Label } from "@/components/ui/label";
 import landscape from "/landscape.png";
 import chessLogo from "/chess.svg";
 import Error from "@/components/alerts/Error";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getWhoAmI, postLogin } from "@/services/accessControl/AuthService";
-import { response } from "express";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -91,9 +90,9 @@ export function Login() {
                   </div>
                   <div className="text-center text-sm">
                     Don&apos;t have an account?{" "}
-                    <a href="/signup" className="underline">
+                    <Link to="/signup" className="underline">
                       Sign up
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>

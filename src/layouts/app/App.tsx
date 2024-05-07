@@ -11,6 +11,7 @@ import { SignUp } from "../../pages/SignUp";
 import "./App.css";
 import MainLayout from "../main/MainLayout";
 import Dev from "@/pages/Dev";
+import GameHistory from "@/pages/GameHistory";
 
 function App() {
   return (
@@ -25,7 +26,10 @@ function App() {
           <Route path="/play" element={<Play />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />}>
+            <Route path="history" element={<GameHistory />} />
+          </Route>
+
           <Route path="/onlineplay/:roomid" element={<OnlinePlay />} />
           <Route path="/dev" element={<Dev />} />
         </Route>

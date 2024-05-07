@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { getWhoAmI, postSignup } from "@/services/accessControl/AuthService";
 import { useWhoAmIContext } from "@/context/WhoAmIContext";
@@ -32,7 +32,7 @@ export function SignUp() {
 
       const data = await getWhoAmI();
       saveWhoAmI(data.user);
-      navigate("/");
+      navigate("/profile");
       return toast({
         title: "Successfully signed up.",
         description: "Redirecting to your profile.",
@@ -96,9 +96,9 @@ export function SignUp() {
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <a href="/login" className="underline">
+            <Link to="/login" className="underline">
               Log in
-            </a>
+            </Link>
           </div>
         </CardContent>
       </Card>

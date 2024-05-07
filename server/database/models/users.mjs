@@ -29,7 +29,7 @@ export const insertUser = async (username, email, password) => {
 
     await pool.query("COMMIT");
 
-    return uuid;
+    return { username, uuid };
   } catch (error) {
     await pool.query("ROLLBACK");
     console.error("Error: ", error);

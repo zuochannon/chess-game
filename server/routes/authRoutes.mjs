@@ -64,7 +64,7 @@ router.post("/signup", async (req, res) => {
     if (result.rows.length)
       return res.status(400).json({ error: "User already exists." });
 
-    const uuid = await insertUser(username, email, password);
+    const { uuid } = await insertUser(username, email, password);
 
     const token = signToken(uuid, username, email);
 

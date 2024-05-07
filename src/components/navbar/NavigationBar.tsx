@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import chessLogo from "/chess.svg";
 import { navItems, navUserItems } from "@/data/constants/NavItems";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import { Button } from "../ui/button";
 // import { FiSettings } from "react-icons/fi";
@@ -44,17 +44,17 @@ const NavigationBar = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <a href="/" className="flex gap-6 px-4 py-1 mr-4 ">
+            <Link to="/" className="flex gap-6 px-4 py-1 mr-4 ">
               <img src={chessLogo} className="h-14 w-14" />
               <h1 className="font-bold text-3xl flex flex-col items-center justify-center italic">
                 Chess
               </h1>
-            </a>
+            </Link>
           </NavigationMenuItem>
 
           <div className="flex flex-row gap-4">
             {navItems.map((item) => (
-              <NavigationMenuItem>
+              <NavigationMenuItem key={item.id}>
                 <NavLink to={item.url} style={activeState}>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                     {item.text}
@@ -75,7 +75,7 @@ const NavigationBar = () => {
               </NavigationMenuTrigger>
               <NavigationMenuContent className="min-w-fit px-4 py-2 bg-gradient-to-b from-white to-blue-200 border-gray-400 border-2 border-r-4 border-b-4">
                 {navUserItems.map((item) => (
-                  <NavbarItem href={item.url} title={item.text} />
+                  <NavbarItem key={item.id} href={item.url} title={item.text} />
                 ))}
 
                 <div className="border-gray-500  border-t-2 my-1"></div>

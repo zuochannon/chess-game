@@ -6,7 +6,7 @@ import { getGameHistorySummary } from "@/services/UserService";
 export function Profile() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
-  const [gamesPlayed, setGamesPlayed] = useState([]);
+  const [gamesPlayed, setGamesPlayed] = useState({});
 
   const { whoAmI } = useWhoAmIContext();
 
@@ -15,10 +15,11 @@ export function Profile() {
     setEmail(whoAmI?.email ?? "GuestEmail");
 
     getGameHistorySummary().then((data) => setGamesPlayed(data ?? []));
-  }, []);
+  }, [whoAmI?.email, whoAmI?.username]);
 
   return (
     <main className="h-screen ">
+
       <div
         className="profile-container"
         style={{
@@ -62,7 +63,7 @@ export function Profile() {
           </div>
         </div>
       </div>
-      {gamesPlayed.map((el) => (
+      {Object.values(gamesPlayed).map((el) => (
         <p>{JSON.stringify(el)}</p>
       ))}
     </main>
