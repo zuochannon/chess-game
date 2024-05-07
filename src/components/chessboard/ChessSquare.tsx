@@ -6,16 +6,18 @@ interface Props {
     highlight: boolean;
 }
 
-export default function ChessSquare( { image, number, highlight } : Props) {
-
+export default function ChessSquare({ image, number, highlight }: Props) {
     // Get className to set division HTML element style
-    const className: string = ["square", number % 2 === 0 && "dark-tile", 
-    number % 2 !== 0 && "light-tile", highlight && "square-highlight", 
-    image && "chess-piece-square"].filter(Boolean).join(' ');
+    const className: string = [
+        "square", 
+        number % 2 === 0 ? "dark-tile" : "light-tile", 
+        highlight ? "square-highlight" : "",  // Apply square-highlight class when highlight prop is true
+        image ? "chess-piece-square" : ""  // Apply chess-piece-square class when there's an image
+    ].join(' ');
 
     return (
         <div className={className}>
-            {image && <div style = {{ backgroundImage: `url(${image})`}} className="chess-piece"></div>}
+            {image && <div style={{ backgroundImage: `url(${image})` }} className="chess-piece"></div>}
         </div>
     );
 }
