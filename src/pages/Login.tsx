@@ -6,8 +6,9 @@ import { Label } from "@/components/ui/label";
 import landscape from "/landscape.png";
 import chessLogo from "/chess.svg";
 import Error from "@/components/alerts/Error";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
+import { getWhoAmI, postLogin } from "@/services/accessControl/AuthService";
+import { response } from "express";
 
 export function Login() {
   const [username, setUsername] = useState("");
@@ -18,44 +19,28 @@ export function Login() {
 
   const { saveWhoAmI } = useWhoAmIContext();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     // Check if user and password are not empty
     if (username.trim() !== "" && password.trim() !== "") {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-          credentials: "include",
-        }
-      );
+      try {
+        const loginResponse = await postLogin(username, password);
 
-      if (response.ok) {
-        await fetch(`${import.meta.env.VITE_SERVER}/whoami`, {
-          method: "GET",
-          credentials: "include",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(data);
-            saveWhoAmI(data.user);
-            setMessage("");
-            navigate("/");
-          });
+        if (!loginResponse.ok) throw new Error("Network response was not ok.");
+
+        const data = await getWhoAmI();
+        saveWhoAmI(data.user);
+        setMessage("");
+        navigate("/");
+      } catch (error) {
+        setMessage("Could not authenticate user. Please try again.");
       }
-      else {
-        setMessage("Invalid username or password.");
-      }
-    } else {
-      setMessage("Please enter valid username and password."); // Set error message
-    }
-    setAlertKey(prevKey => prevKey + 1); // Update error key
+    } else setMessage("Please enter a valid username and password.");
+
+    setAlertKey((prevKey) => prevKey + 1); // Update error key
   };
+
   return (
     <>
       <div>
@@ -67,9 +52,7 @@ export function Login() {
         ) : (
           <>
             <div className="min-h-screen grid lg:grid-cols-2">
-              {message &&
-              <Error key={alertKey} desc={message} />
-              }
+              {message && <Error key={alertKey} desc={message} />}
               <div className="flex items-center justify-center py-12 bg-gradient-to-br from-blue-100  to-blue-50">
                 <div className="mx-auto grid w-[350px] gap-6">
                   <div className="grid gap-2 text-center">

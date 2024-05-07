@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import profileImage from "../assets/default_pfp.png"; // Importing the profile image
 import { useWhoAmIContext } from "../context/WhoAmIContext";
+import { getGameHistorySummary, getGameSummary } from "@/services/UserService";
 
 export function Profile() {
   const [username, setUsername] = useState("");
@@ -13,22 +14,8 @@ export function Profile() {
     setUsername(whoAmI?.username ?? "Guest");
     setEmail(whoAmI?.email ?? "GuestEmail");
 
-    fetch(`${import.meta.env.VITE_SERVER}/gamelog/summary`, {
-      method: "GET",
-      credentials: "include",
-    })
-    .then(response => {
-      if (response.ok)
-        return response.json();
-
-      throw new Error('Not logged in. No game history available.');
-    })
-    .then(data => setGamesPlayed(data ?? []))
-    .catch(error => {
-      console.error('Error fetching data:', error);
-    });
+    getGameHistorySummary().then((data) => setGamesPlayed(data ?? []));
   }, []);
-
 
   return (
     <main className="h-screen ">
@@ -75,7 +62,9 @@ export function Profile() {
           </div>
         </div>
       </div>
-      {gamesPlayed.map(el => <p>{JSON.stringify(el)}</p>)}
+      {gamesPlayed.map((el) => (
+        <p>{JSON.stringify(el)}</p>
+      ))}
     </main>
   );
 }
