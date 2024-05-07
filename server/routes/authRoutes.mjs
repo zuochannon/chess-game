@@ -52,8 +52,6 @@ router.post("/logout", async (req, res) => {
   res.status(200).json("User Logged out");
 });
 
-// TODO add token to signup
-
 router.post("/signup", async (req, res) => {
   const { username, email, password } = req.body;
 
