@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import profileImage from "../assets/default_pfp.png"; // Importing the profile image
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 import { getGameHistorySummary } from "@/services/UserService";
+import UserAvatar from "@/components/avatar/UserAvatar";
 
-export function Profile() {
+const Profile = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [gamesPlayed, setGamesPlayed] = useState({});
@@ -35,7 +35,7 @@ export function Profile() {
             alignItems: "center",
           }}
         >
-          <h1 className="bg-black text-3xl font-bold">User Profile</h1>
+          <h1 className="text-3xl font-bold">User Profile</h1>
         </div>
         <div
           className="profile-info"
@@ -46,16 +46,10 @@ export function Profile() {
             padding: "20px",
           }}
         >
-          <img
-            src={profileImage}
-            alt="Profile"
-            style={{
-              width: "150px",
-              height: "150px",
-              borderRadius: "50%",
-              marginRight: "20px",
-            }}
-          />
+          <div className="h-24 w-24 mx-4">
+
+          <UserAvatar />
+          </div>
           <div>
             <h2>Username: {username}</h2>
             <h2>Email: {email}</h2>
@@ -69,3 +63,5 @@ export function Profile() {
     </main>
   );
 }
+
+export default Profile;

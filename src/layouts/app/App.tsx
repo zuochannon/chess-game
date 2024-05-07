@@ -5,7 +5,7 @@ import Home from "../../pages/Home";
 import { JoinRoom } from "../../pages/JoinRoom";
 import { Login } from "../../pages/Login";
 import { Play } from "../../pages/Play";
-import { Profile } from "../../pages/Profile";
+import Profile from "../../pages/Profile";
 import { RulesAndTutorial } from "../../pages/RulesAndTutorial";
 import { SignUp } from "../../pages/SignUp";
 import "./App.css";

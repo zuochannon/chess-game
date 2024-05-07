@@ -13,3 +13,14 @@ export const getGameHistorySummary = async () => {
         console.error('Error fetching data:', error);
       });
 }
+
+export const updateAvatar = async (url) => {
+  return await fetch(`${import.meta.env.VITE_SERVER}/users/updateAvatar`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ url }),
+    credentials: "include",
+  }); 
+}

@@ -38,4 +38,20 @@ router.get("/getUser", async (req, res) => {
   }
 });
 
+
+router.put("/updateAvatar", async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const query = `UPDATE ${constants.KEYSPACE}.Users SET avatarurl = ? WHERE userid = ?;`;
+    await cassandraClient.execute(query, [url, req.user.userID], {
+      prepare: true,
+    })
+  } catch (error) {
+    console.error("Error executing Cassandra query:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 export default router;
