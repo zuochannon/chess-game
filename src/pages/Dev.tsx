@@ -11,10 +11,10 @@ const Dev = () => {
     <>
     <style>
         {`
-          ul {
+          .accordion {
             list-style: none;
           }
-          ul li::before {
+          .accordion li::before {
             content: "►";
             margin-right: 0.5rem;
           }
@@ -30,7 +30,7 @@ const Dev = () => {
       <AccordionItem value="1">
         <AccordionTrigger>Database</AccordionTrigger>
         <AccordionContent>
-          <ul>
+          <ul className="accordion">
             <li>Test</li>
           </ul>
         </AccordionContent>
@@ -40,7 +40,7 @@ const Dev = () => {
       <AccordionItem value="2">
         <AccordionTrigger>Authentication</AccordionTrigger>
         <AccordionContent>
-          <ul>
+          <ul className="accordion">
             <li>Test</li>
           </ul>
         </AccordionContent>
@@ -52,7 +52,7 @@ const Dev = () => {
         <AccordionTrigger>UI</AccordionTrigger>
         <AccordionContent>
           
-        <ul>
+          <ul className="accordion">
             <li>Test</li>
           </ul>
 
@@ -66,7 +66,7 @@ const Dev = () => {
         <AccordionTrigger>Chess</AccordionTrigger>
         <AccordionContent>
 
-        <ul>
+          <ul className="accordion">
             <li>Test</li>
           </ul>
 
@@ -79,7 +79,7 @@ const Dev = () => {
         <AccordionTrigger>Sockets</AccordionTrigger>
         <AccordionContent>
 
-        <ul>
+          <ul className="accordion">
             <li>Test</li>
           </ul>
 
