@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/use-toast";
 
 export function SignUp() {
   const [username, setUsername] = useState("");
@@ -11,37 +12,43 @@ export function SignUp() {
   const [password, setPassword] = useState("");
   const [isRegistered, setIsRegistered] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSignUp = () => {
-    // Checks for non-empty email, username, and password
-    if (
-      username.trim() !== "" &&
-      email.trim() !== "" &&
-      password.trim() !== ""
-    ) {
-      fetch(`${import.meta.env.VITE_SERVER}/auth/signup`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log(data);
-          setIsRegistered(true);
-        })
-        .catch((error) => {
-          console.error("There was a problem with the login request:", error);
-        });
+
+    if (!(username.trim() && email.trim() && password.trim()))
+      return toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "Please enter valid username, email, and password.",
+      });
+
+    fetch(`${import.meta.env.VITE_SERVER}/auth/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, email, password }),
+      credentials: "include"
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      navigate("/profile");
+    })
+    .catch((error) => {
+      console.error("There was a problem with the login request.", error);
+      return toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+      });
+    }); 
       // TODO: Redirect the user to another page after successful registration
-    } else {
-      alert("Please enter valid username, email, and password.");
-    }
   };
 
   return (

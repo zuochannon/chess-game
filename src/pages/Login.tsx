@@ -6,15 +6,19 @@ import { Label } from "@/components/ui/label";
 import landscape from "/landscape.png";
 import chessLogo from "/chess.svg";
 import Error from "@/components/alerts/Error";
+import { useNavigate } from 'react-router-dom';
+
 
 export function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const [alertKey, setAlertKey] = useState(0);
 
   const { saveWhoAmI } = useWhoAmIContext();
+
+  const navigate = useNavigate()
 
   const handleLogin = async () => {
     // Check if user and password are not empty
@@ -38,17 +42,17 @@ export function Login() {
         })
           .then((response) => response.json())
           .then((data) => {
+            console.log(data);
             saveWhoAmI(data.user);
-            setError("");
+            setMessage("");
+            navigate("/");
           });
-
-        setIsLoggedIn(true);
       }
       else {
-        setError("Invalid username or password.");
+        setMessage("Invalid username or password.");
       }
     } else {
-      setError("Please enter valid username and password."); // Set error message
+      setMessage("Please enter valid username and password."); // Set error message
     }
     setAlertKey(prevKey => prevKey + 1); // Update error key
   };
@@ -63,8 +67,8 @@ export function Login() {
         ) : (
           <>
             <div className="min-h-screen grid lg:grid-cols-2">
-              {error &&
-              <Error key={alertKey} desc={error} />
+              {message &&
+              <Error key={alertKey} desc={message} />
               }
               <div className="flex items-center justify-center py-12 bg-gradient-to-br from-blue-100  to-blue-50">
                 <div className="mx-auto grid w-[350px] gap-6">

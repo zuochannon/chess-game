@@ -6,6 +6,15 @@ import { insertUser } from "../database/models/users.mjs";
 
 const router = express.Router();
 
+const signToken = (uuid, username, email) =>
+  jwt.sign(
+    { userID: uuid, username: username, email: email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -17,21 +26,20 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "User not found, please sign up." });
 
     if (await bcrypt.compare(password, result.rows[0].password)) {
-      const token = jwt.sign(
-        { userID: result.rows[0].userid, username: result.rows[0].username, email: result.rows[0].email },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "1h",
-        }
+      const token = signToken(
+        result.rows[0].userid,
+        result.rows[0].username,
+        result.rows[0].email
       );
 
-      res.cookie('token', token, {
-        maxAge: 36000000,
-        httpOnly: true,
-        secure: true,
-        sameSite: 'None',
-      }).json({message: "Login successful"});
-
+      res
+        .cookie("token", token, {
+          maxAge: 36000000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "None",
+        })
+        .json({ message: "Login successful" });
     } else res.status(401).json({ error: "Incorrect password." });
   } catch (error) {
     console.error("Error executing query:", error);
@@ -39,11 +47,10 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.post('/logout', async (req, res) => {
-  res.clearCookie('token');
-  res.status(200).json('User Logged out');
+router.post("/logout", async (req, res) => {
+  res.clearCookie("token");
+  res.status(200).json("User Logged out");
 });
-
 
 // TODO add token to signup
 
@@ -61,12 +68,18 @@ router.post("/signup", async (req, res) => {
 
     const uuid = await insertUser(username, email, password);
 
-    res.json({
-      message: "User registered successfully",
-      token: jwt.sign({ userID: uuid }, process.env.JWT_SECRET, {
-        expiresIn: "1h",
-      }),
-    });
+    const token = signToken(uuid, username, email);
+
+    res
+      .cookie("token", token, {
+        maxAge: 36000000,
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      })
+      .json({
+        message: "User registered successfully",
+      });
   } catch (err) {
     console.error("Error:", err);
     res.status(500).json({ error: "Internal server error" });
