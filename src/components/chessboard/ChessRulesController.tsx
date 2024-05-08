@@ -210,23 +210,31 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
                     </div>
                 </div>
             </div>
-            <div className="overflow-auto">
-                <Chessboard playMove={playMove} pieces={board.pieces} offset = {offset} boardOrientation = {boardOrientation}/>
-            </div>
-            <div className="move-history">
-                <h3 className="text-center text-white p-2">PGN</h3>
-                <div className="moves-container">
-                    {moveHistory.map((move, index) => (
-                        (index % 2 === 0) ? (
-                            // Display both White and Black moves on the same line
-                            <span key={index} className="move-pair">
-                                <span>{Math.floor(index / 2) + 1}. {move}</span>
-                                {moveHistory[index + 1] && <span className="black-move"> {moveHistory[index + 1]}</span>}
-                            </span>
-                        ) : null
-                    ))}
+            <div className="container">
+                <div className="turn-count-box">
+                    <label className="text-white turn-label">
+                        Turn: {board.totalTurns}
+                    </label>
+                </div>
+                <div className="chessboard-container overflow-auto">
+                    <Chessboard playMove={playMove} pieces={board.pieces} offset={offset} boardOrientation={boardOrientation} />
+                </div>
+                <div className="move-history">
+                    <h3 className="text-center text-white p-2">PGN</h3>
+                    <div className="moves-container">
+                        {moveHistory.map((move, index) => (
+                            (index % 2 === 0) ? (
+                                // Display both White and Black moves on the same line
+                                <span key={index} className="move-pair">
+                                    <span>{Math.floor(index / 2) + 1}. {move}</span>
+                                    {moveHistory[index + 1] && <span className="black-move"> {moveHistory[index + 1]}</span>}
+                                </span>
+                            ) : null
+                        ))}
+                    </div>
                 </div>
             </div>
+
         </>
     );
 }

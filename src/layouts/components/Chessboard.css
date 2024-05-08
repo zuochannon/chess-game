@@ -65,11 +65,18 @@
     cursor: pointer;
 }
 
+.container {
+    display: flex; /* Use flexbox to create a flex container */
+}
+
+.chessboard-container {
+    flex: 1; /* Make the chessboard container grow to fill the available space */
+}
+
 .move-history {
-    position: relative;
-    max-width: 600px; /* Limit the width to match the width of the chessboard */
-    max-height: 200px; /* Limit the height to 200px */
-    margin-top: 10px; /* Add some space between the board and the move history */
+    width: 300px; 
+    max-height: 600px; 
+    margin-left: 20px; /* Add some space between the chessboard and the move history */
     color: black; /* Set text color to black */
     overflow: auto; /* Add scrollbar if content exceeds max-width or max-height */
 }
@@ -89,3 +96,15 @@
     margin-right: 0; /* Remove margin for the last move pair */
 }
 
+.turn-count-box {
+    display: inline-block; /* Ensure it wraps around the label */
+    background-color: #779556; /* Set background color */
+    padding: 10px; /* Add padding */
+    border-radius: 10px; /* Add rounded corners */
+    margin-right: 20px; /* Add some margin to separate from the chessboard */
+    height: 50px;
+}
+
+.turn-label {
+    margin: 0; /* Reset margin to ensure proper alignment */
+}
