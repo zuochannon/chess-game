@@ -31,7 +31,9 @@ const Dev = () => {
         <AccordionTrigger>Database</AccordionTrigger>
         <AccordionContent>
           <ul className="accordion">
-            <li>Test</li>
+            <li>Postgres, Cassandra, Redis</li>
+            <li>Game history</li>
+            <li>User settings</li>
           </ul>
         </AccordionContent>
       </AccordionItem>
@@ -41,7 +43,9 @@ const Dev = () => {
         <AccordionTrigger>Authentication</AccordionTrigger>
         <AccordionContent>
           <ul className="accordion">
-            <li>Test</li>
+            <li>JWT token in HTTP Only cookie</li>
+            <li>Username, email, avatar url in session storage under whoami</li>
+            <li>Clear on logout</li>
           </ul>
         </AccordionContent>
       </AccordionItem>
@@ -53,7 +57,7 @@ const Dev = () => {
         <AccordionContent>
           
           <ul className="accordion">
-            <li>Test</li>
+            <li>General UI revamp</li>
           </ul>
 
 
