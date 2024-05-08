@@ -12,6 +12,7 @@ import "./App.css";
 import MainLayout from "../main/MainLayout";
 import Dev from "@/pages/Dev";
 import GameHistory from "@/pages/GameHistory";
+import Match from "@/pages/Match";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
 
           <Route path="/onlineplay/:roomid" element={<OnlinePlay />} />
           <Route path="/dev" element={<Dev />} />
+          <Route path="/match" element={<Match />} />
+          
         </Route>
       </Routes>
     </Router>

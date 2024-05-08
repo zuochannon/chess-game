@@ -7,6 +7,7 @@ import gamelogRoutes from "./routes/gamelogRoutes.mjs";
 import onlinePlayRoutes from "./routes/onlinePlay.mjs";
 import userRoutes from "./routes/userRoutes.mjs";
 import whoamiRoutes from "./routes/whoami.mjs";
+import matchRoutes from "./routes/match.mjs";
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT secret is not defined. Set the JWT_SECRET environment variable.');
@@ -25,6 +26,7 @@ app.use("/auth", authRoutes);
 app.use("/whoami", verifyToken, whoamiRoutes);
 app.use("/gamelog", verifyToken, gamelogRoutes);
 app.use("/onlinePlay", onlinePlayRoutes);
+app.use("/match", matchRoutes);
 
 app.listen(ENV.PORT, () => {
   console.log(`Server running on port ${ENV.PORT}`);

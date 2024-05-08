@@ -58,8 +58,8 @@ const resetDB = async () => {
 };
 
 export async function initDB() {
-  // await resetDB();
+  await resetDB();
   await Promise.all([initCassandra(), initPostgres()]);
 
-  // initData();
+  initData();
 }
