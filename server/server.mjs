@@ -1,3 +1,5 @@
+import http from 'http';
+import { Server as SocketServer } from 'socket.io';
 import ENV from "./EnvVars.mjs";
 import { initDB } from "./database/initDB.mjs";
 import app from "./expressSetup.mjs";
@@ -14,18 +16,43 @@ if (!process.env.JWT_SECRET) {
 }
 
 try {
-  await initDB(); 
+  await initDB();
 }
 catch (err) {
-  console.log("DB not there")
+  console.error("Database initialization failed:", err);
 }
 
-app.use("/users/", verifyToken, userRoutes);
+app.use("/users", verifyToken, userRoutes);
 app.use("/auth", authRoutes);
 app.use("/whoami", verifyToken, whoamiRoutes);
 app.use("/gamelog", verifyToken, gamelogRoutes);
 app.use("/onlinePlay", onlinePlayRoutes);
 
-app.listen(ENV.PORT, () => {
+const httpServer = http.createServer(app);
+const io = new SocketServer(httpServer, {
+  cors: {
+    origin: process.env.VITE_ORIGIN,
+    credentials: true
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    console.log(`Socket ${socket.id} joined room ${roomId}`);
+  });
+
+  socket.on("moveMade", (roomId, move) => {
+    io.in(roomId).emit("moveReceived", move);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+httpServer.listen(ENV.PORT, () => {
   console.log(`Server running on port ${ENV.PORT}`);
 });

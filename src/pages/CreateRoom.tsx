@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// src/pages/CreateRoom.tsx
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 
@@ -10,7 +12,6 @@ export function CreateRoom() {
 
     async function handleButton() {
         if (!whoAmI) {
-            // Checks if player is signed in to create a room
             setErrorMessage(true);
             return;
         }
@@ -21,13 +22,15 @@ export function CreateRoom() {
                 credentials: "include",
             }
         );
-        console.log(response);
-        setRoomid((await response.json())['roomid']);
+        const data = await response.json();
+        setRoomid(data['roomid']);  // This should be the only place to setRoomid
     }
 
-    if (roomid !== -1) {
-        navigate('/onlinePlay/'+ roomid, {replace: true});
-    }
+    useEffect(() => {
+      if (roomid !== -1) {
+        navigate(`/onlinePlay/${roomid}`, { replace: true });
+      }
+    }, [roomid]);
 
     return (
         <main className='h-screen bg-black flex flex-col items-center' style={{ paddingTop: '100px' }}>
