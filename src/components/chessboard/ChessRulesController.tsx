@@ -196,10 +196,10 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
         <>
             <div className="modal hidden" ref={modalRef}>
                 <div className="modal-body">
-                    <img onClick={() => promotePawn(PieceType.ROOK)} src={`src/assets/chess/${promotionTeamType()}R.png`} />
-                    <img onClick={() => promotePawn(PieceType.BISHOP)} src={`src/assets/chess/${promotionTeamType()}B.png`} />
-                    <img onClick={() => promotePawn(PieceType.KNIGHT)} src={`src/assets/chess/${promotionTeamType()}N.png`} />
-                    <img onClick={() => promotePawn(PieceType.QUEEN)} src={`src/assets/chess/${promotionTeamType()}Q.png`} />
+                    <img onClick={() => promotePawn(PieceType.ROOK)} src={`/${promotionTeamType()}R.png`} />
+                    <img onClick={() => promotePawn(PieceType.BISHOP)} src={`/${promotionTeamType()}B.png`} />
+                    <img onClick={() => promotePawn(PieceType.KNIGHT)} src={`/${promotionTeamType()}N.png`} />
+                    <img onClick={() => promotePawn(PieceType.QUEEN)} src={`/${promotionTeamType()}Q.png`} />
                 </div>
             </div>
             <div className = "modal hidden" ref={checkmateModalRef}>
@@ -216,7 +216,7 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
                         Turn: {board.totalTurns}
                     </label>
                 </div>
-                <div className="chessboard-container overflow-auto">
+                <div className="chessboard-container">
                     <Chessboard playMove={playMove} pieces={board.pieces} offset={offset} boardOrientation={boardOrientation} />
                 </div>
                 <div className="move-history">
