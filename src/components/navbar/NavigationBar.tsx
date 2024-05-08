@@ -3,22 +3,16 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuContent,
-  NavigationMenuLink,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import chessLogo from "/chess.svg";
 import {
   navCommunityItems,
-  navItems,
   navPlayItems,
   navTutorialItems,
   navUserItems,
 } from "@/data/constants/NavItems";
-import { Link, NavLink } from "react-router-dom";
 
 import { Button } from "../ui/button";
-// import { FiSettings } from "react-icons/fi";
 import { useWhoAmIContext } from "@/context/WhoAmIContext";
 import NavbarItem from "./NavbarItem";
 import { useNavigate } from "react-router-dom";
@@ -89,10 +83,10 @@ const NavigationBar = () => {
           ) : (
             <div className="flex flex-row gap-2 py-4">
             <NavigationMenuItem className="mr-4">
-              <Button className="underline font-bold" variant="ghost" onClick={() => navigate("/login")}>Login</Button>
+              <Button className="underline font-bold" variant="ghost" onClick={() => navigate("/signup")}>Sign up</Button>
             </NavigationMenuItem>
             <NavigationMenuItem className="mr-4">
-              <Button onClick={() => navigate("/signup")}>Register</Button>
+              <Button onClick={() => navigate("/login")}>Login</Button>
             </NavigationMenuItem>
             </div>
             

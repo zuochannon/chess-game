@@ -1,24 +1,11 @@
-import chess from "../assets/chess.jpg"
-
 const Home = () => {
   return (
-    <main className='h-screen bg-black'>
-      <div>
-        <img src={chess} alt="Chess_Home" className='w-full object-cover' />
+    <div className="h-screen w-full">
+      <div className="h-full w-full flex flex-col jusimtify-center items-center bg-[url('/public/landscape.png')]">
+        <h1>Chess</h1>
+        <h3>Online multiplayer chess</h3>
       </div>
-      <footer className='text-center bg-black'>
-        <p>
-          A CS160 Project
-        </p>
-        <p>
-          "
-          <a href="https://opengameart.org/content/chess-pieces-and-board-squares">
-            JohnPablok's improved Cburnett chess set
-          </a>
-          " by JohnPablok is licensed under CC-BY-SA 3.0.
-        </p>
-      </footer>
-    </main>
+    </div>
   )
 }
 
