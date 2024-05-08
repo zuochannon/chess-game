@@ -1,20 +1,26 @@
-import React from "react";
-import { ColorTeam } from "@/data/enums/ChessEnums";
+// src/layouts/game/Game.tsx
+
+import React, { useState, useEffect } from "react";
+import { ColorTeam } from "../../data/enums/ChessEnums";
 import ChessRulesController from "../../components/chessboard/ChessRulesController";
-import "../pages/Play.css";
+import "../../layouts/pages/Play.css";
+
+// src/layouts/game/Game.tsx
 
 interface Props {
     offset: number;
     boardOrientation: ColorTeam;
-    moves: any[]; // Define the type of your moves properly, 'any' is used for simplicity here
+    initialMoves: any[];  // Ensure this is included if it's expected as a prop
 }
 
-const Game: React.FC<Props> = ({ offset, boardOrientation, moves }) => {
+const Game: React.FC<Props> = ({ offset, boardOrientation, initialMoves }) => {
     return (
-        <div id="play" className="content-center">
-            <ChessRulesController offset={offset} boardOrientation={boardOrientation} moves={moves} />
+        <div id="play" className="content-center" style={{ marginTop: `${offset}px` }}>
+            {/* Assuming ChessRulesController handles rendering the board based on moves */}
+            <ChessRulesController offset={offset} boardOrientation={boardOrientation} moves={initialMoves} />
         </div>
     );
 }
 
 export default Game;
+

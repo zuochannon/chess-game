@@ -1,3 +1,4 @@
+// server/routes/onlinePlay.mjs
 import express from "express";
 import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
@@ -25,7 +26,7 @@ router.get("/:roomid/joinRoom", async (req, res) => {
       await setGameInfo(roomid, gameInfo); 
     }
     if (gameInfo.blackIP === req.ip || gameInfo.whiteIP === req.ip) {
-      res.json(gameInfo.moves);
+      res.json({moves: gameInfo.moves, gameInfo: gameInfo}); // Send entire gameInfo
     } else {
       res.status(401).send("Room is Full");
     }

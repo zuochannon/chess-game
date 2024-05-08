@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../hooks/useSocket';
 import Game from '../layouts/game/Game';
 import "../layouts/pages/Play.css";
-import { NavigationBarHeight, ButtonOffset } from '@/data/constants/NavItems';
+import { NavigationBarHeight } from '@/data/constants/NavItems';
 import { ColorTeam } from '@/data/enums/ChessEnums';
 
 export function OnlinePlay() {
@@ -11,6 +11,7 @@ export function OnlinePlay() {
     const { roomid } = useParams<{ roomid: string }>();
     const socket = useSocket(import.meta.env.VITE_SERVER);
     const [response, setResponse] = useState({ status: -1, message: 'Loading...' });
+    const [gameInfo, setGameInfo] = useState<any>({ moves: [] });
 
     useEffect(() => {
         const joinRoom = async () => {
@@ -23,6 +24,7 @@ export function OnlinePlay() {
                 const data = await response.json();
                 if (response.ok) {
                     console.log("Joined room successfully:", data);
+                    setGameInfo(data.gameInfo); // Assume gameInfo includes initial game state and moves
                     setResponse({ status: 200, message: 'Room joined' });
                 } else {
                     console.log("Failed to join room:", data);
@@ -42,30 +44,23 @@ export function OnlinePlay() {
 
             socket.on('moveReceived', (move) => {
                 console.log('Move received:', move);
+                setGameInfo(prev => ({
+                    ...prev,
+                    moves: [...prev.moves, move]
+                }));
             });
 
             socket.on('gameStarted', () => {
                 console.log("Game started event received");
-                setResponse({ status: 200, message: 'Game started' });
             });
 
             return () => {
                 socket.off('moveReceived');
                 socket.off('gameStarted');
+                socket.disconnect();
             };
         }
     }, [socket, roomid, navigate]);
-
-    const handleMove = (move: any) => {
-        if (socket) {
-            socket.emit('moveMade', roomid, move);
-        }
-    };
-
-    const copyRoomIdToClipboard = () => {
-        navigator.clipboard.writeText(roomid);
-        alert("Room ID copied to clipboard!");
-    };
 
     if (response.status === -1) {
         return (
@@ -83,9 +78,8 @@ export function OnlinePlay() {
         return (
             <main className='h-screen bg-black'>
                 <h1 style={{ color: 'white', fontWeight: "bold", textAlign: 'center' }}>Room: {roomid}</h1>
-                <button className="block mx-auto my-5 bg-gray-800 text-white px-4 py-2 rounded-md" onClick={copyRoomIdToClipboard}>Copy Room ID</button>
                 <div id="play" className='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
-                    <Game offset={NavigationBarHeight + ButtonOffset} boardOrientation={ColorTeam.WHITE} onMove={handleMove} />
+                    <Game offset={NavigationBarHeight} boardOrientation={ColorTeam.WHITE} initialMoves={gameInfo.moves} />
                 </div>
             </main>
         );

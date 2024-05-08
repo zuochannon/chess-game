@@ -1,3 +1,5 @@
+// src/data/models/ChessPiece.ts
+
 import { COLUMNS, ROWS } from "../constants/ChessConstants";
 import { PieceType, ColorTeam } from "../enums/ChessEnums";
 import { Position } from "./Position";
@@ -5,13 +7,13 @@ import { Position } from "./Position";
 export class ChessPiece {
     image: string;
     position: Position;
-    type: PieceType
+    type: PieceType;
     color: ColorTeam;
     possibleMoves?: Position[];
     hasMoved: boolean;
 
     constructor(position: Position, type: PieceType, color: ColorTeam, hasMoved: boolean, possibleMoves: Position[] = []) {
-        this.image = `src/assets/chess/${color}${type}.png`;
+        this.image = `/${color}${type}.png`;  // Adjusted to use PUBLIC_URL for correct path
         this.position = position;
         this.type = type;
         this.color = color;
@@ -82,6 +84,6 @@ export class Pawn extends ChessPiece {
     }
 
     clone(): Pawn {
-        return new Pawn(this.position.clone(), this.color, this.hasMoved, this.enPassant, this.possibleMoves?.map(m => m.clone()))
+        return new Pawn(this.position.clone(), this.color, this.hasMoved, this.enPassant, this.possibleMoves?.map(m => m.clone()));
     }
 }
