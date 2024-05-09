@@ -1,13 +1,19 @@
+import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import React, { useEffect, useState } from 'react'
 
-const Leaderboard = () => {
+
+
+const UserLeaderboard = () => {
     const [players, setPlayers] = useState([]);
 
     const fetchUsers = async () => {
         try {
           fetch(`${import.meta.env.VITE_SERVER}/leaderboard/getAll`)
             .then((response) => response.json())
-            .then((data) => setPlayers(data.users));
+            .then((data) => {
+                data.users.sort((a, b) => b.elo - a.elo);
+                setPlayers(data.users);
+            });
         } catch (error) {
           console.error("Error fetching players:", error);
         }
@@ -21,13 +27,11 @@ const Leaderboard = () => {
       }, []);
 
   return (
-    <div>
-        Leaderboard
-        {JSON.stringify(players)}
-
-
+    <div className='p-4 w-full h-screen'>
+        <h2 className='text-center'>Leaderboard</h2>
+        <Leaderboard data={players}/>
     </div>
   )
 }
 
-export default Leaderboard
+export default UserLeaderboard

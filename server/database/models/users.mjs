@@ -22,8 +22,8 @@ export const insertUser = async (username, email, password) => {
     const uuid = userAuthResult.rows[0]?.userid;
 
     if (uuid) {
-      const query = `INSERT INTO ${constants.KEYSPACE}.Users (userID, username, email, elo) VALUES (?, ?, ?, ?);`;
-      await cassandraClient.execute(query, [uuid, username, email, chessConstants.EloDefault + Math.random()*100], {
+      const query = `INSERT INTO ${constants.KEYSPACE}.Users (userID, username, email, elo, timestamp) VALUES (?, ?, ?, ?, ?);`;
+      await cassandraClient.execute(query, [uuid, username, email, chessConstants.EloDefault + Math.random()*100, Date.now()], {
         prepare: true,
       });
     }

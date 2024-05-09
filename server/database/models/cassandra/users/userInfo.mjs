@@ -8,6 +8,7 @@ const createUserInfo = async () => {
         email text,
         avatarURL text,
         elo int,
+        timestamp timestamp,
         PRIMARY KEY(userID)
     );`;
   await cassandraClient.execute(query);
@@ -42,7 +43,7 @@ export const updateElo = async (userID, eloDelta) => {
 };
 
 export const getAllElo = async () => {
-  return (await cassandraClient.execute(`SELECT username, elo FROM ${constants.KEYSPACE}.Users`)).rows;
+  return (await cassandraClient.execute(`SELECT username, elo, timestamp FROM ${constants.KEYSPACE}.Users`)).rows;
 }
 
 export default createUserInfo;

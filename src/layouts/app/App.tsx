@@ -13,7 +13,7 @@ import MainLayout from "../main/MainLayout";
 import Dev from "@/pages/Dev";
 import GameHistory from "@/pages/GameHistory";
 import Match from "@/pages/Match";
-import Leaderboard from "@/pages/Leaderboard";
+import UserLeaderboard from "@/pages/Leaderboard";
 
 function App() {
   return (
@@ -34,7 +34,7 @@ function App() {
           <Route path="/onlineplay/:roomid" element={<OnlinePlay />} />
           <Route path="/dev" element={<Dev />} />
           <Route path="/match" element={<Match />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/leaderboard" element={<UserLeaderboard />} />
           
         </Route>
       </Routes>
