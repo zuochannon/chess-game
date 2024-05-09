@@ -4,19 +4,23 @@ import { GameInfo } from "../models/GameInfo.mjs";
 const queue = "queue"
 
 export const enqueue = async (user) => {
-  await redisClient.sadd(queue, user);
+  await redisClient.rpush(queue, user);
 };
 
 export const length = async () => {
-    return await redisClient.scard(queue);
+    return await redisClient.llen(queue);
   };
 
+export const dequeue = async () => {
+    return await redisClient.lpop(queue);
+}
+
 export const remove = async (user) => {
-  await redisClient.srem(user);
+  await redisClient.lrem(queue, 0, user);
 };
 
 export const get = async () => {
-    return await redisClient.smembers(queue);
+    return await redisClient.lrange(queue, 0, -1);
 }
 
 export const del = async () => {

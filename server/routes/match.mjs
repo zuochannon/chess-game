@@ -1,48 +1,83 @@
 import express from "express";
 import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
 import { GameInfo } from "../models/GameInfo.mjs";
-import { enqueue, get, length } from "../utils/redisQueue.mjs";
+import { dequeue, enqueue, get, length, remove } from "../utils/redisQueue.mjs";
 import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
 import { User } from "../models/User.mjs";
-import { getUser, setUser } from "../utils/redisUser.mjs";
+import { delUser, getUser, setUser } from "../utils/redisUser.mjs";
+import Constants from "../utils/constants/Constants.mjs";
 
 const router = express.Router();
 // const gameMap = new Map(); // Tracks all the running games with room id. Can be replaced with DB later
 // RoomID:[white player IP, black player  IP, List of moves]
 
-let i = 0;
-
 const getPlayers = async () =>
   await Promise.all((await get()).map(async (key) => await getUser(key)));
 
+const calculateDiff = (player1, player2) => Math.abs(player1.elo - player2.elo);
+
+const match = async (currentPlayer) => {
+  const players = await getPlayers();
+  if (!players || players.length === 0) return;
+
+  let nextClosest = { user: null, eloDiff: Number.MAX_SAFE_INTEGER };
+
+  for (const current of players) {
+    const eloDiff = calculateDiff(current, currentPlayer);
+    if (eloDiff < Constants.EloThreshold) {
+      nextClosest.user = current;
+      break;
+    }
+
+    if (eloDiff < nextClosest.eloDiff) {
+      nextClosest.user = current;
+      nextClosest.eloDiff = eloDiff;
+    }
+  }
+  await remove(nextClosest.user.IP);
+  return nextClosest.user;
+};
+
+const queueNext = async () => {
+    return (await length() > 2) ? await dequeue() : null;
+}
+
 router.get("/queue_length", async (req, res) => {
-    try {
-        res.json({ len: await length() })
-    }
-    catch (err) {
-        console.log(err);
-    }
+  try {
+    res.json({ len: await length() });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 router.post("/queue", async (req, res) => {
   const name = req.ip + `::${nanoid(5)}`;
   const user = new User(name, 1000 + Math.random() * 500);
-  // console.log(user);
 
-  setTimeout(async () => {
-    console.log("ping");
-    await enqueue(name);
-    await setUser(name, user);
-    console.log("added ", name);
-  }, 3000);
+  await enqueue(name);
+  await setUser(name, user);
+
 });
 
 router.post("/match", async (req, res) => {
+
   console.log("players", await getPlayers());
+  console.log("queue", await get());
+  let currentPlayerKey = await queueNext();
+
+  while (currentPlayerKey) {
+    const currentPlayer = await getUser(currentPlayerKey);
+    console.log(
+      "currentPlayer",
+      currentPlayer,
+      "matched with",
+      await match(currentPlayer)
+    );
+    currentPlayerKey = await queueNext();
+  }
+  console.log("players still in the queue", await getPlayers());
 });
-
-
 
 
 
