@@ -74,7 +74,7 @@
 }
 
 .move-history {
-    width: 300px; 
+    width: 150px; 
     max-height: 600px; 
     margin-left: 20px; /* Add some space between the chessboard and the move history */
     color: black; /* Set text color to black */
@@ -99,12 +99,28 @@
 .turn-count-box {
     display: inline-block; /* Ensure it wraps around the label */
     background-color: #779556; /* Set background color */
-    padding: 10px; /* Add padding */
+    padding: 15px; /* Add padding */
     border-radius: 10px; /* Add rounded corners */
-    margin-right: 20px; /* Add some margin to separate from the chessboard */
+    margin-right: 25px; /* Add some margin to separate from the chessboard */
     height: 50px;
+    width: 100px;
 }
 
 .turn-label {
     margin: 0; /* Reset margin to ensure proper alignment */
+}
+
+.forfeit-button {
+    display: inline-block;
+    padding: 15px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-right: 25px; 
+    border-radius: 10px;
+    background-color:antiquewhite;
+    height: 50px;
+    width: 100px;
+    text-align: center;
+    text-transform: 10px;
 }
