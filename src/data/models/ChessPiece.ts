@@ -11,7 +11,7 @@ export class ChessPiece {
     hasMoved: boolean;
 
     constructor(position: Position, type: PieceType, color: ColorTeam, hasMoved: boolean, possibleMoves: Position[] = []) {
-        this.image = `src/assets/chess/${color}${type}.png`;
+        this.image = `/${color}${type}.png`;
         this.position = position;
         this.type = type;
         this.color = color;

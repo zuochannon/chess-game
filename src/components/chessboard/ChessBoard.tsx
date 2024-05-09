@@ -163,6 +163,8 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
                     const number = j + i + 2;
                     const piece = pieces.find(p => p.hasSamePositionAs(new Position(i, j)));
                     let image = piece ? piece.image : undefined;
+
+                    console.log(image);
         
                     let currentPiece = activePiece != null ? pieces.find(p => p.hasSamePositionAs(grabPosition)) : undefined;
                     let highlight = (currentPiece?.possibleMoves) ? currentPiece.possibleMoves.some(p => p.equalsTo(new Position(i, j))) : false;
@@ -190,7 +192,7 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
     
     const board = renderBoard();
 
-    //console.log(board);
+    console.log(board);
 
     return (
         <>
