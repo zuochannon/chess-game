@@ -11,15 +11,17 @@ import { generateMoveNotation } from "../ChessNotation/ChessNotation";
 interface Props {
     offset: number;
     boardOrientation: ColorTeam;
+    chessboard: Board;
 }
 
 // Responsible for handling valid chess moves
-export default function ChessRulesController({ offset, boardOrientation }: Props) {
-    const [board, setBoard] = useState<Board>(initialBoard.clone());
+export default function ChessRulesController({ offset, boardOrientation, chessboard }: Props) {
+    const [board, setBoard] = useState<Board>(chessboard);
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
     const modalRef = useRef<HTMLDivElement>(null);
     const checkmateModalRef = useRef<HTMLDivElement>(null);
+    const stalemateModalRef = useRef<HTMLDivElement>(null);
 
     // Checks if it is a valid move by that particular piece
     function isValidMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam) {
@@ -70,8 +72,6 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
 
         const enPassantMove = isEnPassantMove(playedPiece.position, dest, playedPiece.type, playedPiece.color);
 
-        //console.log(board.totalTurns);
-
         // Update chessboard to include all move changes 
         setBoard(() => {
             const clonedChessboard = board.clone();
@@ -82,15 +82,23 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
 
             // Winner prompt appears when winner is determined
             if (clonedChessboard.winningTeam !== undefined) {
-                checkmateModalRef.current?.classList.remove("hidden");
+                // Check if winning team is white or black
+                if (clonedChessboard.winningTeam === ColorTeam.WHITE || clonedChessboard.winningTeam === ColorTeam.BLACK) {
+                    checkmateModalRef.current?.classList.remove("hidden");
+                }
+                // Check for draw
+                else if (clonedChessboard.winningTeam === ColorTeam.DRAW) {
+                    stalemateModalRef.current?.classList.remove("hidden");
+                }
             }
 
             // Determine if the move results in check or checkmate
-            const isCheck = clonedChessboard.isKingInCheck();
+            const isCheck = clonedChessboard.getKingCheck();
             const isCheckmate = clonedChessboard.isCheckmate();
+            const isStalemate = clonedChessboard.getStalemate();
 
             // Append move to move history
-            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate);
+            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate, isStalemate);
             updateMoveHistory(moveNotation);
 
             return clonedChessboard;
@@ -182,6 +190,7 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
     
     function restartGame() {
         checkmateModalRef.current?.classList.add("hidden");
+        stalemateModalRef.current?.classList.add("hidden");
         setBoard(initialBoard.clone());
         setMoveHistory([]);
     }
@@ -204,8 +213,16 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
             </div>
             <div className = "modal hidden" ref={checkmateModalRef}>
                 <div className = "modal-body">
-                    <div className= "checkmate-body">
+                    <div className= "gameover-body">
                         <span className="text-center"> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
+                        <button onClick={restartGame}> Play Again </button>
+                    </div>
+                </div>
+            </div>
+            <div className = "modal hidden" ref={stalemateModalRef}>
+                <div className = "modal-body">
+                    <div className= "gameover-body">
+                        <span className="text-center"> Draw! </span>
                         <button onClick={restartGame}> Play Again </button>
                     </div>
                 </div>
@@ -213,7 +230,7 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
             <div className="container">
                 <div className="turn-count-box">
                     <label className="text-white turn-label">
-                        Turn: {board.totalTurns}
+                        Turn: {board.totalTurns} 
                     </label>
                 </div>
                 <div className="chessboard-container">
