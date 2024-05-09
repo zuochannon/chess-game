@@ -1,7 +1,7 @@
 import express from "express";
 import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
 import { GameInfo } from "../models/GameInfo.mjs";
-import { enqueue, get } from "../utils/redisQueue.mjs";
+import { enqueue, get, length } from "../utils/redisQueue.mjs";
 import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
 import { User } from "../models/User.mjs";
@@ -16,32 +16,31 @@ let i = 0;
 const getPlayers = async () =>
   await Promise.all((await get()).map(async (key) => await getUser(key)));
 
+router.get("/queue_length", async (req, res) => {
+    try {
+        res.json({ len: await length() })
+    }
+    catch (err) {
+        console.log(err);
+    }
+});
+
 router.post("/queue", async (req, res) => {
   const name = req.ip + `::${nanoid(5)}`;
   const user = new User(name, 1000 + Math.random() * 500);
   // console.log(user);
-  await enqueue(name);
-  await setUser(name, user);
-  console.log("added ", name);
+
+  setTimeout(async () => {
+    console.log("ping");
+    await enqueue(name);
+    await setUser(name, user);
+    console.log("added ", name);
+  }, 3000);
 });
 
 router.post("/match", async (req, res) => {
   console.log("players", await getPlayers());
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
