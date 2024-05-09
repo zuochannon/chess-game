@@ -1,34 +1,38 @@
 import express from "express";
-import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
-import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
+import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { GameInfo } from "../models/GameInfo.mjs";
+import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
 
 const router = express.Router();
 // const gameMap = new Map(); // Tracks all the running games with room id. Can be replaced with DB later
 // RoomID:[white player IP, black player  IP, List of moves]
 
-router.get("/createRoom", verifyToken, async (req, res) => {
+router.post("/createRoom", verifyToken, async (req, res) => {
   // need to be logged in in order to create a room
   let roomid = nanoid(10); // check out stats from this site https://zelark.github.io/nano-id-cc/
-  await setGameInfo(roomid, new GameInfo(req.ip));
+  let user = req.user.userID;
+  await setGameInfo(roomid, new GameInfo(user));
   res.json({ roomid: roomid });
-  console.log("created room: " + roomid);
+  console.log("iN CREATE ROOM, created room: " + roomid);
 });
 
-router.get("/:roomid/joinRoom", async (req, res) => {
+router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
   // does not need to be logged in in order to join a room
+  console.log('JOINING ROOM');
+  console.log("Trying to join room: " + roomid);
   let roomid = req.params.roomid;
+  let user = req.user.userID;
   console.log(await getAll());
   console.log("Trying to join room: " + roomid + " |" + await has(roomid));
   if (await has(roomid)) {
     const gameInfo = await getGameInfo(roomid);
 
-    if (gameInfo.blackIP === -1 && gameInfo.whiteIP !== req.ip) {
+    if (gameInfo.blackUserID === -1 && gameInfo.whiteUserID !== user) {
       // Person creating room sent game invite and got a response
-      gameInfo.blackIP = req.ip;
+      gameInfo.blackUserID = user;
     }
-    if (gameInfo.blackIP === req.ip || gameInfo.whiteIP === req.ip) {
+    if (gameInfo.blackUserID === user || gameInfo.whiteUserID === user) {
       // Only let people join the room if they were in the game
       res.json(gameInfo.moves);
     } else {
@@ -38,6 +42,7 @@ router.get("/:roomid/joinRoom", async (req, res) => {
     res.status(404).send("Unauthorized room");
   }
 });
+
 router.get("/:roomid/getMoves", async (req, res) => {
   let roomid = req.params.roomid;
   if (await has(roomid)) {
