@@ -10,12 +10,14 @@ export class Board {
     winningTeam ?: ColorTeam;
     private kingCheck: boolean;
     private checkmate: boolean;
+    private stalemate: boolean;
 
     constructor(pieces: ChessPiece[], totalTurns: number) {
         this.pieces = pieces;
         this.totalTurns = totalTurns;
         this.kingCheck = false;
         this.checkmate = false;
+        this.stalemate = false;
     }
 
     // Check whose turn it is
@@ -48,18 +50,25 @@ export class Board {
         }
 
         // Check if playing team has any moves left (Checkmate condition)
-        if (this.pieces.filter(p => p.color === this.currentTeam).some(p => p.possibleMoves !== undefined && p.possibleMoves.length > 0)) {
-            this.checkmate = false;
+        if (this.isCheckmate() && this.kingCheck) {
+            this.winningTeam = (this.currentTeam === ColorTeam.WHITE) ? ColorTeam.BLACK : ColorTeam.WHITE;
             return;
         }
 
-        this.checkmate = true;
-        this.winningTeam = (this.currentTeam === ColorTeam.WHITE) ? ColorTeam.BLACK : ColorTeam.WHITE;
     }
 
     // Return if checkmate occurs
     isCheckmate() {
+        this.checkmate = !this.pieces.filter(p => p.color === this.currentTeam).some(p => p.possibleMoves !== undefined && p.possibleMoves.length > 0);
         return this.checkmate;
+    }
+
+    getKingCheck() {
+        return this.kingCheck;
+    }
+
+    getStalemate() {
+        return this.stalemate;
     }
 
     // Get valid moves of the piece type
@@ -91,8 +100,6 @@ export class Board {
             // Check if piece has possible moves
             if (piece.possibleMoves === undefined) continue;
 
-            var pieceHasCheck = false;
-
             // Get every possible move of each piece on the playing team
             for (const move of piece.possibleMoves) {
                 const sBoard = this.clone();
@@ -106,39 +113,11 @@ export class Board {
 
                 // Get the king of the playing team
                 const cKing = sBoard.pieces.find(p => p.isKing && p.color === this.currentTeam)!;
-           
-                // Loops through all opponent pieces and update their possible moves
-                // Also, conduct checks (playing team's king is in danger)
-                for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
 
-                    // get possible moves of piece
-                    opponent.possibleMoves = sBoard.getValidMoves(opponent, sBoard.pieces);
+                // Update the variable indicating whether the king is in check
+                this.kingCheck = this.isKingInCheck(sBoard, cKing, piece, move);
 
-                    // Check if opponent is pawn
-                    if (opponent.isPawn) {
-
-                        // Checks if pawn has at least one possible move that has the opposite king in danger
-                        if (opponent.possibleMoves.some(m => m.x !== opponent.position.x && m.equalsTo(cKing.position))) {
-                            piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(move));
-                            this.kingCheck = true;
-                            pieceHasCheck = true;
-                        }
-                        else if (!pieceHasCheck) {
-                            this.kingCheck = false;
-                        }
-                    }
-                    else {
-                        // Checks if non-pawn opponent pieces has the playing king in its pathway
-                        if (opponent.possibleMoves.some(m => m.equalsTo(cKing.position))) {
-                            piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(move));
-                            pieceHasCheck = true;
-                            this.kingCheck = true;
-                        }
-                        else if (!pieceHasCheck) {
-                            this.kingCheck = false;
-                        }
-                    }
-                }
+                this.stalemate = this.isStalemate(sBoard);
 
             }
 
@@ -147,8 +126,48 @@ export class Board {
     }
 
     // Return if king is in check
-    isKingInCheck() {
-        return this.kingCheck;
+    private isKingInCheck(sBoard: Board, cKing: ChessPiece, piece: ChessPiece, move: Position) {
+
+        // Initialize a flag to track whether the current player's king is in check
+        let currentTeamKingInCheck = false;
+
+        // Loops through all opponent pieces and update their possible moves
+        for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
+            // Get possible moves of opponent's piece
+            opponent.possibleMoves = sBoard.getValidMoves(opponent, sBoard.pieces);
+
+            // Check if the opponent's piece can attack the current player's king
+            if (opponent.possibleMoves.some(m => m.equalsTo(cKing.position))) {
+                // If the opponent's piece can attack the king, set the flag to true
+                currentTeamKingInCheck = true;
+
+                // Filter out any moves of the current player's piece that would leave the king in check
+                piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(move));
+            }
+        }
+
+        return currentTeamKingInCheck;
+    }
+
+    // Return if stalemate occurs
+    private isStalemate(sBoard: Board): boolean {
+        let stalemate = false;
+
+        // If the king is not in check, check for stalemate
+        if (!this.kingCheck) {
+            // Check if there are no legal moves for the current player
+            const noLegalMoves = sBoard.pieces
+                .filter(p => p.color === sBoard.currentTeam)
+                .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
+
+            // If there are no legal moves, it's a stalemate
+            if (noLegalMoves) {
+                stalemate = true;
+                this.winningTeam = ColorTeam.DRAW;
+            }
+        }
+
+        return stalemate;
     }
 
     // Check if move is valid

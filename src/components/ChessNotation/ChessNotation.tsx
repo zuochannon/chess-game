@@ -5,13 +5,13 @@ import { COLUMNS, ROWS } from "../../data/constants/ChessConstants";
 
 // Function to generate algebraic notation for a position (e.g., [0, 0] -> "a1")
 export function getPositionAlgebraicNotation(position: Position): string {
-    const column = COLUMNS[position.x - 1];
-    const row = ROWS[position.y - 1];
+    const column = COLUMNS[position.x];
+    const row = ROWS[position.y];
     return `${column}${row}`;
 }
 
 // Function to generate notation for a move
-export function generateMoveNotation(piece: ChessPiece, dest: Position, check: boolean, checkmate: boolean): string {
+export function generateMoveNotation(piece: ChessPiece, dest: Position, check: boolean, checkmate: boolean, stalemate: boolean): string {
     const pieceType = piece.type;
     const endPosition = getPositionAlgebraicNotation(dest);
 
@@ -44,7 +44,7 @@ export function generateMoveNotation(piece: ChessPiece, dest: Position, check: b
     if (checkmate) {
         notation += "#"; // Checkmate symbol
     } else if (check) {
-        console.log("hi");
+        console.log("check: " + check);
         notation += "+"; // Check symbol
     }
 

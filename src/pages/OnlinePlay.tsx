@@ -4,11 +4,13 @@ import Game from '../layouts/game/Game'
 import "../layouts/pages/Play.css"
 import { NavigationBarHeight, ButtonOffset } from '@/data/constants/NavItems'
 import { ColorTeam } from '@/data/enums/ChessEnums'
+import { initialBoard } from '@/data/constants/ChessConstants'
 
 export function OnlinePlay() {
 
     const [response, setResponse] = useState({status: -1, message: ''}) 
     const {roomid} = useParams()
+    const newBoard = initialBoard.clone();
 
     useEffect(() =>{
         setResponse({status: -1, message: ''})
@@ -52,7 +54,7 @@ export function OnlinePlay() {
                 <button className="block mx-auto my-5 bg-gray-800 text-white px-4 py-2 rounded-md" 
                 onClick={copyRoomIdToClipboard}>Copy Room ID</button>
                 <div id="play" className ='p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative'>
-                    <Game offset = {NavigationBarHeight + ButtonOffset + 80} boardOrientation={ColorTeam.WHITE}/>
+                    <Game offset = {NavigationBarHeight + ButtonOffset + 80} boardOrientation={ColorTeam.WHITE} board = {newBoard}/>
                 </div>
             </main>
         )
