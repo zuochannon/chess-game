@@ -40,7 +40,7 @@ const match = async (currentPlayer) => {
 };
 
 const queueNext = async () => {
-    return (await length() > 2) ? await dequeue() : null;
+    return (await length() > 1) ? await dequeue() : null;
 }
 
 router.get("/queue_length", async (req, res) => {

@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { cassandraClient, pool } from "../connection.mjs";
 import constants from "../constants.mjs";
+import chessConstants from "../../utils/constants/Constants.mjs"
 
 const saltRounds = 10;
 
@@ -21,8 +22,8 @@ export const insertUser = async (username, email, password) => {
     const uuid = userAuthResult.rows[0]?.userid;
 
     if (uuid) {
-      const query = `INSERT INTO ${constants.KEYSPACE}.Users (userID, username, email) VALUES (?, ?, ?);`;
-      await cassandraClient.execute(query, [uuid, username, email], {
+      const query = `INSERT INTO ${constants.KEYSPACE}.Users (userID, username, email, elo) VALUES (?, ?, ?, ?);`;
+      await cassandraClient.execute(query, [uuid, username, email, chessConstants.EloDefault + Math.random()*100], {
         prepare: true,
       });
     }

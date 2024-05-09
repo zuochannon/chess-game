@@ -53,5 +53,4 @@ router.put("/updateAvatar", async (req, res) => {
   }
 });
 
-
 export default router;
