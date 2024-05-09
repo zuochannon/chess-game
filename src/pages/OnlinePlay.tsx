@@ -1,24 +1,30 @@
+import { ButtonOffset, NavigationBarHeight } from '@/data/constants/NavItems'
+import { ColorTeam } from '@/data/enums/ChessEnums'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useWhoAmIContext } from "../context/WhoAmIContext"
 import Game from '../layouts/game/Game'
 import "../layouts/pages/Play.css"
-import { NavigationBarHeight, ButtonOffset } from '@/data/constants/NavItems'
-import { ColorTeam } from '@/data/enums/ChessEnums'
 
 export function OnlinePlay() {
 
     const [response, setResponse] = useState({status: -1, message: ''}) 
     const {roomid} = useParams()
+    const { whoAmI } = useWhoAmIContext();
 
     useEffect(() =>{
         setResponse({status: -1, message: ''})
         fetch(
-            `${import.meta.env.VITE_SERVER}/onlinePlay/${roomid}/joinRoom`,
-                {
-                method: "GET",
-                credentials: "include",
-                }
-            ).then(async response => {console.log(response); 
+            `${import.meta.env.VITE_SERVER}/onlinePlay/createRoom`,
+            {
+                method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({ user: whoAmI }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+            }
+        ).then(async response => {console.log(response); 
                     setResponse({status: response.status, message: await response.text()})})
         },[roomid])
 
