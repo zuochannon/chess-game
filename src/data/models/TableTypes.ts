@@ -11,6 +11,7 @@ export type GameHistoryRow = {
     turns: number;
     playernames: string[];
     game_type: string;
+    comments: string;
 }
 
 export type UserRow = LeaderboardRow | GameHistoryRow;

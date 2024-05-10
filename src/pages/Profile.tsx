@@ -6,12 +6,15 @@ import { GameHistorySummary } from "@/components/gameHistory/GameHistorySummary"
 import { ColumnDef } from "@tanstack/react-table";
 import { GameHistoryRow } from "@/data/models/TableTypes";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, ChevronDown } from "lucide-react";
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
 import clsx from "clsx";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -21,8 +24,6 @@ enum GameResultFilter {
   LOST = "LOST",
   DRAW = "DRAW",
 }
-
-// type GameResultFilter = "ALL" | "WON" | "LOST" | "DRAW";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -117,6 +118,11 @@ const Profile = () => {
       },
     },
     {
+      accessorKey: "comments",
+      header: "Comments",
+      cell: ({ row }) => <div className="max-w-fit overflow-hidden">{row.getValue("comments")}</div>
+    },
+    {
       accessorKey: "timestamp",
       header: ({ column }) => (
         <div className="text-right">
@@ -131,6 +137,37 @@ const Profile = () => {
       ),
       cell: ({ row }) => {
         return <div className="text-right">{row.getValue("timestamp")}</div>;
+      },
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const game = row.original;
+   
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={() => {
+                  alert("To be implemented");
+                  console.log("Clicked on", game);
+                }}
+              >
+                Replay game
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>View comments</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
       },
     },
   ];
