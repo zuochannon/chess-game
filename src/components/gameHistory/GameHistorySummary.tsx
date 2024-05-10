@@ -11,7 +11,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
+import { ArrowUpDown, Rows } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,16 +23,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { UserRow } from "../../data/models/TableTypes";
+import { GameHistoryRow, UserRow } from "../../data/models/TableTypes";
 
-export const columns: ColumnDef<UserRow>[] = [
+export const columns: ColumnDef<GameHistoryRow>[] = [
   {
-    accessorKey: "rank",
-    header: "Rank",
-    cell: ({ row }) => row.index + 1,
+    accessorKey: "id",
+    header: "GameID",
+    cell: ({ row }) => <div>{row.original.gameid}</div>,
   },
   {
-    accessorKey: "elo",
+    accessorKey: "result",
     header: ({ column }) => {
       return (
         <div>
@@ -40,30 +40,37 @@ export const columns: ColumnDef<UserRow>[] = [
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Elo
+            Result
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         </div>
       );
     },
-    cell: ({ row }) => <div className="font-medium">{row.getValue("elo")}</div>,
+    cell: ({ row }) => <div className="font-medium">{row.getValue("result").toUpperCase()}</div>,
   },
   {
-    accessorKey: "username",
+    accessorKey: "turns",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Username
+          Turns
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("username")}</div>
+      <div className="font-medium">{row.getValue("turns")}</div>
     ),
+  },
+  {
+    accessorKey: "players",
+    header: "Players",
+    cell: ({ row }) => {
+        return row.original.playernames.map(el => <div>{el}</div>);
+    },
   },
   {
     accessorKey: "timestamp",
@@ -73,7 +80,7 @@ export const columns: ColumnDef<UserRow>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date Created (UTC)
+          Date Played (UTC)
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       </div>
@@ -84,7 +91,8 @@ export const columns: ColumnDef<UserRow>[] = [
   },
 ];
 
-export function Leaderboard({ data } : { data : UserRow[]}) {
+export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
+    console.log(data);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -133,10 +141,10 @@ export function Leaderboard({ data } : { data : UserRow[]}) {
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.username}>
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.username}>
+                    <TableHead key={header.id}>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -152,9 +160,9 @@ export function Leaderboard({ data } : { data : UserRow[]}) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.username}>
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.username}>
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()

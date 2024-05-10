@@ -20,7 +20,7 @@ const createGameHistory = async () => {
 };
 
 const getDrawGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, result, turns FROM ${constants.KEYSPACE}.GameHistory WHERE players CONTAINS ? AND result='draw' ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE players CONTAINS ? AND result='draw' ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
@@ -29,7 +29,7 @@ const getDrawGames = async (userID) => {
 };
 
 const getWonGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, result, turns FROM ${constants.KEYSPACE}.GameHistory WHERE winnerid = ? ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE winnerid = ? ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
@@ -38,7 +38,7 @@ const getWonGames = async (userID) => {
 };
 
 const getLostGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, result, turns FROM ${constants.KEYSPACE}.GameHistory WHERE loserid = ? ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE loserid = ? ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
@@ -52,6 +52,10 @@ export const getGames = async (userID) => {
     getLostGames(userID),
     getDrawGames(userID),
   ]);
+
+  won.forEach(el => el.result = "won");
+  lost.forEach(el => el.result = "lost");
+  draw.forEach(el => el.result = "draw");
 
   return {
     won,

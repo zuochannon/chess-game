@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 import { getGameHistorySummary } from "@/services/UserService";
 import UserAvatar from "@/components/avatar/UserAvatar";
+import { GameHistorySummary } from "@/components/gameHistory/GameHistorySummary";
 
 const Profile = () => {
   const [username, setUsername] = useState("");
@@ -9,6 +10,12 @@ const Profile = () => {
   const [gamesPlayed, setGamesPlayed] = useState({});
 
   const { whoAmI } = useWhoAmIContext();
+
+  const getGamesPlayed = () => {
+    return Object.values(gamesPlayed).reduce((acc, curr) => {
+      return acc.concat(curr);
+    }, []);
+  };
 
   useEffect(() => {
     setUsername(whoAmI?.username ?? "Guest");
@@ -19,7 +26,6 @@ const Profile = () => {
 
   return (
     <main className="h-screen ">
-
       <div
         className="profile-container"
         style={{
@@ -46,22 +52,21 @@ const Profile = () => {
             padding: "20px",
           }}
         >
-          <div className="h-24 w-24 mx-4">
-
-          <UserAvatar />
+          <div className="h-24 w-24 mx-8">
+            <UserAvatar />
           </div>
           <div>
-            <h2>Username: {username}</h2>
-            <h2>Email: {email}</h2>
+            <h3>Username: {username}</h3>
+            <h3>Email: {email}</h3>
             {/* <h2>Last Name: {user.lastName}</h2> */}
           </div>
         </div>
       </div>
-      {Object.values(gamesPlayed).map((el) => (
-        <p>{JSON.stringify(el)}</p>
-      ))}
+      <div className="p-4">
+        <GameHistorySummary data={getGamesPlayed()} />
+      </div>
     </main>
   );
-}
+};
 
 export default Profile;
