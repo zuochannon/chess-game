@@ -1,0 +1,81 @@
+.
+├── README.md
+├── components.json
+├── data
+│   ├── PG_VERSION
+│   ├── base
+│   ├── global
+│   ├── pg_commit_ts
+│   ├── pg_dynshmem
+│   ├── pg_hba.conf
+│   ├── pg_ident.conf
+│   ├── pg_logical
+│   ├── pg_multixact
+│   ├── pg_notify
+│   ├── pg_replslot
+│   ├── pg_serial
+│   ├── pg_snapshots
+│   ├── pg_stat
+│   ├── pg_stat_tmp
+│   ├── pg_subtrans
+│   ├── pg_tblspc
+│   ├── pg_twophase
+│   ├── pg_wal
+│   ├── pg_xact
+│   ├── postgresql.auto.conf
+│   ├── postgresql.conf
+│   ├── postmaster.opts
+│   └── postmaster.pid
+├── docker-compose.yaml
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── project_tree.txt
+├── public
+│   ├── bB.png
+│   ├── bK.png
+│   ├── bN.png
+│   ├── bP.png
+│   ├── bQ.png
+│   ├── bR.png
+│   ├── chess.svg
+│   ├── landscape.png
+│   ├── vite.svg
+│   ├── wB.png
+│   ├── wK.png
+│   ├── wN.png
+│   ├── wP.png
+│   ├── wQ.png
+│   └── wR.png
+├── server
+│   ├── Dockerfile
+│   ├── EnvVars.mjs
+│   ├── database
+│   ├── expressSetup.mjs
+│   ├── middlewares
+│   ├── models
+│   ├── routes
+│   ├── server.mjs
+│   └── utils
+├── src
+│   ├── assets
+│   ├── components
+│   ├── context
+│   ├── data
+│   ├── features
+│   ├── hooks
+│   ├── index.css
+│   ├── layouts
+│   ├── lib
+│   ├── main.tsx
+│   ├── pages
+│   ├── services
+│   ├── utils
+│   └── vite-env.d.ts
+├── tailwind.config.js
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+38 directories, 41 files

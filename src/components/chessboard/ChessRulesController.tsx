@@ -19,6 +19,7 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
     const [board, setBoard] = useState<Board>(chessboard);
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
+    const [orientation, setOrientation] = useState<ColorTeam>(boardOrientation);
     const modalRef = useRef<HTMLDivElement>(null);
     const checkmateModalRef = useRef<HTMLDivElement>(null);
     const stalemateModalRef = useRef<HTMLDivElement>(null);
@@ -73,8 +74,8 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
         const enPassantMove = isEnPassantMove(playedPiece.position, dest, playedPiece.type, playedPiece.color);
 
         // Update chessboard to include all move changes 
-        setBoard(() => {
-            const clonedChessboard = board.clone();
+        setBoard((clonedChessboard) => {
+            clonedChessboard = board.clone();
             clonedChessboard.totalTurns += 1; // Increase turn count
 
             // Plays the moves of the player
@@ -114,7 +115,7 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             modalRef.current?.classList.remove("hidden");
 
             // Set promotion pawn
-            setPromotionPawn((previousPromotionPawn) => {
+            setPromotionPawn(() => {
                 const clonedPlayedPiece = playedPiece.clone();
                 clonedPlayedPiece.position = dest.clone();
                 return clonedPlayedPiece;
@@ -158,8 +159,8 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
         }
 
         // Update board to include promoted pawn
-        setBoard((prevBoard) => {
-            const clonedChessboard = board.clone();
+        setBoard((clonedChessboard) => {
+            clonedChessboard = board.clone();
 
             // During promotion, remove pawn piece and add promoted piece
             clonedChessboard.pieces = clonedChessboard.pieces.reduce((results, piece) => {
@@ -193,12 +194,31 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
         stalemateModalRef.current?.classList.add("hidden");
         setBoard(initialBoard.clone());
         setMoveHistory([]);
+        setOrientation((prevOrientation) => (prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE));
+
     }
 
     // Update move history
     function updateMoveHistory(move: string) {
         setMoveHistory(prevHistory => [...prevHistory, move]);
     }
+
+    // Forfeit the game
+    function forfeitGame() {
+        // Determine the winning team based on the current turn
+        const winningTeam = board.totalTurns % 2 === 1 ? ColorTeam.BLACK : ColorTeam.WHITE;
+        
+        // Update the winning team and display the checkmate modal
+        setBoard((prevBoard) => {
+            const clonedBoard = prevBoard.clone();
+            clonedBoard.winningTeam = winningTeam;
+            return clonedBoard;
+        });
+    
+        // Show the checkmate modal
+        checkmateModalRef.current?.classList.remove("hidden");
+    }
+    
 
     // Return Promotion Prompt
     return (
@@ -233,8 +253,11 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
                         Turn: {board.totalTurns} 
                     </label>
                 </div>
+                <div className="forfeit-button">
+                    <button onClick={forfeitGame} className="btn btn-danger">Forfeit</button>
+                </div>
                 <div className="chessboard-container">
-                    <Chessboard playMove={playMove} pieces={board.pieces} offset={offset} boardOrientation={boardOrientation} />
+                    <Chessboard playMove={playMove} pieces={board.pieces} offset={offset} boardOrientation={orientation} />
                 </div>
                 <div className="move-history">
                     <h3 className="text-center text-white p-2">PGN</h3>
@@ -246,7 +269,10 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
                                     <span>{Math.floor(index / 2) + 1}. {move}</span>
                                     {moveHistory[index + 1] && <span className="black-move"> {moveHistory[index + 1]}</span>}
                                 </span>
-                            ) : null
+                            ) : (
+                                // Add a line break after every black move
+                                <br key={index} />
+                            )
                         ))}
                     </div>
                 </div>

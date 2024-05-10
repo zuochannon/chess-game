@@ -85,76 +85,33 @@ export const bishopMove = (initialPosition: Position, newPosition: Position, col
     return false;
 }
 
-// Get all possible bishop moves of the piece
+// Get all possible bishop moves
 export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[]): Position[] => {
-    // array to store all possible bishop moves
     const possibleMoves: Position[] = [];
 
-    // Case: Upper right diagonal movement of bishop
-    for (let i = 1; i < 8; i++) {
-        const dest = new Position(bishop.position.x + i, bishop.position.y + i);
+    const directions = [
+        { dx: 1, dy: 1 },   // Upper right
+        { dx: 1, dy: -1 },  // Bottom right
+        { dx: -1, dy: -1 }, // Bottom left
+        { dx: -1, dy: 1 },  // Top left
+    ];
 
-        // Check if square is not occupied
-        if (!isSquareOccupied(dest, board)) {
-            possibleMoves.push(dest);   // Push to array if possible
-        } 
-        // Check if square is occupied by eenemy
-        else if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
-            possibleMoves.push(dest);  
-            break; 
-        } else { /* Break from for loop */
-            break;
-        }
-    }
+    // Cycle through the directions
+    for (const {dx, dy} of directions) {
+        let dest = new Position(bishop.position.x + dx, bishop.position.y + dy);
 
-    // Case: Upper left diagonal movement of bishop
-    for (let i = 1; i < 8; i++) {
-        const dest = new Position(bishop.position.x - i, bishop.position.y + i);
+        // Finds all possible moves within board boundaries
+        while (dest.x >= 0 && dest.x < 8 && dest.y >= 0 && dest.y < 8) {
+            if (isSquareOccupied(dest, board)) {
+                if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
+                    possibleMoves.push(dest);
+                }
+                break;
+            } else {
+                possibleMoves.push(dest);
+            }
 
-        // Check if square is not occupied
-        if (!isSquareOccupied(dest, board)) {
-            possibleMoves.push(dest);   // Push to array if possible
-        } 
-        // Check if square is occupied by eenemy
-        else if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
-            possibleMoves.push(dest);  
-            break; 
-        } else { /* Break from for loop */
-            break;
-        }
-    }
-
-    // Case: lower right diagonal movement of bishop
-    for (let i = 1; i < 8; i++) {
-        const dest = new Position(bishop.position.x + i, bishop.position.y - i);
-
-        // Check if square is not occupied
-        if (!isSquareOccupied(dest, board)) {
-            possibleMoves.push(dest);   // Push to array if possible
-        } 
-        // Check if square is occupied by eenemy
-        else if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
-            possibleMoves.push(dest);  
-            break; 
-        } else { /* Break from for loop */
-            break;
-        }
-    }
-
-    // Case: Lower left diagonal movement of bishop
-    for (let i = 1; i < 8; i++) {
-        const dest = new Position(bishop.position.x - i, bishop.position.y - i);
-
-        // Check if square is not occupied
-        if (!isSquareOccupied(dest, board)) {
-            possibleMoves.push(dest);   // Push to array if possible
-        } 
-        // Check if square is occupied by eenemy
-        else if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
-            possibleMoves.push(dest);  
-            break; 
-        } else { /* Break from for loop */
-            break;
+            dest = new Position(dest.x + dx, dest.y + dy);
         }
     }
 
