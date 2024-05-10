@@ -4,4 +4,13 @@ export type LeaderboardRow = {
     timestamp: string,
 };
 
-export type UserRow = LeaderboardRow;
+export type GameHistoryRow = {
+    gameid: string;
+    timestamp: string;
+    result: string;
+    turns: number;
+    playernames: string[];
+    game_type: string;
+}
+
+export type UserRow = LeaderboardRow | GameHistoryRow;

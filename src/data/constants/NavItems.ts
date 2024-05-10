@@ -6,7 +6,8 @@ const navItems = {
     login: {id: 6, text: 'Login', url: '/login', desc: 'Log in to your account'},
     signup: {id: 7, text: 'Sign Up', url: '/signup', desc: 'Sign up for a new account'},
     profile: {id: 8, text: 'Profile', url: '/profile', desc: 'View your profile'},
-    blog: {id: 8, text: 'Blog', url: '/dev', desc: 'Explore our developer blog'}
+    blog: {id: 9, text: 'Blog', url: '/dev', desc: 'Explore our developer blog'},
+    leaderboard: {id: 10, text: 'Leaderboard', url: '/leaderboard', desc: 'See where you stand among other players'},
 };
 
 
@@ -21,6 +22,7 @@ export const navTutorialItems = [
 ];
 
 export const navCommunityItems = [
+    navItems.leaderboard,
     navItems.blog,
 ];
 
