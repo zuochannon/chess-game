@@ -35,27 +35,25 @@ export const knightMove = (initialPosition: Position, newPosition: Position, col
 
 // Export all possible knight moves from the selected knight piece
 export const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[]): Position[] => {
-    // Stores all possible knight moves by piece
     const possibleMoves: Position[] = [];
+    const offsets: [number, number][] = [
+        [1, 2], [1, -2], [-1, 2], [-1, -2], // Vertical moves first
+        [2, 1], [2, -1], [-2, 1], [-2, -1]  // Horizontal moves second
+    ];
 
-    // Checks for all possible knight moves
-    for (let i = -1; i < 2; i+=2) { /* i handles the stem of the L (the long part which is 2 squares long) */
-        for (let j = -1; j < 2; j += 2) {   /* j handles the arm of the L (the short part which is 1 square long) */
-        
-            const verticalMove = new Position(knight.position.x + j, knight.position.y + i * 2);
-            const horizontalMove = new Position(knight.position.x + i * 2, knight.position.y + j);
+    for (const [dx, dy] of offsets) {
+        // Gets knight's possible destination position
+        const newX = knight.position.x + dx;
+        const newY = knight.position.y + dy;
+
+        // Check if move is valid
+        if (newX < 0 || newX > 7 || newY < 0 || newY > 7) continue;
   
-            // Check if square is not occupied or occupied by enemy in vertical direction
-            if(!isSquareOccupied(verticalMove, board) || isSquareOccupiedByOppositeColor(verticalMove, board, knight.color)) {
-                possibleMoves.push(verticalMove);
-            }
-  
-            // Check if square is not occupied or occupied by enemy in horizontal direction
-            if(!isSquareOccupied(horizontalMove, board) || isSquareOccupiedByOppositeColor(horizontalMove, board, knight.color))  {
-                possibleMoves.push(horizontalMove);
-            }
-        }           
-    
+        const dest = new Position(newX, newY);
+        if ((!isSquareOccupied(dest, board) || isSquareOccupiedByOppositeColor(dest, board, knight.color))) {
+            possibleMoves.push(dest);
+        }
     }
+
     return possibleMoves;
 }

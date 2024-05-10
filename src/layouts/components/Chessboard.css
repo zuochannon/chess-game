@@ -124,3 +124,7 @@
     text-align: center;
     text-transform: 10px;
 }
+
+.forfeit-button:hover {
+    background-color: lightgray; /* Change background color on hover */
+}
