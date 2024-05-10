@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -11,7 +10,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, Rows } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,83 +21,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GameHistoryRow, UserRow } from "../../data/models/TableTypes";
+import { GameHistoryRow } from "../../data/models/TableTypes";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
 
-export const columns: ColumnDef<GameHistoryRow>[] = [
-  {
-    accessorKey: "id",
-    header: "GameID",
-    cell: ({ row }) => <div>{row.original.gameid}</div>,
-  },
-  {
-    accessorKey: "result",
-    header: ({ column }) => {
-      return (
-        <div>
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Result
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
-    cell: ({ row }) => <div className="font-medium">{row.getValue("result").toUpperCase()}</div>,
-  },
-  {
-    accessorKey: "turns",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Turns
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("turns")}</div>
-    ),
-  },
-  {
-    accessorKey: "players",
-    header: "Players",
-    cell: ({ row }) => {
-        return row.original.playernames.map(el => <div>{el}</div>);
-    },
-  },
-  {
-    accessorKey: "timestamp",
-    header: ({ column }) => (
-      <div className="text-right">
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Date Played (UTC)
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      </div>
-    ),
-    cell: ({ row }) => {
-      return <div className="text-right">{row.getValue("timestamp")}</div>;
-    },
-  },
-];
-
-export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
-    console.log(data);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
+export function GameHistorySummary({
+  data,
+  columns,
+}: {
+  data: GameHistoryRow[];
+  columns: ColumnDef<GameHistoryRow>[];
+}) {
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState({});
 
   const table = useReactTable({
     data,
@@ -120,14 +62,13 @@ export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
     },
   });
 
-
-  const [currentPage, setCurrentPage] = React.useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
 
   return (
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter usernames..."
+          placeholder="Filter player names..."
           value={
             (table.getColumn("username")?.getFilterValue() as string) ?? ""
           }
@@ -136,6 +77,32 @@ export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
           }
           className="max-w-sm"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Show columns <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => {
+                return (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                );
+              })}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="rounded-md border">
         <Table>
@@ -189,13 +156,16 @@ export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
           Total of {table.getFilteredRowModel().rows.length} row(s)
         </div>
         <div className="flex-1 text-sm text-muted-foreground">
-          Viewing {currentPage} of{" "} {table.getPageCount()} pages
+          Viewing {currentPage} of {table.getPageCount()} pages
         </div>
         <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={ () => { table.previousPage(); setCurrentPage(currentPage - 1); } }
+            onClick={() => {
+              table.previousPage();
+              setCurrentPage(currentPage - 1);
+            }}
             disabled={!table.getCanPreviousPage()}
           >
             Previous
@@ -203,7 +173,10 @@ export function GameHistorySummary({ data } : { data : GameHistoryRow[]}) {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => { table.nextPage(); setCurrentPage(currentPage + 1); }}
+            onClick={() => {
+              table.nextPage();
+              setCurrentPage(currentPage + 1);
+            }}
             disabled={!table.getCanNextPage()}
           >
             Next

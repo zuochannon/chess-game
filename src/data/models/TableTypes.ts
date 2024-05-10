@@ -10,6 +10,7 @@ export type GameHistoryRow = {
     result: string;
     turns: number;
     playernames: string[];
+    game_type: string;
 }
 
 export type UserRow = LeaderboardRow | GameHistoryRow;
