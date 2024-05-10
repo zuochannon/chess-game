@@ -80,7 +80,7 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
             // Set element position to center of mouse position
             // Prevents pieces from moving out of board
             const minX = chessboard.offsetLeft - window.scrollX - (GRID_SIZE / 4);
-            const minY = chessboard.offsetTop - window.scrollY - (GRID_SIZE / 4);
+            const minY = chessboard.offsetTop - (GRID_SIZE / 4);
             const maxX = chessboard.offsetLeft + chessboard.clientWidth - ((GRID_SIZE / 4) * 3);
             const maxY = chessboard.offsetTop + chessboard.clientHeight - ((GRID_SIZE / 4) * 3);
             const x = e.clientX - (GRID_SIZE / 2) + window.scrollX;
