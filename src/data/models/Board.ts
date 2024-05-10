@@ -11,6 +11,8 @@ export class Board {
     private kingCheck: boolean;
     private checkmate: boolean;
     private stalemate: boolean;
+    private shortCastle: boolean;
+    private longCastle: boolean;
 
     constructor(pieces: ChessPiece[], totalTurns: number) {
         this.pieces = pieces;
@@ -18,6 +20,8 @@ export class Board {
         this.kingCheck = false;
         this.checkmate = false;
         this.stalemate = false;
+        this.shortCastle = false;
+        this.longCastle = false;
     }
 
     // Check whose turn it is
@@ -69,6 +73,14 @@ export class Board {
 
     getStalemate() {
         return this.stalemate;
+    }
+
+    getLongCastling() {
+        return this.longCastle;
+    }
+
+    getShortCastling() {
+        return this.shortCastle;
     }
 
     // Get valid moves of the piece type
@@ -146,6 +158,8 @@ export class Board {
             }
         }
 
+        //console.log(cKing);
+
         return currentTeamKingInCheck;
     }
 
@@ -159,6 +173,15 @@ export class Board {
             const noLegalMoves = sBoard.pieces
                 .filter(p => p.color === sBoard.currentTeam)
                 .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
+
+
+            // console.log(noLegalMoves);
+            // const currentTeamPieces = sBoard.pieces.filter(p => p.color === sBoard.currentTeam);
+
+            // currentTeamPieces.forEach(piece => {
+            //     console.log(`Piece: ${piece.type} at (${piece.position.x}, ${piece.position.y})`);
+            //     console.log("Possible Moves:", piece.possibleMoves);
+            // });
 
             // If there are no legal moves, it's a stalemate
             if (noLegalMoves) {
@@ -175,6 +198,8 @@ export class Board {
         // Get pawn direction based on team color
         const pawnDir = playedPiece.color === ColorTeam.WHITE ? 1 : -1;
         const destPiece = this.pieces.find(p => p.hasSamePositionAs(dest));
+        this.longCastle = false;
+        this.shortCastle = false;
 
         // Special Case: Castling
         if (playedPiece.isKing && destPiece?.isRook && destPiece.color === playedPiece.color) {
@@ -189,9 +214,11 @@ export class Board {
             this.pieces = this.pieces.map(p => {
                 if (p.hasSamePiecePositionAs(playedPiece)) {
                     p.position.x = newKingPosition;
+                    this.longCastle = true;
                 }
                 else if (p.hasSamePiecePositionAs(destPiece)) {
                     p.position.x = newKingPosition - dir;
+                    this.shortCastle = true;
                 }
                 return p;
             });

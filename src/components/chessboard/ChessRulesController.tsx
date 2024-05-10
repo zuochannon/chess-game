@@ -77,6 +77,7 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
         setBoard((clonedChessboard) => {
             clonedChessboard = board.clone();
             clonedChessboard.totalTurns += 1; // Increase turn count
+            let length = clonedChessboard.pieces.length;
 
             // Plays the moves of the player
             isValidMove = clonedChessboard.playMove(enPassantMove, validMove, playedPiece, dest);
@@ -96,11 +97,32 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             // Determine if the move results in check or checkmate
             const isCheck = clonedChessboard.getKingCheck();
             const isCheckmate = clonedChessboard.isCheckmate();
-            const isStalemate = clonedChessboard.getStalemate();
+            const isStalemate = clonedChessboard.getStalemate();  // This is retrieved but not used later, consider if it needs to be used or removed
+            const startPosition = playedPiece.position.clone(); // Ensure there's indeed a 'clone' method on Position or implement it
+
+            // Attempt to find an existing piece at the destination to determine capture
+            // Replace 'equals' with 'equalsTo' as per your error message
+            const existingPiece = board.pieces.find(p => p.position.equalsTo(dest));
+
+            // Ensure 'isCapture' is always a boolean (false if 'existingPiece' is undefined or not an opposing piece)
+            const isCapture = existingPiece ? existingPiece.color !== playedPiece.color : false;
 
             // Append move to move history
-            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate, isStalemate);
-            updateMoveHistory(moveNotation);
+            // Ensure all parameters are now correctly boolean
+            const moveNotation = generateMoveNotation(playedPiece, startPosition, dest, isCapture, isCheck, isCheckmate);
+
+            updateMoveHistory(moveNotation); 
+            if (isCheckmate) {
+                if (playedPiece.color === ColorTeam.WHITE) {
+                    updateMoveHistory("1-0");
+                }
+                else {
+                    updateMoveHistory("0-1");
+                }
+
+            } else if (isStalemate) {
+                updateMoveHistory("1/2-1/2");
+            }
 
             return clonedChessboard;
         });
@@ -212,6 +234,11 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
         setBoard((prevBoard) => {
             const clonedBoard = prevBoard.clone();
             clonedBoard.winningTeam = winningTeam;
+            if (winningTeam === ColorTeam.WHITE) {
+                updateMoveHistory("1-0");
+            } else if (winningTeam === ColorTeam.BLACK) {
+                updateMoveHistory("0-1");
+            }
             return clonedBoard;
         });
     
@@ -250,7 +277,7 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             <div className="container">
                 <div className="turn-count-box">
                     <label className="text-white turn-label">
-                        Turn: {board.totalTurns} 
+                        {board.totalTurns % 2 === 1 ? "White's" : "Black's"} Turn
                     </label>
                 </div>
                 <div className="forfeit-button">

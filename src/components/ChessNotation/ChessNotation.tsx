@@ -10,42 +10,39 @@ export function getPositionAlgebraicNotation(position: Position): string {
     return `${column}${row}`;
 }
 
-// Function to generate notation for a move
-export function generateMoveNotation(piece: ChessPiece, dest: Position, check: boolean, checkmate: boolean, stalemate: boolean): string {
+// Updated to include startPosition and isCapture
+export function generateMoveNotation(piece: ChessPiece, startPosition: Position, dest: Position, isCapture: boolean, check: boolean, checkmate: boolean): string {
     const pieceType = piece.type;
+    const startPositionNotation = getPositionAlgebraicNotation(startPosition);
     const endPosition = getPositionAlgebraicNotation(dest);
-
     let notation = "";
 
     switch (pieceType) {
         case PieceType.PAWN:
-            notation = endPosition;
+            notation = isCapture ? `${startPositionNotation[0]}x${endPosition}` : endPosition;
             break;
         case PieceType.KNIGHT:
-            notation = `N${endPosition}`;
-            break;
         case PieceType.BISHOP:
-            notation = `B${endPosition}`;
-            break;
         case PieceType.ROOK:
-            notation = `R${endPosition}`;
-            break;
         case PieceType.QUEEN:
-            notation = `Q${endPosition}`;
+            notation = `${pieceType[0]}${isCapture ? 'x' : ''}${endPosition}`;
             break;
         case PieceType.KING:
-            notation = `K${endPosition}`;
+            // Check if the king moved two squares to the right or left
+            if (Math.abs(dest.x - startPosition.x) > 1) {
+                notation = dest.x > startPosition.x ? "O-O" : "O-O-O";
+            } else {
+                notation = `K${endPosition}`;
+            }
             break;
         default:
-            notation = ""; // Default case, shouldn't happen
+            notation = ""; // Shouldn't happen
     }
 
-    // Append additional information
     if (checkmate) {
-        notation += "#"; // Checkmate symbol
+        notation += "#";
     } else if (check) {
-        console.log("check: " + check);
-        notation += "+"; // Check symbol
+        notation += "+";
     }
 
     return notation;
