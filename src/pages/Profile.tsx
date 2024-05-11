@@ -47,6 +47,7 @@ enum GameResultFilter {
 const Profile = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [elo, setElo] = useState(-1);
   const [gamesPlayed, setGamesPlayed] = useState({});
   const inputCommentRef = useRef(null);
 
@@ -261,6 +262,7 @@ const Profile = () => {
   useEffect(() => {
     setUsername(whoAmI?.username ?? "Guest");
     setEmail(whoAmI?.email ?? "GuestEmail");
+    setElo(whoAmI?.elo ?? -1);
 
     getGameHistorySummary().then((data) => setGamesPlayed(data ?? []));
   }, [whoAmI?.email, whoAmI?.username]);
@@ -299,6 +301,7 @@ const Profile = () => {
           <div>
             <h3>Username: {username}</h3>
             <h3>Email: {email}</h3>
+            <h3>Elo: {elo}</h3>
             {/* <h2>Last Name: {user.lastName}</h2> */}
           </div>
         </div>

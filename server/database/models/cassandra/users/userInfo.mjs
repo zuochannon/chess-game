@@ -26,12 +26,7 @@ export const getAvatarURL = async (userID) => {
 
 // may increase or decrease (positive or negative)
 export const updateElo = async (userID, eloDelta) => {
-  const currentElo = (
-    await cassandraClient.execute(`SELECT elo FROM ${constants.KEYSPACE}.Users WHERE userid = ?`,
-      [userID],
-      { prepare: true }
-    )
-  ).rows[0].elo;
+  const currentElo = getUserElo(userID);
 
   const newElo = currentElo + eloDelta;
 
@@ -42,8 +37,22 @@ export const updateElo = async (userID, eloDelta) => {
   );
 };
 
+export const getUserElo = async (userID) => {
+  return (
+    await cassandraClient.execute(
+      `SELECT elo FROM ${constants.KEYSPACE}.Users WHERE userid = ?`,
+      [userID],
+      { prepare: true }
+    )
+  ).rows[0].elo;
+};
+
 export const getAllElo = async () => {
-  return (await cassandraClient.execute(`SELECT username, elo, timestamp FROM ${constants.KEYSPACE}.Users`)).rows;
-}
+  return (
+    await cassandraClient.execute(
+      `SELECT username, elo, timestamp FROM ${constants.KEYSPACE}.Users`
+    )
+  ).rows;
+};
 
 export default createUserInfo;
