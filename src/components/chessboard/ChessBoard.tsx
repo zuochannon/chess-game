@@ -89,9 +89,10 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
 
     function renderBoard() {
         const board = [];
+    
         for (let j = ROWS.length - 1; j >= 0; j--) {
             for (let i = 0; i < COLUMNS.length; i++) {
-                const pos = new Position(i, j);
+                const pos = boardOrientation === ColorTeam.WHITE ? new Position(i, j) : new Position(7 - i, 7 -j);
                 const piece = pieces.find(p => p.position.equalsTo(pos));
                 
                 // Determine if this position is part of the last move

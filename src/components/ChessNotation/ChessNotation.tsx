@@ -1,5 +1,3 @@
-// src/components/ChessNotation/ChessNotation.tsx hi
-
 import { Position } from "../../data/models/Position";
 import { PieceType } from "../../data/enums/ChessEnums";
 import { ChessPiece } from "../../data/models/ChessPiece";
@@ -19,32 +17,26 @@ export function generateMoveNotation(piece: ChessPiece, startPosition: Position,
     const endPosition = getPositionAlgebraicNotation(dest);
     let notation = "";
 
-    if (pieceType === PieceType.KING) {
-        // Check if the king moved two squares to the right or left
-        if (Math.abs(dest.x - startPosition.x) > 1) {
-            notation = dest.x > startPosition.x ? "O-O" : "O-O-O";
-        } else {
-            notation = `K${endPosition}`;
-        }
-    }
-        
-    else {
-        switch (pieceType) {
-            case PieceType.PAWN:
-                notation = isCapture ? `${startPositionNotation[0]}x${endPosition}` : endPosition;
-                break;
-            case PieceType.KNIGHT:
-            case PieceType.BISHOP:
-            case PieceType.ROOK:
-            case PieceType.QUEEN:
-                notation = `${pieceType[0]}${isCapture ? 'x' : ''}${endPosition}`;
-                break;
-            case PieceType.KING:
-                notation = `K${endPosition}`;
-                break;
-            default:
-                notation = ""; // Shouldn't happen
-        }
+    switch (pieceType) {
+        case PieceType.PAWN:
+            notation = isCapture ? `${startPositionNotation[0]}x${endPosition}` : endPosition;
+            break;
+        case PieceType.KNIGHT:
+        case PieceType.BISHOP:
+        case PieceType.ROOK:
+        case PieceType.QUEEN:
+            notation = `${pieceType[0]}${isCapture ? 'x' : ''}${endPosition}`;
+            break;
+        case PieceType.KING:
+            // Check if the king moved two squares to the right or left
+            if (Math.abs(dest.x - startPosition.x) > 1) {
+                notation = dest.x > startPosition.x ? "O-O" : "O-O-O";
+            } else {
+                notation = `K${isCapture ? 'x' : ''}${endPosition}`;
+            }
+            break;
+        default:
+            notation = ""; // Shouldn't happen
     }
 
     if (checkmate) {

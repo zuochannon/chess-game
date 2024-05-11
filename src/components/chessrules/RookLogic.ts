@@ -52,7 +52,7 @@ export const rookMove = (initialPosition: Position, newPosition: Position, color
 }
 
 // Export all possible rook moves
-export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
     // Stores all possible pawn moves
     const possibleMoves: Position[] = [];
 
@@ -72,6 +72,10 @@ export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[]): Pos
             if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
       
             const destination = new Position(newX, newY);
+
+            if (includeIllegal) {
+                possibleMoves.push(destination);
+            }
 
             // Check if square is unoccupied for move to be possible
             if (!isSquareOccupied(destination, board)) {

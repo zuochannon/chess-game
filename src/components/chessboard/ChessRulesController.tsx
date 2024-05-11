@@ -1,9 +1,7 @@
-//hi
 import { useState, useRef } from "react";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
 import { Board } from "../../data/models/Board";
-import { pawnMove, knightMove, bishopMove, rookMove, queenMove, kingMove } from "../chessrules";
 import Chessboard from "./ChessBoard";
 import { initialBoard } from "../../data/constants/ChessConstants";
 import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
@@ -24,35 +22,6 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
     const modalRef = useRef<HTMLDivElement>(null);
     const checkmateModalRef = useRef<HTMLDivElement>(null);
     const stalemateModalRef = useRef<HTMLDivElement>(null);
-
-    // Checks if it is a valid move by that particular piece
-    function isValidMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam) {
-        let valid = false;
-
-        // Check by piece type
-        switch(type) {
-            case PieceType.PAWN:
-                valid = pawnMove(initialPosition, newPosition, color, board.pieces);
-                break;
-            case PieceType.KNIGHT:
-                valid = knightMove(initialPosition, newPosition, color, board.pieces);
-                break;
-            case PieceType.BISHOP:
-                valid = bishopMove(initialPosition, newPosition, color, board.pieces);
-                break;
-            case PieceType.ROOK:
-                valid = rookMove(initialPosition, newPosition, color, board.pieces);
-                break;
-            case PieceType.QUEEN:
-                valid = queenMove(initialPosition, newPosition, color, board.pieces);
-                break;
-            case PieceType.KING:
-                valid = kingMove(initialPosition, newPosition, color, board.pieces);
-                break;
-        }
-
-        return valid;
-    }
 
     // Boolean function to check if move was valid
     function playMove(playedPiece: ChessPiece, dest: Position): boolean {
@@ -97,8 +66,8 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             // Determine if the move results in check or checkmate
             const isCheck = clonedChessboard.getKingCheck();
             const isCheckmate = clonedChessboard.isCheckmate();
-            const isStalemate = clonedChessboard.getStalemate();  // This is retrieved but not used later, consider if it needs to be used or removed
-            const startPosition = playedPiece.position.clone(); // Ensure there's indeed a 'clone' method on Position or implement it
+            const isStalemate = clonedChessboard.getStalemate();  
+            const startPosition = playedPiece.position.clone(); 
 
             // Attempt to find an existing piece at the destination to determine capture
             // Replace 'equals' with 'equalsTo' as per your error message
@@ -112,6 +81,12 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             const moveNotation = generateMoveNotation(playedPiece, startPosition, dest, isCapture, isCheck, isCheckmate);
 
             updateMoveHistory(moveNotation);
+
+            if (isCheckmate) {
+                updateMoveHistory(playedPiece.color === ColorTeam.WHITE ? "1-0" : "0-1");
+            } else if (isStalemate) {
+                updateMoveHistory("1/2-1/2")
+            }
 
 
             return clonedChessboard;
@@ -226,6 +201,8 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             clonedBoard.winningTeam = winningTeam;
             return clonedBoard;
         });
+
+        updateMoveHistory(winningTeam === ColorTeam.WHITE ? "1-0" : "0-1");
     
         // Show the checkmate modal
         checkmateModalRef.current?.classList.remove("hidden");

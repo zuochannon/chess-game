@@ -32,7 +32,7 @@ export const queenMove = (initialPosition: Position, newPosition: Position, colo
 }
 
 // Export all possible queen moves
-export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
     // Store all possible moves for the queen piece
     const possibleMoves: Position[] = [];
     
@@ -49,24 +49,29 @@ export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[]): P
   
     // Goes through all possible moves of queen piece
     for (const { dx, dy } of directions) {
-      for (let i = 1; i < 8; i++) {
-        const newX = queen.position.x + dx * i;
-        const newY = queen.position.y + dy * i;
-        
-        // Prevent out-of-board moves from being included
-        if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
-  
-        const destination = new Position(newX, newY);
-  
-        if (!isSquareOccupied(destination, board)) {
-            possibleMoves.push(destination);
-        } else if (isSquareOccupiedByOppositeColor(destination, board, queen.color)) {
-            possibleMoves.push(destination);
-             break;
-        } else {
-            break;
+        for (let i = 1; i < 8; i++) {
+            const newX = queen.position.x + dx * i;
+            const newY = queen.position.y + dy * i;
+            
+            // Prevent out-of-board moves from being included
+            if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
+    
+            const destination = new Position(newX, newY);
+
+            if (includeIllegal) {
+                possibleMoves.push(destination);
+                continue;
+            }
+    
+            if (!isSquareOccupied(destination, board)) {
+                possibleMoves.push(destination);
+            } else if (isSquareOccupiedByOppositeColor(destination, board, queen.color)) {
+                possibleMoves.push(destination);
+                break;
+            } else {
+                break;
+            }
         }
-      }
     }
   
     return possibleMoves;

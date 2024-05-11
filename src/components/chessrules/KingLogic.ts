@@ -25,7 +25,7 @@ export const kingMove = (initialPosition: Position, newPosition: Position, color
 }
 
 // Export all possible king moves
-export const getPossibleKingMoves = (king: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleKingMoves = (king: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
     // array to store all possible king moves
     const possibleMoves: Position[] = [];
         
@@ -47,6 +47,11 @@ export const getPossibleKingMoves = (king: ChessPiece, board: ChessPiece[]): Pos
         // Check if position is within board
         if (newX >= 0 && newX <= 7 && newY >= 0 && newY <= 7) {
             const destination = new Position(newX, newY);
+
+            if (includeIllegal) {
+                possibleMoves.push(destination);
+                continue;
+            }
       
             // Check if square is unoccupied or occupied by opponent to add as possible move
             if (!isSquareOccupied(destination, board) || isSquareOccupiedByOppositeColor(destination, board, king.color)) {

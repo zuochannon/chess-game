@@ -86,7 +86,7 @@ export const bishopMove = (initialPosition: Position, newPosition: Position, col
 }
 
 // Get all possible bishop moves
-export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
     const possibleMoves: Position[] = [];
 
     const directions = [
@@ -102,6 +102,12 @@ export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[]):
 
         // Finds all possible moves within board boundaries
         while (dest.x >= 0 && dest.x < 8 && dest.y >= 0 && dest.y < 8) {
+
+            if (includeIllegal) {
+                possibleMoves.push(dest);
+                continue;
+            }
+
             if (isSquareOccupied(dest, board)) {
                 if (isSquareOccupiedByOppositeColor(dest, board, bishop.color)) {
                     possibleMoves.push(dest);
