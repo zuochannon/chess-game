@@ -1,8 +1,8 @@
-import { NavigationBarHeight } from '@/data/constants/NavItems'
-import Game from '../layouts/game/Game'
-import "../layouts/pages/Play.css"
-import { ColorTeam } from '@/data/enums/ChessEnums'
+import { NavigationBarHeight } from '@/data/constants/NavItems';
+import { ColorTeam } from '@/data/enums/ChessEnums';
 import { useState } from 'react';
+import Game from '../layouts/game/Game';
+import "../layouts/pages/Play.css";
 
 export function Play() {
     const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
