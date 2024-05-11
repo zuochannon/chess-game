@@ -13,6 +13,7 @@ const createGameHistory = async () => {
         turns INT,
         moves LIST<TEXT>,
         game_type TEXT,
+        comments TEXT,
         PRIMARY KEY (gameID, timestamp)
     ) WITH CLUSTERING ORDER BY (timestamp DESC);`;
   await cassandraClient.execute(query);
@@ -20,7 +21,7 @@ const createGameHistory = async () => {
 };
 
 const getDrawGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE players CONTAINS ? AND result='draw' ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE players CONTAINS ? AND result='draw' ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
@@ -29,7 +30,7 @@ const getDrawGames = async (userID) => {
 };
 
 const getWonGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE winnerid = ? ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE winnerid = ? ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
@@ -38,7 +39,7 @@ const getWonGames = async (userID) => {
 };
 
 const getLostGames = async (userID) => {
-  const query = `SELECT gameid, timestamp, game_type, playerNames, turns FROM ${constants.KEYSPACE}.GameHistory WHERE loserid = ? ALLOW FILTERING;`;
+  const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE loserid = ? ALLOW FILTERING;`;
   return (
     await cassandraClient.execute(query, [userID], {
       prepare: true,
