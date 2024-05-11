@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { COLUMNS, ROWS, GRID_SIZE, FULL_SIZE } from "../../data/constants/ChessConstants";
-import "../../layouts/components/Chessboard.css"
-import { Position } from "../../data/models/Position";
-import ChessSquare from "./ChessSquare";
-import { ChessPiece } from "../../data/models/ChessPiece";
 import { ColorTeam } from "@/data/enums/ChessEnums";
+import { useEffect, useRef, useState } from "react";
+import { COLUMNS, FULL_SIZE, GRID_SIZE, ROWS } from "../../data/constants/ChessConstants";
+import { ChessPiece } from "../../data/models/ChessPiece";
+import { Position } from "../../data/models/Position";
+import "../../layouts/components/Chessboard.css";
+import ChessSquare from "./ChessSquare";
 
 interface Props {
     playMove: (piece: ChessPiece, position: Position) => boolean;
@@ -164,7 +164,7 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
                     const piece = pieces.find(p => p.hasSamePositionAs(new Position(i, j)));
                     let image = piece ? piece.image : undefined;
 
-                    console.log(image);
+                    // console.log(image); // TODO: remove
         
                     let currentPiece = activePiece != null ? pieces.find(p => p.hasSamePositionAs(grabPosition)) : undefined;
                     let highlight = (currentPiece?.possibleMoves) ? currentPiece.possibleMoves.some(p => p.equalsTo(new Position(i, j))) : false;
