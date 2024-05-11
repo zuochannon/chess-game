@@ -7,20 +7,13 @@ const startWebSocketServer = (app) => {
   const wss = new WebSocketServer({ server });
 
   wss.on("connection", (ws) => {
-    console.log("A client connected");
-
     ws.on("message", (message) => {
-      console.log("Received: ", message.toString());
       // Broadcast message to all clients
       wss.clients.forEach((client) => {
         if (client.readyState === WebSocket.OPEN) {
           client.send(message.toString());
         }
       });
-    });
-
-    ws.on("close", () => {
-      console.log("Client disconnected");
     });
   });
   server.listen(constants.CHAT_PORT, () => {

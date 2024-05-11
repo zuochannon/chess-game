@@ -18,7 +18,6 @@ function Chat({ styles }) {
     });
 
     socket.current.addEventListener("message", (event) => {
-      console.log("\x1b[34mmessage received:\x1b[0m", event.data);
       const newMessage = JSON.parse(event.data);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
