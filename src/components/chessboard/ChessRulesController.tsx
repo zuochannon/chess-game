@@ -1,3 +1,4 @@
+//hi
 import { useState, useRef } from "react";
 import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
 import { Position } from "../../data/models/Position";
@@ -96,11 +97,22 @@ export default function ChessRulesController({ offset, boardOrientation, chessbo
             // Determine if the move results in check or checkmate
             const isCheck = clonedChessboard.getKingCheck();
             const isCheckmate = clonedChessboard.isCheckmate();
-            const isStalemate = clonedChessboard.getStalemate();
+            const isStalemate = clonedChessboard.getStalemate();  // This is retrieved but not used later, consider if it needs to be used or removed
+            const startPosition = playedPiece.position.clone(); // Ensure there's indeed a 'clone' method on Position or implement it
+
+            // Attempt to find an existing piece at the destination to determine capture
+            // Replace 'equals' with 'equalsTo' as per your error message
+            const existingPiece = board.pieces.find(p => p.position.equalsTo(dest));
+
+            // Ensure 'isCapture' is always a boolean (false if 'existingPiece' is undefined or not an opposing piece)
+            const isCapture = existingPiece ? existingPiece.color !== playedPiece.color : false;
 
             // Append move to move history
-            const moveNotation = generateMoveNotation(playedPiece, dest, isCheck, isCheckmate, isStalemate);
+            // Ensure all parameters are now correctly boolean
+            const moveNotation = generateMoveNotation(playedPiece, startPosition, dest, isCapture, isCheck, isCheckmate);
+
             updateMoveHistory(moveNotation);
+
 
             return clonedChessboard;
         });
