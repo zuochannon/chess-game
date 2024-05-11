@@ -7,7 +7,7 @@ import { Position } from "./Position";
 export class Board {
     pieces: ChessPiece[];
     totalTurns: number;
-    winningTeam ?: ColorTeam;
+    winningTeam?: ColorTeam;
     private kingCheck: boolean;
     private checkmate: boolean;
 
@@ -64,7 +64,7 @@ export class Board {
 
     // Get valid moves of the piece type
     getValidMoves(piece: ChessPiece, board: ChessPiece[]): Position[] {
-        switch(piece.type) {
+        switch (piece.type) {
             case PieceType.PAWN:
                 return getPossiblePawnMoves(piece, board);
             case PieceType.KNIGHT:
@@ -77,11 +77,11 @@ export class Board {
                 return getPossibleQueenMoves(piece, board);
             case PieceType.KING:
                 return getPossibleKingMoves(piece, board);
-            default: 
+            default:
                 return [];
         }
     }
-    
+
     // Check current moves
     checkCurrentMoves() {
 
@@ -98,15 +98,15 @@ export class Board {
                 const sBoard = this.clone();
 
                 // Remove piece at destination
-                sBoard.pieces = sBoard.pieces.filter(p => !p.hasSamePositionAs(move));
-                
+                sBoard.pieces = sBoard.pieces.filter(p => !new Position(p.position.x, p.position.y).equalsTo(move));
+
                 // Get piece of cloned board
                 const clonedPiece = sBoard.pieces.find(p => p.hasSamePiecePositionAs(piece))!;
                 clonedPiece.position = move.clone();
 
                 // Get the king of the playing team
                 const cKing = sBoard.pieces.find(p => p.isKing && p.color === this.currentTeam)!;
-           
+
                 // Loops through all opponent pieces and update their possible moves
                 // Also, conduct checks (playing team's king is in danger)
                 for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
@@ -216,11 +216,11 @@ export class Board {
                     // Special Move: En Passant
                     if (piece.isPawn)
                         (piece as Pawn).enPassant = Math.abs(playedPiece.position.y - dest.y) === 2;
-                
+
                     piece.position = dest;
                     piece.hasMoved = true;
                     results.push(piece);
-                } 
+                }
                 // Check if piece is not same position as destination of played piece
                 else if (!piece.hasSamePositionAs(dest)) {
                     if (piece.isPawn)

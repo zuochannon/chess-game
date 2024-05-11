@@ -1,4 +1,4 @@
-import "../../layouts/components/ChessSquare.css"
+import "../../layouts/components/ChessSquare.css";
 
 interface Props {
     image?: string;
