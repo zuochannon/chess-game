@@ -1,11 +1,9 @@
 export class GameInfo {
   constructor(whiteUserID) {
     this.whiteUserID = whiteUserID;
-    this.blackUserID = -1;
+    this.blackUserID = "-1";
     this.moves = [];
     this.lastMove = new Date();
-    this.canJoin = () => !(this.whiteUserID && this.blackUserID); // if set both to null as default, so users can join
-    // players with maxiumum of 2, every new other player is just spectator (cant move)
   }
 
   // Function to convert GameInfo object to a Redis hash
