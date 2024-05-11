@@ -14,27 +14,27 @@ router.post("/createRoom", verifyToken, async (req, res) => {
   let user = req.user.userID;
   await setGameInfo(roomid, new GameInfo(user));
   res.json({ roomid: roomid });
-  console.log("iN CREATE ROOM, created room: " + roomid);
+  // console.log("iN CREATE ROOM, created room: " + roomid);
 });
 
 router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
-  // does not need to be logged in in order to join a room
-  console.log('JOINING ROOM');
-  console.log("Trying to join room: " + roomid);
   let roomid = req.params.roomid;
+  console.log("Trying to join room: " + roomid);
   let user = req.user.userID;
+  console.log(user)
+
   console.log(await getAll());
-  console.log("Trying to join room: " + roomid + " |" + await has(roomid));
   if (await has(roomid)) {
     const gameInfo = await getGameInfo(roomid);
-
-    if (gameInfo.blackUserID === -1 && gameInfo.whiteUserID !== user) {
+    console.log(gameInfo);
+    if (gameInfo.blackUserID === "-1" && gameInfo.whiteUserID !== user) {
       // Person creating room sent game invite and got a response
       gameInfo.blackUserID = user;
+      await setGameInfo(roomid, gameInfo);
     }
     if (gameInfo.blackUserID === user || gameInfo.whiteUserID === user) {
       // Only let people join the room if they were in the game
-      res.json(gameInfo.moves);
+      res.json({ ...gameInfo, color: gameInfo.whiteUserID === user ? "w" : "b" });
     } else {
       res.status(401).send("Room is Full");
     }
@@ -44,6 +44,7 @@ router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
 });
 
 router.get("/:roomid/getMoves", async (req, res) => {
+  // gets the move history
   let roomid = req.params.roomid;
   if (await has(roomid)) {
     res.json(await getGameInfo(roomid));
@@ -54,11 +55,26 @@ router.get("/:roomid/getMoves", async (req, res) => {
 
 router.post("/:roomid/makeMove", async (req, res) => {
   // TODO: ADD TIMECHECK WHERE AFTER 30 MINUTES SINCE ROOM CREATION, PURGE IT FROM GAMEMAP
+  // updates the move history with the most recent move made
   let roomid = req.params.roomid;
   if (await has(roomid)) {
-    let moveHistory = await getGameInfo(roomid);
-    moveHistory.push(req.body.move);
-    res.end(200);
+    let gameInfo = await getGameInfo(roomid);
+    gameInfo.moves.push(req.body)
+    await setGameInfo(roomid, gameInfo);
+    res.status(200);
+  } else {
+    res.status(404).send("Room ID not found");
+  }
+});
+
+router.post("/:roomid/restartGame", async (req, res) => {
+  console.log("Restarting Game")
+  let roomid = req.params.roomid;
+  if (await has(roomid)) {
+    let gameInfo = await getGameInfo(roomid);
+    gameInfo.moves = []
+    await setGameInfo(roomid, gameInfo);
+    res.status(200);
   } else {
     res.status(404).send("Room ID not found");
   }
