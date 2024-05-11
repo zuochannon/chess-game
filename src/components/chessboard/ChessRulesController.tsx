@@ -1,25 +1,26 @@
-import { useState, useRef } from "react";
-import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
-import { Position } from "../../data/models/Position";
-import { Board } from "../../data/models/Board";
-import { pawnMove, knightMove, bishopMove, rookMove, queenMove, kingMove } from "../chessrules";
-import Chessboard from "./ChessBoard";
+import { useEffect, useRef, useState } from "react";
 import { initialBoard } from "../../data/constants/ChessConstants";
+import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
+import { Board } from "../../data/models/Board";
 import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
+import { Position } from "../../data/models/Position";
 import { generateMoveNotation } from "../ChessNotation/ChessNotation";
-
+import { bishopMove, kingMove, knightMove, pawnMove, queenMove, rookMove } from "../chessrules";
+import Chessboard from "./ChessBoard";
 interface Props {
     offset: number;
     boardOrientation: ColorTeam;
+    onlineHandler: any;
 }
 
 // Responsible for handling valid chess moves
-export default function ChessRulesController({ offset, boardOrientation }: Props) {
+export default function ChessRulesController({ offset, boardOrientation, onlineHandler }: Props) {
     const [board, setBoard] = useState<Board>(initialBoard.clone());
     const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
     const [moveHistory, setMoveHistory] = useState<string[]>([]);
     const modalRef = useRef<HTMLDivElement>(null);
     const checkmateModalRef = useRef<HTMLDivElement>(null);
+    const [myTurn, setMyTurn] = useState(true)
 
     // Checks if it is a valid move by that particular piece
     function isValidMove(initialPosition: Position, newPosition: Position, type: PieceType, color: ColorTeam) {
@@ -191,6 +192,22 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
         setMoveHistory(prevHistory => [...prevHistory, move]);
     }
 
+    useEffect(() => {
+        // If it someone else's turn, do not allow the other opponent to move
+        if (onlineHandler){
+            console.log(board.totalTurns)
+            console.log(boardOrientation)
+            if ((board.totalTurns-1) % 2 == (boardOrientation == ColorTeam.WHITE ? 0 : 1)) {
+                setMyTurn(true)
+            }
+            else {
+                setMyTurn(false)
+            }
+            onlineHandler.playMove=playMove;
+            onlineHandler.restartGame=restartGame;
+        }
+    }, [boardOrientation, board.totalTurns, onlineHandler])
+    
     // Return Promotion Prompt
     return (
         <>
@@ -206,7 +223,7 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
                 <div className = "modal-body">
                     <div className= "checkmate-body">
                         <span className="text-center"> {board.winningTeam === ColorTeam.WHITE ? "White" : "Black"} wins! </span>
-                        <button onClick={restartGame}> Play Again </button>
+                        <button onClick={onlineHandler ? onlineHandler.restartGameLocal(restartGame) : restartGame}> Play Again </button>
                     </div>
                 </div>
             </div>
@@ -217,7 +234,7 @@ export default function ChessRulesController({ offset, boardOrientation }: Props
                     </label>
                 </div>
                 <div className="chessboard-container">
-                    <Chessboard playMove={playMove} pieces={board.pieces} offset={offset} boardOrientation={boardOrientation} />
+                    <Chessboard playMove={onlineHandler ? onlineHandler.playMoveLocal(playMove, myTurn): playMove} pieces={board.pieces} offset={offset} boardOrientation={boardOrientation} />
                 </div>
                 <div className="move-history">
                     <h3 className="text-center text-white p-2">PGN</h3>
