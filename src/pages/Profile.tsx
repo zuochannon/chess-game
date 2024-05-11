@@ -27,16 +27,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { updateComment } from "@/services/GameService";
-import { Input } from "@/components/ui/input";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { UserStats } from "./UserStats";
 
 enum GameResultFilter {
   ALL = "ALL",
@@ -306,13 +305,21 @@ const Profile = () => {
       </div>
       <div className="p-4 bg-blue-100 rounded-md">
         <h3 className="italic">User Details</h3>
-        <Accordion type="single" collapsible>
+        <Accordion type="multiple" collapsible>
           <AccordionItem value="item-1">
             <AccordionTrigger className="max-w-44">
               Game History
             </AccordionTrigger>
             <AccordionContent>
               <GameHistorySummary data={getGamesPlayed()} columns={columns} />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="max-w-44">
+              Statistics
+            </AccordionTrigger>
+            <AccordionContent>
+              <UserStats data={gamesPlayed} />
             </AccordionContent>
           </AccordionItem>
         </Accordion>
