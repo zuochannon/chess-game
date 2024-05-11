@@ -26,7 +26,6 @@ const UserAvatar = () => {
   const { whoAmI, saveWhoAmI } = useWhoAmIContext();
 
   useEffect(() => {
-    console.log(typeof whoAmI?.avatarURL)
     setAvatarURL(whoAmI?.avatarURL);
   }, [whoAmI?.avatarURL]);
 

@@ -14,8 +14,8 @@ const createGameHistory = async () => {
         moves LIST<TEXT>,
         game_type TEXT,
         comments TEXT,
-        PRIMARY KEY (gameID, timestamp)
-    ) WITH CLUSTERING ORDER BY (timestamp DESC);`;
+        PRIMARY KEY (gameID)
+    );`;
   await cassandraClient.execute(query);
   console.log("created game history table");
 };
@@ -64,5 +64,13 @@ export const getGames = async (userID) => {
     draw,
   };
 };
+
+export const updateComment = async (gameID, comment) => {
+  await cassandraClient.execute(
+    `UPDATE ${constants.KEYSPACE}.GameHistory SET comments = ? WHERE gameid=?`,
+    [comment, gameID],
+    { prepare: true }
+  );
+}
 
 export default createGameHistory;

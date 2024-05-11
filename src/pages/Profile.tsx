@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 import { getGameHistorySummary } from "@/services/UserService";
 import UserAvatar from "@/components/avatar/UserAvatar";
@@ -17,6 +17,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { updateComment } from "@/services/GameService";
+import { Input } from "@/components/ui/input";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 enum GameResultFilter {
   ALL = "ALL",
@@ -29,6 +49,7 @@ const Profile = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [gamesPlayed, setGamesPlayed] = useState({});
+  const inputCommentRef = useRef(null);
 
   const [resultFilter, setResultFilter] = useState<GameResultFilter>(
     GameResultFilter.ALL
@@ -120,7 +141,13 @@ const Profile = () => {
     {
       accessorKey: "comments",
       header: "Comments",
-      cell: ({ row }) => <div className="max-w-fit overflow-hidden">{row.getValue("comments")}</div>
+      cell: ({ row }) => (
+        <div className="max-w-fit overflow-hidden">{`${row
+          .getValue("comments")
+          .substring(0, 60)}${
+          row.getValue("comments").length > 50 && "..."
+        }`}</div>
+      ),
     },
     {
       accessorKey: "timestamp",
@@ -144,30 +171,68 @@ const Profile = () => {
       enableHiding: false,
       cell: ({ row }) => {
         const game = row.original;
-   
+
         return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => {
-                  alert("To be implemented");
-                  console.log("Clicked on", game);
-                }}
-              >
-                Replay game
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>View comments</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => {
+                    alert("To be implemented");
+                    console.log("Clicked on", game);
+                  }}
+                >
+                  Replay game
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <DialogTrigger>View comments</DialogTrigger>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>View and edit comment</DialogTitle>
+                <DialogDescription>
+                  Add any comments you'd like. Click save when you're done.
+                </DialogDescription>
+              </DialogHeader>
+
+              <Textarea
+              ref={inputCommentRef}
+              id="inputComment"
+              defaultValue={game.comments}
+              placeholder="Enter comments..."
+            />
+
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    
+                <Button
+                  type="submit"
+                  onClick={() => {
+                    const inputValue = inputCommentRef?.current.value; 
+                    saveComment(game.gameid, inputValue);
+                    game.comments = inputValue;
+                  }}
+                  >
+                  Save
+                </Button>
+                    </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        );
       },
     },
   ];
@@ -178,7 +243,7 @@ const Profile = () => {
         return Object.values(gamesPlayed).reduce((acc, curr) => {
           return acc.concat(curr);
         }, []);
-      
+
       case GameResultFilter.WON:
         return gamesPlayed.won;
 
@@ -190,15 +255,19 @@ const Profile = () => {
     }
   };
 
+  const saveComment = (gameID, comment) => {
+    updateComment(gameID, comment);
+  };
+
   useEffect(() => {
     setUsername(whoAmI?.username ?? "Guest");
     setEmail(whoAmI?.email ?? "GuestEmail");
 
     getGameHistorySummary().then((data) => setGamesPlayed(data ?? []));
   }, [whoAmI?.email, whoAmI?.username]);
-
+  
   return (
-    <main className="h-screen ">
+    <main className="min-h-screen auto overflow-auto p-2">
       <div
         className="profile-container"
         style={{
@@ -235,8 +304,18 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div className="p-4">
-        <GameHistorySummary data={getGamesPlayed()} columns={columns} />
+      <div className="p-4 bg-blue-100 rounded-md">
+        <h3 className="italic">User Details</h3>
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="max-w-44">
+              Game History
+            </AccordionTrigger>
+            <AccordionContent>
+              <GameHistorySummary data={getGamesPlayed()} columns={columns} />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </main>
   );
