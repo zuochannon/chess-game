@@ -60,7 +60,7 @@ export class Board {
     // Return if checkmate occurs
     isCheckmate(): boolean {
         this.checkmate = !this.pieces.filter(p => p.color === this.currentTeam).some(p => p.possibleMoves !== undefined && p.possibleMoves.length > 0);
-        return this.checkmate;
+        return this.checkmate && this.kingCheck;
     }
 
     getKingCheck(): boolean {
@@ -105,10 +105,6 @@ export class Board {
 
                 // Remove piece at destination
                 sBoard.pieces = sBoard.pieces.filter(p => !p.hasSamePositionAs(move));
-                
-                // Get piece of cloned board
-                const clonedPiece = sBoard.pieces.find(p => p.hasSamePiecePositionAs(piece))!.clone();
-                clonedPiece.position = move.clone();
 
                 // Get the king of the playing team
                 const cKing = sBoard.pieces.find(p => p.isKing && p.color === this.currentTeam)!.clone();
@@ -119,9 +115,14 @@ export class Board {
                 // Check if king can be in check 
                 this.canKingBeInCheck(cKing, sBoard, piece); 
 
+                if (piece.isPawn) {
+                    console.log(piece);
+                }
+
                 // Check for stalemate
-                if (!this.kingCheck)
+                if (!this.kingCheck) {
                     this.stalemate = this.isStalemate(sBoard);
+                }
 
             }
 
@@ -129,7 +130,6 @@ export class Board {
 
     }
 
-    // WIP
     // Checks if king can be in check
     // If so, it filters out all moves that endangers the king
     private canKingBeInCheck(cKing: ChessPiece, sBoard: Board, piece: ChessPiece) {
@@ -138,9 +138,20 @@ export class Board {
             opponent.possibleMoves = sBoard.getMoves(opponent, sBoard.pieces, false);
 
             if (piece.isKing) {
-                piece.possibleMoves = piece.possibleMoves?.filter(move => !opponent.possibleMoves?.some(m => m.equalsTo(move)));
+                if (opponent.isPawn) {
+                    const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + 1);
+                    const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + 1);
+
+                    piece.possibleMoves = piece.possibleMoves?.filter(m => !(m.equalsTo(leftCapture) || m.equalsTo(rightCapture)));
+                } else {
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !opponent.possibleMoves?.some(m => m.equalsTo(move)));
+                }
             } else {
-                
+                cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
+                piece.possibleMoves = piece.possibleMoves?.filter(() => !(cKing.possibleMoves?.some(m => m.equalsTo(piece.position)) && opponent.possibleMoves?.some(m => m.equalsTo(piece.position))));
+                if (piece.isPawn) {
+                    console.log(piece);
+                }
             }
         }
     }
@@ -182,14 +193,20 @@ export class Board {
         let stalemate = false;
 
         // Check if there are no legal moves for the current player
-        const noLegalMoves = sBoard.pieces
+        const noLegalMoves = this.pieces
         .filter(p => p.color === sBoard.currentTeam)
         .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
+
+        // console.log(sBoard.pieces.filter(p => p.color === sBoard.currentTeam));
+        console.log(sBoard.currentTeam, noLegalMoves);
 
         // If there are no legal moves, it's a stalemate
         if (noLegalMoves) {
             stalemate = true;
             this.winningTeam = ColorTeam.DRAW;
+        } else {
+            stalemate = false;
+            this.winningTeam = undefined;
         }
 
         return stalemate;
