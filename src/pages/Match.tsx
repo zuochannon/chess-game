@@ -1,4 +1,3 @@
-import Chat from "@/components/chat/Chat";
 import { Button } from "@/components/ui/button";
 import React, { useEffect, useState } from "react";
 
@@ -64,7 +63,6 @@ const Match = () => {
         Random match
       </Button>
       <div>Users in queue: {queueLength}</div>
-      <Chat />
     </div>
   );
 };
