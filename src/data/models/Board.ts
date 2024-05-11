@@ -114,11 +114,7 @@ export class Board {
 
                 // Check if king can be in check 
                 this.canKingBeInCheck(cKing, sBoard, piece); 
-
-                if (piece.isPawn) {
-                    console.log(piece);
-                }
-
+                
                 // Check for stalemate
                 if (!this.kingCheck) {
                     this.stalemate = this.isStalemate(sBoard);
@@ -149,9 +145,6 @@ export class Board {
             } else {
                 cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
                 piece.possibleMoves = piece.possibleMoves?.filter(() => !(cKing.possibleMoves?.some(m => m.equalsTo(piece.position)) && opponent.possibleMoves?.some(m => m.equalsTo(piece.position))));
-                if (piece.isPawn) {
-                    console.log(piece);
-                }
             }
         }
     }
@@ -196,9 +189,6 @@ export class Board {
         const noLegalMoves = this.pieces
         .filter(p => p.color === sBoard.currentTeam)
         .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
-
-        // console.log(sBoard.pieces.filter(p => p.color === sBoard.currentTeam));
-        console.log(sBoard.currentTeam, noLegalMoves);
 
         // If there are no legal moves, it's a stalemate
         if (noLegalMoves) {
