@@ -51,39 +51,39 @@ function Chat({ styles }) {
   };
 
   return (
-    <div className={clsx("container mx-auto px-8 py-4 flex flex-col border-white border-2 bg-opacity-75 bg-black rounded-2xl", styles)}>
-        
-    <div className="overflow-auto max-h-screen">
-      <h2 className="text-3xl font-bold mb-4 text-slate-200">Chat</h2>
-      <div className="mb-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className="text-white p-2 rounded mb-2 flex flex-row"
-          >
-            <div className="font-bold">{message.name ?? "Guest"}</div>:{" "}
-            {message.text}
-          </div>
-        ))}
-    </div>
+    <div
+      className={clsx(
+        "container mx-auto px-8 py-4 flex flex-col border-white border-2 bg-opacity-75 bg-black rounded-2xl",
+        styles
+      )}
+    >
+      <div className="overflow-auto max-h-screen h-full">
+        <h2 className="text-3xl font-bold mb-4 text-slate-200">Chat</h2>
+        <div className="mb-4">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className="text-white p-2 rounded mb-2 flex flex-row"
+            >
+              <div className="font-bold">{message.name ?? "Guest"}</div>:{" "}
+              {message.text}
+            </div>
+          ))}
+        </div>
       </div>
       <form onSubmit={handleMessageSubmit}>
         <div className="flex flex-row gap-5 max-h-fit">
-
-        <input
-          type="text"
-          value={messageInput}
-          onChange={handleMessageChange}
-          className="border border-gray-300 p-2 rounded w-full mb-2"
-          placeholder="Type your message..."
+          <input
+            type="text"
+            value={messageInput}
+            onChange={handleMessageChange}
+            className="border border-gray-300 p-2 rounded w-full mb-2"
+            placeholder="Type your message..."
           />
-        <Button
-          type="submit"
-          variant="outline"
-          >
-          Send
-        </Button>
-            </div>
+          <Button type="submit" variant="outline">
+            Send
+          </Button>
+        </div>
       </form>
     </div>
   );
