@@ -106,9 +106,9 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
                 }
     
                 // Combine highlight conditions
-                const highlight = isLastMove || isPossibleMove;
+                // const highlight = isLastMove || isPossibleMove;
                 
-                board.push(<ChessSquare key={`${i},${j}`} image={piece?.image} number={i + j + 2} highlight={highlight} />);
+                board.push(<ChessSquare key={`${i},${j}`} image={piece?.image} number={i + j + 2} lastMove={isLastMove} possibleMove={isPossibleMove} />);
             }
         }
         
