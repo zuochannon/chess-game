@@ -89,6 +89,9 @@ export default function ChessRulesController({
 				else if (clonedChessboard.winningTeam === ColorTeam.DRAW) {
 					stalemateModalRef.current?.classList.remove("hidden");
 				}
+				else if (clonedChessboard.winningTeam === ColorTeam.ILLEGAL) {
+					stalemateModalRef.current?.classList.remove("hidden");
+				}
 			}
 
 			// Determine if the move results in check or checkmate
@@ -337,7 +340,7 @@ export default function ChessRulesController({
 			<div className="modal hidden" ref={stalemateModalRef}>
 				<div className="modal-body">
 					<div className="gameover-body">
-						<span className="text-center"> Draw! </span>
+						<span className="text-center"> {board.winningTeam === ColorTeam.DRAW ? "Draw!" : "Illegal"} </span>
 						<button onClick={restartGame}> Play Again </button>
 					</div>
 				</div>
