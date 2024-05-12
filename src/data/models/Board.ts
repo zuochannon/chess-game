@@ -199,8 +199,34 @@ export class Board {
         .filter(p => p.color === sBoard.currentTeam)
         .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
 
+        // Insufficient Materials Check
+        const noPawn = this.pieces.filter(p => p.isPawn).length === 0;  // Check if there are no pawns on both sides
+
+        // Checks if other team has sufficient materials
+        const otherTeamCheck = this.pieces.filter(p => p.color !== sBoard.currentTeam).some(p => p.isQueen || p.isRook) 
+        || this.pieces.filter(p => p.color !== sBoard.currentTeam && p.isBishop).length == 2
+        || this.pieces.filter(p => p.color !== sBoard.currentTeam && p.isKnight).length == 2;
+
+        // Check if one side has just a king and the other side have insufficient materials
+        let onlyKings = this.pieces.filter(p => p.color === sBoard.currentTeam).every(p => p.isKing);
+        onlyKings = onlyKings && !otherTeamCheck;
+
+        // Check if one side has just one king and bishop and the other side have insufficient materials
+        const kingBishopArray = this.pieces.filter(p => p.color === sBoard.currentTeam);
+        const kingBishopLength = kingBishopArray.length;
+        const kingBishop = kingBishopLength === 2 && !kingBishopArray.some(p => p.isRook || p.isQueen) && !otherTeamCheck;
+
+        // Check if one side has just one king and knight and the other side have insufficient materials
+        const kingKnightArray = this.pieces.filter(p => p.color === sBoard.currentTeam);
+        const kingKnightLength = kingKnightArray.length;
+        const kingKnight = kingKnightLength === 2 && !kingKnightArray.some(p => p.isRook || p.isQueen) && !otherTeamCheck;
+
+        const insufficentMaterials = noPawn && (onlyKings || kingBishop || kingKnight);
+
+        console.log(insufficentMaterials, noLegalMoves);
+
         // If there are no legal moves, it's a stalemate
-        if (noLegalMoves) {
+        if (noLegalMoves || insufficentMaterials) {
             stalemate = true;
             this.winningTeam = ColorTeam.DRAW;
         } else {
