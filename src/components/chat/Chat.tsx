@@ -45,6 +45,7 @@ function Chat({ styles }) {
       socket.current.send(
         JSON.stringify({ name: whoAmI?.username, text: messageInput })
       );
+      setMessages((prevMessages) => [...prevMessages, { name: "You", text: messageInput }]);
       setMessageInput("");
     }
   };
