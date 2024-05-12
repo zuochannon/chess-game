@@ -82,7 +82,7 @@ export class Board {
             case PieceType.PAWN:
                 return getPossiblePawnMoves(piece, board);
             case PieceType.KNIGHT:
-                return getPossibleKnightMoves(piece, board);
+                return getPossibleKnightMoves(piece, board, includeIllegal);
             case PieceType.BISHOP:
                 return getPossibleBishopMoves(piece, board, includeIllegal, includeOnlyMovesPastKing);
             case PieceType.ROOK:
@@ -106,7 +106,7 @@ export class Board {
 
             // Get every possible move of each piece on the playing team
             for (const move of piece.possibleMoves) {
-                const sBoard = this.clone();
+                let sBoard = this.clone();
 
                 // Remove piece at destination
                 sBoard.pieces = sBoard.pieces.filter(p => !p.hasSamePositionAs(move));
@@ -118,13 +118,12 @@ export class Board {
                 this.kingCheck = this.isKingInCheck(sBoard, cKing, piece, move);
 
                 // Check if king can be in check 
-                console.log(1, piece);
                 this.canKingBeInCheck(cKing, sBoard, piece); 
                 
                 // Check for stalemate
                 if (!this.kingCheck) {
                     this.stalemate = this.isStalemate(sBoard);
-                }
+                }              
 
             }
 
@@ -156,7 +155,6 @@ export class Board {
                         || move.equalsTo(opponent.position)).filter(move => !list.some(m => m.equalsTo(move)));
                 }
             } else { /* Filter out moves that can leave the king vulnerable to immediate check */
-                console.log(2, piece);
                 cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
                 piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
                 
