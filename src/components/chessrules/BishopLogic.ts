@@ -1,7 +1,7 @@
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
-import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
+import { isSquareOccupied, isSquareOccupiedByOpposingKing, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 // Moves the bishop piece
 export const bishopMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
@@ -86,7 +86,7 @@ export const bishopMove = (initialPosition: Position, newPosition: Position, col
 }
 
 // Get all possible bishop moves
-export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
+export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], includeIllegal: boolean, includeOnlyMovesPastKing: boolean = false): Position[] => {
     const possibleMoves: Position[] = [];
 
     const directions = [
@@ -98,13 +98,30 @@ export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], 
 
     // Cycle through the directions
     for (const {dx, dy} of directions) {
-        let dest = new Position(bishop.position.x + dx, bishop.position.y + dy);
+        let flag = true;
+        for (let i = 1; i < 8; i++) {
+            const newX = bishop.position.x + dx * i;
+            const newY = bishop.position.y + dy * i;
 
-        // Finds all possible moves within board boundaries
-        while (dest.x >= 0 && dest.x < 8 && dest.y >= 0 && dest.y < 8) {
+            // Prevent out-of-board moves from being included
+            if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
+
+            let dest = new Position(bishop.position.x + dx * i, bishop.position.y + dy * i);
 
             if (includeIllegal) {
-                possibleMoves.push(dest);
+                if (flag && includeOnlyMovesPastKing) {
+                    // Only include moves past the opposing king
+                    possibleMoves.push(dest);
+                }
+                if (!isSquareOccupiedByOpposingKing(dest, board, bishop.color)) {
+                    flag = false;
+                    break;
+                }
+
+                if (!includeOnlyMovesPastKing) {
+                    possibleMoves.push(dest);
+                }
+
                 continue;
             }
 

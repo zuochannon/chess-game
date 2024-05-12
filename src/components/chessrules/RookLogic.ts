@@ -1,7 +1,7 @@
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
-import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
+import { isSquareOccupied, isSquareOccupiedByOpposingKing, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 // Moves the rook piece
 export const rookMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
@@ -52,7 +52,7 @@ export const rookMove = (initialPosition: Position, newPosition: Position, color
 }
 
 // Export all possible rook moves
-export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
+export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], includeIllegal: boolean, includeOnlyMovesPastKing: boolean = false): Position[] => {
     // Stores all possible pawn moves
     const possibleMoves: Position[] = [];
 
@@ -64,6 +64,7 @@ export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], incl
     ];
       
     for (const { dx, dy } of directions) {
+        let flag = true;
         for (let i = 1; i < 8; i++) {
             const newX = rook.position.x + dx * i;
             const newY = rook.position.y + dy * i;
@@ -71,26 +72,38 @@ export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], incl
             // Prevent off-the-board moves from being stored
             if (newX < 0 || newX > 7 || newY < 0 || newY > 7) break;
       
-            const destination = new Position(newX, newY);
+            const dest = new Position(newX, newY);
 
             if (includeIllegal) {
-                possibleMoves.push(destination);
+                if (flag && includeOnlyMovesPastKing) {
+                    // Only include moves past the opposing king
+                    possibleMoves.push(dest);
+                }
+                if (!isSquareOccupiedByOpposingKing(dest, board, rook.color)) {
+                    flag = false;
+                    break;
+                }
+
+                if (!includeOnlyMovesPastKing) {
+                    possibleMoves.push(dest);
+                }
+
+                continue;
             }
 
             // Check if square is unoccupied for move to be possible
-            if (!isSquareOccupied(destination, board)) {
-                possibleMoves.push(destination);
+            if (!isSquareOccupied(dest, board)) {
+                possibleMoves.push(dest);
             } 
             // Check if opponent occupies square to put as possible move
-            else if (isSquareOccupiedByOppositeColor(destination, board, rook.color)) {
-                possibleMoves.push(destination);
+            else if (isSquareOccupiedByOppositeColor(dest, board, rook.color)) {
+                possibleMoves.push(dest);
                 break;
             } else {
                 break;
             }
         }
     }
-      
 
     return possibleMoves;
 }

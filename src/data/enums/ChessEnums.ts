@@ -13,4 +13,5 @@ export enum ColorTeam {
     BLACK = 'b',
     WHITE = 'w',
     DRAW = 'd',
+    ILLEGAL = "i",
 }
