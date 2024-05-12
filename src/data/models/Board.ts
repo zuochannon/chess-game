@@ -28,6 +28,11 @@ export class Board {
     // Process all possible moves of the pieces
     processAllPossibleMoves() {
 
+        if (!(this.pieces.some(p => p.isKing && p.color === ColorTeam.WHITE) && this.pieces.some(p => p.color === ColorTeam.BLACK && p.isKing))) {
+            this.winningTeam = ColorTeam.ILLEGAL;
+            return;
+        }
+
         // Process possible moves for all pieces on the board
         for (const piece of this.pieces) {
             piece.possibleMoves = this.getMoves(piece, this.pieces, false);
@@ -72,18 +77,18 @@ export class Board {
     }
 
     // Get valid moves of the piece type
-    getMoves(piece: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] {
+    getMoves(piece: ChessPiece, board: ChessPiece[], includeIllegal: boolean, includeOnlyMovesPastKing: boolean = false): Position[] {
         switch(piece.type) {
             case PieceType.PAWN:
                 return getPossiblePawnMoves(piece, board);
             case PieceType.KNIGHT:
                 return getPossibleKnightMoves(piece, board);
             case PieceType.BISHOP:
-                return getPossibleBishopMoves(piece, board, includeIllegal);
+                return getPossibleBishopMoves(piece, board, includeIllegal, includeOnlyMovesPastKing);
             case PieceType.ROOK:
-                return getPossibleRookMoves(piece, board, includeIllegal);
+                return getPossibleRookMoves(piece, board, includeIllegal, includeOnlyMovesPastKing);
             case PieceType.QUEEN:
-                return getPossibleQueenMoves(piece, board, includeIllegal);
+                return getPossibleQueenMoves(piece, board, includeIllegal, includeOnlyMovesPastKing);
             case PieceType.KING:
                 return getPossibleKingMoves(piece, board, includeIllegal);
             default: 
@@ -95,7 +100,7 @@ export class Board {
     checkCurrentMoves() {
 
         // Loops through all pieces of the current playing team
-        for (const piece of this.pieces.filter(p => p.color === this.currentTeam)) {
+        for (let piece of this.pieces.filter(p => p.color === this.currentTeam)) {
             
             if (piece.possibleMoves === undefined) continue;
 
@@ -113,6 +118,7 @@ export class Board {
                 this.kingCheck = this.isKingInCheck(sBoard, cKing, piece, move);
 
                 // Check if king can be in check 
+                console.log(1, piece);
                 this.canKingBeInCheck(cKing, sBoard, piece); 
                 
                 // Check for stalemate
@@ -133,18 +139,27 @@ export class Board {
         for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
             opponent.possibleMoves = sBoard.getMoves(opponent, sBoard.pieces, false);
 
-            if (piece.isKing) {
+            if (piece.isKing) { /* Filter out moves that can put the king in check */
                 if (opponent.isPawn) {
                     const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + 1);
                     const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + 1);
 
-                    piece.possibleMoves = piece.possibleMoves?.filter(m => !(m.equalsTo(leftCapture) || m.equalsTo(rightCapture)));
+                    piece.possibleMoves = piece.possibleMoves?.filter(m => !(m.equalsTo(leftCapture) || m.equalsTo(rightCapture)) || m.equalsTo(opponent.position));
                 } else {
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => !opponent.possibleMoves?.some(m => m.equalsTo(move)));
+                    let list = [];
+                    for (const pos of sBoard.getMoves(opponent, sBoard.pieces, true, true)) {
+                        list.push(pos);
+                    }
+
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => 
+                        !(opponent.possibleMoves?.some(m => m.equalsTo(move))) 
+                        || move.equalsTo(opponent.position)).filter(move => !list.some(m => m.equalsTo(move)));
                 }
-            } else {
+            } else { /* Filter out moves that can leave the king vulnerable to immediate check */
+                console.log(2, piece);
                 cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
-                piece.possibleMoves = piece.possibleMoves?.filter(() => !(cKing.possibleMoves?.some(m => m.equalsTo(piece.position)) && opponent.possibleMoves?.some(m => m.equalsTo(piece.position))));
+                //piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
+                
             }
         }
     }
@@ -162,17 +177,13 @@ export class Board {
 
             // Check if the opponent's piece can attack the current player's king
             if (opponent.possibleMoves.some(m => m.equalsTo(cKing.position))) {
-                // If the opponent's piece can attack the king, set the flag to true
                 currentTeamKingInCheck = true;
 
                 // Filter out any moves of the current player's piece that would leave the king in check
                 if (piece.isKing) {
-                    const opp2 = opponent.clone();
-                    opp2.possibleMoves = sBoard.getMoves(opponent, sBoard.pieces, true);
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => opp2.possibleMoves?.some(m => m.equalsTo(move)));
-                }
-                else {
-                    piece.possibleMoves = piece.possibleMoves?.filter(m => !m.equalsTo(playMove));
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => opponent.possibleMoves?.some(m => !m.equalsTo(move)) || move.equalsTo(opponent.position));
+                } else {
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
                 }
 
             }
