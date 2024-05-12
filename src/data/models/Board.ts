@@ -158,7 +158,7 @@ export class Board {
             } else { /* Filter out moves that can leave the king vulnerable to immediate check */
                 console.log(2, piece);
                 cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
-                //piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
+                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
                 
             }
         }
