@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 
@@ -17,8 +17,12 @@ export function CreateRoom() {
         const response = await fetch(
             `${import.meta.env.VITE_SERVER}/onlinePlay/createRoom`,
             {
-                method: "GET",
-                credentials: "include",
+                method: "POST",
+                    credentials: "include",
+                    body: JSON.stringify({ user: whoAmI }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
             }
         );
         console.log(response);

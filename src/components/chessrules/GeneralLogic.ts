@@ -13,7 +13,7 @@ export const isSquareOccupied = (position: Position, boardState: ChessPiece[]): 
 
 // Checks if square is occupied by opponent
 export const isSquareOccupiedByOppositeColor = (position: Position, boardState: ChessPiece[], color: ColorTeam): boolean => {
-    
+
     const piece = boardState.find((p) => p.hasSamePositionAs(position) && p.color !== color);
 
     // Returns if piece is there

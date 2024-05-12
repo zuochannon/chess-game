@@ -4,7 +4,7 @@ import { Position } from "../../data/models/Position";
 import { isSquareOccupied, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
 
 
-export const pawnMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
+export const pawnMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]): boolean => {
 
     const pawnRow = (color === ColorTeam.WHITE) ? 1 : 6;    // if white, handle white pawns; if black, handle black pawns
     const pawnDir = (color === ColorTeam.WHITE) ? 1 : -1;   // if white, go positive; if black, go negative direction
@@ -12,8 +12,8 @@ export const pawnMove = (initialPosition: Position, newPosition: Position, color
     // Handles Pawn Movement
     // First:  Handles Pawn's first move case where it can move 2 squares forward 
     // Second: Handles Pawn's moves where it can only move 1 space forward
-    if (initialPosition.x === newPosition.x && initialPosition.y === pawnRow && newPosition.y - initialPosition.y === 2 * pawnDir) { 
-        if (!isSquareOccupied(newPosition, boardState) && !isSquareOccupied(new Position (newPosition.x, newPosition.y - pawnDir), boardState)) {
+    if (initialPosition.x === newPosition.x && initialPosition.y === pawnRow && newPosition.y - initialPosition.y === 2 * pawnDir) {
+        if (!isSquareOccupied(newPosition, boardState) && !isSquareOccupied(new Position(newPosition.x, newPosition.y - pawnDir), boardState)) {
             return true;
         }
     } else if (initialPosition.x === newPosition.x && newPosition.y - initialPosition.y === 1 * pawnDir) {
