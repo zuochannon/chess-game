@@ -14,6 +14,20 @@ import {
 	rookMove,
 } from "../chessrules";
 import Chessboard from "./ChessBoard";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog"
+  import { Button } from "@/components/ui/button"
+
+
 interface Props {
 	offset: number;
 	boardOrientation: ColorTeam;
@@ -346,15 +360,34 @@ export default function ChessRulesController({
 				</div>
 			</div>
 			<div className="container">
+                <div className="flex flex-col items-center justify-between py-10">
+                    
 				<div className="turn-count-box">
 					<label className="text-white turn-label">
 						Turn: {board.totalTurns}
 					</label>
 				</div>
-				<div className="forfeit-button">
-					<button onClick={forfeitGame} className="btn btn-danger">
+				<div className="inline-block">
+                <AlertDialog>
+      <AlertDialogTrigger asChild>
+					<Button variant="secondary">
 						Forfeit
-					</button>
+					</Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Forfeit?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you absolutely sure you want to forfeit?
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={forfeitGame}>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+                </div>
 				</div>
 				<div className="chessboard-container">
 					<Chessboard

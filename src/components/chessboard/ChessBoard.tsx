@@ -73,6 +73,7 @@ export default function Chessboard({ playMove, pieces, offset, boardOrientation 
             const currentPiece = pieces.find(p => p.hasSamePositionAs(grabPosition));
             if (currentPiece && playMove(currentPiece, newPosition)) {
                 setLastMove({ from: grabPosition, to: newPosition });
+                console.log("fran");
             }
             resetPiecePosition();
         }
