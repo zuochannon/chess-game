@@ -1,6 +1,9 @@
-import { COLUMNS, ROWS } from "../constants/ChessConstants";
-import { PieceType, ColorTeam } from "../enums/ChessEnums";
+// import { COLUMNS, ROWS } from "../constants/ChessConstants";
+import { ColorTeam, PieceType } from "../enums/ChessEnums";
 import { Position } from "./Position";
+
+const COLUMNS = "abcdefgh".split("");
+const ROWS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export class ChessPiece {
     image: string;
@@ -20,40 +23,40 @@ export class ChessPiece {
     }
 
     // Check if type is pawn
-    get isPawn() : boolean {
+    get isPawn(): boolean {
         return this.type === PieceType.PAWN;
     }
 
     // Checks if type is rook
-    get isRook() : boolean {
+    get isRook(): boolean {
         return this.type === PieceType.ROOK;
     }
 
     // Checks if type is knight
-    get isKnight() : boolean {
+    get isKnight(): boolean {
         return this.type === PieceType.KNIGHT;
     }
 
     // Checks if type is bishop
-    get isBishop() : boolean {
+    get isBishop(): boolean {
         return this.type === PieceType.BISHOP;
     }
 
     // Checks if type is king
-    get isKing() : boolean {
+    get isKing(): boolean {
         return this.type === PieceType.KING;
     }
 
     // Checks if type is queen
-    get isQueen() : boolean {
+    get isQueen(): boolean {
         return this.type === PieceType.QUEEN;
     }
 
-    hasSamePiecePositionAs(otherPiece: ChessPiece) : boolean {
+    hasSamePiecePositionAs(otherPiece: ChessPiece): boolean {
         return this.position.equalsTo(otherPiece.position);
     }
 
-    hasSamePositionAs(otherPosition: Position) : boolean {
+    hasSamePositionAs(otherPosition: Position): boolean {
         return this.position.equalsTo(otherPosition);
     }
 
@@ -67,8 +70,8 @@ export class ChessPiece {
 
     clone(): ChessPiece {
         return new ChessPiece(this.position.clone(),
-             this.type, this.color, this.hasMoved,
-             this.possibleMoves?.map(m => m.clone()));
+            this.type, this.color, this.hasMoved,
+            this.possibleMoves?.map(m => m.clone()));
     }
 }
 
