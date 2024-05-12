@@ -10,6 +10,7 @@ import Game from "../layouts/game/Game";
 import "../layouts/pages/Play.css";
 
 export function OnlinePlay() {
+	const newBoard = initialBoard.clone();
 	const [response, setResponse] = useState({
 		status: -1,
 		message: "",
