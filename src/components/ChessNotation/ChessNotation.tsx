@@ -18,6 +18,8 @@ export function generateMoveNotation(piece: ChessPiece, board: Board, startPosit
     const endPosition = getPositionAlgebraicNotation(dest);
     let notation = "";
 
+    // Get other rook and knight
+    // SPECIAL CASE: two pieces of the same type can move into common destination. PGN must differentiate the two
     const otherKnight = board.pieces.find(p => p.isKnight && p.color === piece.color && !p.hasSamePiecePositionAs(piece))?.clone();
     if (otherKnight)
         otherKnight.possibleMoves = board.getMoves(otherKnight, board.pieces, false);
@@ -42,7 +44,6 @@ export function generateMoveNotation(piece: ChessPiece, board: Board, startPosit
             if (otherRook && otherRook.possibleMoves)
                 common = otherRook.possibleMoves.some(move => piece.possibleMoves?.some(m => m.equalsTo(dest) && m.equalsTo(move)));
             sameX = otherRook?.position.x === piece.position.x;
-            console.log(common, sameX, piece, otherRook);
             notation = `${pieceType[0]}${common ? sameX ? startPositionNotation[1] : startPositionNotation[0] : ""}${isCapture ? 'x' : ''}${endPosition}`;
             break;
         case PieceType.BISHOP:
