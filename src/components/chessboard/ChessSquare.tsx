@@ -30,7 +30,7 @@ export default function ChessSquare({
           className="chess-piece"
         ></div>
       )}
-      {possibleMove && <div className="h-1/2 w-1/2 bg-yellow-200 rounded-full"></div>}
+      {possibleMove && <div className="h-1/2 w-1/2 bg-yellow-200 rounded-full bg-opacity-90"></div>}
     </div>
   );
 }
