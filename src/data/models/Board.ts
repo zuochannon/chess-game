@@ -135,29 +135,31 @@ export class Board {
     // If so, it filters out all moves that endangers the king
     private canKingBeInCheck(cKing: ChessPiece, sBoard: Board, piece: ChessPiece) {
 
+        if (this.kingCheck) return;
+
         for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
             opponent.possibleMoves = sBoard.getMoves(opponent, sBoard.pieces, false);
 
             if (piece.isKing) { /* Filter out moves that can put the king in check */
                 if (opponent.isPawn) {
-                    const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + 1);
-                    const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + 1);
+                    const pawnDir = (opponent.color === ColorTeam.WHITE) ? 1 : -1;
+                    const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + pawnDir);
+                    const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + pawnDir);
 
                     piece.possibleMoves = piece.possibleMoves?.filter(m => !(m.equalsTo(leftCapture) || m.equalsTo(rightCapture)) || m.equalsTo(opponent.position));
                 } else {
-                    let list = [];
-                    for (const pos of sBoard.getMoves(opponent, sBoard.pieces, true, true)) {
-                        list.push(pos);
-                    }
-
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => 
-                        !(opponent.possibleMoves?.some(m => m.equalsTo(move))) 
-                        || move.equalsTo(opponent.position)).filter(move => !list.some(m => m.equalsTo(move)));
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => {
+                        const validOpponentMoves = !opponent.possibleMoves?.some(m => m.equalsTo(move));
+                        const validOpponentPosition = move.equalsTo(opponent.position);
+                        return validOpponentMoves || validOpponentPosition;
+                    });
                 }
             } else { /* Filter out moves that can leave the king vulnerable to immediate check */
-                cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
-                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
-                
+                let list = [];
+                for (const pos of sBoard.getMoves(cKing.clone(), sBoard.pieces, true)) {
+                    list.push(pos);
+                }
+                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
             }
         }
     }
@@ -179,9 +181,27 @@ export class Board {
 
                 // Filter out any moves of the current player's piece that would leave the king in check
                 if (piece.isKing) {
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => opponent.possibleMoves?.some(m => !m.equalsTo(move)) || move.equalsTo(opponent.position));
+                    let list = [];
+                    for (const pos of sBoard.getMoves(opponent.clone(), sBoard.clone().pieces, true, true)) {
+                        list.push(pos);
+                    }
+
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => {
+                        const validOpponentMoves = !opponent.possibleMoves?.some(m => m.equalsTo(move));
+                        const validOpponentPosition = move.equalsTo(opponent.position);
+                        return validOpponentMoves || validOpponentPosition;
+                    }).filter(move => {
+                        const isValidMove = list.find(m => m.equalsTo(move));
+                        return !isValidMove;
+                    });
+
                 } else {
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
+                    let list = [];
+                    for (const pos of sBoard.getMoves(cKing.clone(), sBoard.clone().pieces, true)) {
+                        list.push(pos);
+                    }
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
+                
                 }
 
             }
@@ -222,8 +242,6 @@ export class Board {
         const kingKnight = kingKnightLength === 2 && !kingKnightArray.some(p => p.isRook || p.isQueen) && !otherTeamCheck;
 
         const insufficentMaterials = noPawn && (onlyKings || kingBishop || kingKnight);
-
-        console.log(insufficentMaterials, noLegalMoves);
 
         // If there are no legal moves, it's a stalemate
         if (noLegalMoves || insufficentMaterials) {

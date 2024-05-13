@@ -20,7 +20,7 @@ export const isSquareOccupiedByOppositeColor = (position: Position, boardState: 
     return piece != null;
 }
 
-export const isSquareOccupiedByOpposingKing = (position: Position, boardState: ChessPiece[], color: ColorTeam) => {
+export const isSquareOccupiedByOpposingKing = (position: Position, boardState: ChessPiece[], color: ColorTeam): boolean => {
 
     const piece = boardState.find((p) => p.hasSamePositionAs(position) && p.isKing && p.color !== color);
 

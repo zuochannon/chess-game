@@ -49,7 +49,6 @@ export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[], in
   
     // Goes through all possible moves of queen piece
     for (const { dx, dy } of directions) {
-        let flag = true;
         for (let i = 1; i < 8; i++) {
             const newX = queen.position.x + dx * i;
             const newY = queen.position.y + dy * i;
@@ -60,14 +59,16 @@ export const getPossibleQueenMoves = (queen: ChessPiece, board: ChessPiece[], in
             const dest = new Position(newX, newY);
 
             if (includeIllegal) {
-                if (flag && includeOnlyMovesPastKing) {
+                if (includeOnlyMovesPastKing && isSquareOccupiedByOpposingKing(dest, board, queen.color)) {
                     // Only include moves past the opposing king
-                    possibleMoves.push(dest);
-                }
+                    for (let j = i; j < 8; j++) {
+                        const pastX = queen.position.x + dx * j;
+                        const pastY = queen.position.y + dy * j;
 
-                if (!isSquareOccupiedByOpposingKing(dest, board, queen.color)) {
-                    flag = false;
-                    break;
+                        if (pastX < 0 || pastX > 7 || pastY < 0 || pastY > 7) break;
+
+                        possibleMoves.push(new Position(pastX, pastY));
+                    }
                 }
 
 

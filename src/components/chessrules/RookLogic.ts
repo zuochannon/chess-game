@@ -1,7 +1,7 @@
 import { ColorTeam } from "../../data/enums/ChessEnums";
 import { ChessPiece } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
-import { isSquareOccupied, isSquareOccupiedByOpposingKing, isSquareOccupiedByOppositeColor } from "./GeneralLogic";
+import { isSquareOccupied, isSquareOccupiedByOppositeColor, isSquareOccupiedByOpposingKing } from "./GeneralLogic";
 
 // Moves the rook piece
 export const rookMove = (initialPosition: Position, newPosition: Position, color: ColorTeam, boardState: ChessPiece[]) : boolean => {
@@ -64,7 +64,6 @@ export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], incl
     ];
       
     for (const { dx, dy } of directions) {
-        let flag = true;
         for (let i = 1; i < 8; i++) {
             const newX = rook.position.x + dx * i;
             const newY = rook.position.y + dy * i;
@@ -75,13 +74,16 @@ export const getPossibleRookMoves = (rook: ChessPiece, board: ChessPiece[], incl
             const dest = new Position(newX, newY);
 
             if (includeIllegal) {
-                if (flag && includeOnlyMovesPastKing) {
+                if (isSquareOccupiedByOpposingKing(dest, board, rook.color) && includeOnlyMovesPastKing) {
                     // Only include moves past the opposing king
-                    possibleMoves.push(dest);
-                }
-                if (!isSquareOccupiedByOpposingKing(dest, board, rook.color)) {
-                    flag = false;
-                    break;
+                    for (let j = i; j < 8; j++) {
+                        const pastX = rook.position.x + dx * j;
+                        const pastY = rook.position.y + dy * j;
+
+                        if (pastX < 0 || pastX > 7 || pastY < 0 || pastY > 7) break;
+
+                        possibleMoves.push(new Position(pastX, pastY));
+                    }
                 }
 
                 if (!includeOnlyMovesPastKing) {

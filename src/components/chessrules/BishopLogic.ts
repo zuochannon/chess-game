@@ -98,7 +98,6 @@ export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], 
 
     // Cycle through the directions
     for (const {dx, dy} of directions) {
-        let flag = true;
         for (let i = 1; i < 8; i++) {
             const newX = bishop.position.x + dx * i;
             const newY = bishop.position.y + dy * i;
@@ -109,13 +108,16 @@ export const getPossibleBishopMoves = (bishop: ChessPiece, board: ChessPiece[], 
             let dest = new Position(bishop.position.x + dx * i, bishop.position.y + dy * i);
 
             if (includeIllegal) {
-                if (flag && includeOnlyMovesPastKing) {
+                if (isSquareOccupiedByOpposingKing(dest, board, bishop.color) && includeOnlyMovesPastKing) {
                     // Only include moves past the opposing king
-                    possibleMoves.push(dest);
-                }
-                if (!isSquareOccupiedByOpposingKing(dest, board, bishop.color)) {
-                    flag = false;
-                    break;
+                    for (let j = i; j < 8; j++) {
+                        const pastX = bishop.position.x + dx * j;
+                        const pastY = bishop.position.y + dy * j;
+
+                        if (pastX < 0 || pastX > 7 || pastY < 0 || pastY > 7) break;
+
+                        possibleMoves.push(new Position(pastX, pastY));
+                    }
                 }
 
                 if (!includeOnlyMovesPastKing) {
