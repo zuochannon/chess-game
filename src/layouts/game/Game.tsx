@@ -8,9 +8,10 @@ interface Props {
 	boardOrientation: ColorTeam;
 	board: Board;
 	onlineHandler: any;
+    updateBoardState: (board : Board) => void;
 }
 
-function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
+function Game({ offset, boardOrientation, board, onlineHandler, updateBoardState }: Props) {
 	return (
 		<div id="play" className="content-center">
 			<ChessRulesController
@@ -18,6 +19,7 @@ function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
 				boardOrientation={boardOrientation}
 				chessboard={board}
 				onlineHandler={onlineHandler}
+                updateBoardState={updateBoardState}
 			/>
 		</div>
 	);

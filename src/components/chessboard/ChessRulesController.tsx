@@ -32,6 +32,7 @@ interface Props {
   boardOrientation: ColorTeam;
   chessboard: Board;
   onlineHandler: any;
+  updateBoardState: (board : Board) => void;
 }
 
 // Responsible for handling valid chess moves
@@ -40,6 +41,7 @@ export default function ChessRulesController({
   boardOrientation,
   chessboard,
   onlineHandler,
+  updateBoardState,
 }: Props) {
   const [board, setBoard] = useState<Board>(chessboard);
   const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
@@ -49,6 +51,12 @@ export default function ChessRulesController({
   const modalRef = useRef<HTMLDivElement>(null);
   const checkmateModalRef = useRef<HTMLDivElement>(null);
   const stalemateModalRef = useRef<HTMLDivElement>(null);
+
+
+  useEffect(() => {
+    updateBoardState(board);
+  }, [board]);
+
 
   // Boolean function to check if move was valid
   function playMove(playedPiece: ChessPiece, dest: Position): boolean {

@@ -2,13 +2,24 @@ import { NavigationBarHeight } from "@/data/constants/NavItems";
 import Game from "../layouts/game/Game";
 import "../layouts/pages/Play.css";
 import { ColorTeam } from "@/data/enums/ChessEnums";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { initialBoard } from "@/data/constants/ChessConstants";
 import Chat from "@/components/chat/Chat";
+import { Board } from "@/data/models/Board";
 
 export function Play() {
   const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
   const [newBoard, setNewBoard] = useState(initialBoard.clone());
+
+  const [boardState, setBoardState] = useState<Board[]>([]);
+
+  const updateBoardState = (newBoardState : Board) => {
+    setBoardState(prevStates => [...prevStates, newBoardState]);
+  };
+
+  useEffect(() => {
+    console.log(boardState)
+  }, [boardState])
 
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
@@ -44,6 +55,7 @@ export function Play() {
           offset={NavigationBarHeight}
           boardOrientation={boardOrientation}
           board={newBoard}
+          updateBoardState={updateBoardState}
         />
       </div>
       <div className="h-3/4 w-1/4">
