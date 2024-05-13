@@ -82,7 +82,7 @@ export class Board {
             case PieceType.PAWN:
                 return getPossiblePawnMoves(piece, board);
             case PieceType.KNIGHT:
-                return getPossibleKnightMoves(piece, board);
+                return getPossibleKnightMoves(piece, board, includeIllegal);
             case PieceType.BISHOP:
                 return getPossibleBishopMoves(piece, board, includeIllegal, includeOnlyMovesPastKing);
             case PieceType.ROOK:
@@ -106,7 +106,7 @@ export class Board {
 
             // Get every possible move of each piece on the playing team
             for (const move of piece.possibleMoves) {
-                const sBoard = this.clone();
+                let sBoard = this.clone();
 
                 // Remove piece at destination
                 sBoard.pieces = sBoard.pieces.filter(p => !p.hasSamePositionAs(move));
@@ -118,13 +118,12 @@ export class Board {
                 this.kingCheck = this.isKingInCheck(sBoard, cKing, piece, move);
 
                 // Check if king can be in check 
-                console.log(1, piece);
                 this.canKingBeInCheck(cKing, sBoard, piece); 
                 
                 // Check for stalemate
                 if (!this.kingCheck) {
                     this.stalemate = this.isStalemate(sBoard);
-                }
+                }              
 
             }
 
@@ -136,30 +135,31 @@ export class Board {
     // If so, it filters out all moves that endangers the king
     private canKingBeInCheck(cKing: ChessPiece, sBoard: Board, piece: ChessPiece) {
 
+        if (this.kingCheck) return;
+
         for (const opponent of sBoard.pieces.filter(p => p.color !== sBoard.currentTeam)) {
             opponent.possibleMoves = sBoard.getMoves(opponent, sBoard.pieces, false);
 
             if (piece.isKing) { /* Filter out moves that can put the king in check */
                 if (opponent.isPawn) {
-                    const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + 1);
-                    const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + 1);
+                    const pawnDir = (opponent.color === ColorTeam.WHITE) ? 1 : -1;
+                    const leftCapture = new Position(opponent.position.x - 1, opponent.position.y + pawnDir);
+                    const rightCapture = new Position(opponent.position.x + 1, opponent.position.y + pawnDir);
 
                     piece.possibleMoves = piece.possibleMoves?.filter(m => !(m.equalsTo(leftCapture) || m.equalsTo(rightCapture)) || m.equalsTo(opponent.position));
                 } else {
-                    let list = [];
-                    for (const pos of sBoard.getMoves(opponent, sBoard.pieces, true, true)) {
-                        list.push(pos);
-                    }
-
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => 
-                        !(opponent.possibleMoves?.some(m => m.equalsTo(move))) 
-                        || move.equalsTo(opponent.position)).filter(move => !list.some(m => m.equalsTo(move)));
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => {
+                        const validOpponentMoves = !opponent.possibleMoves?.some(m => m.equalsTo(move));
+                        const validOpponentPosition = move.equalsTo(opponent.position);
+                        return validOpponentMoves || validOpponentPosition;
+                    });
                 }
             } else { /* Filter out moves that can leave the king vulnerable to immediate check */
-                console.log(2, piece);
-                cKing.possibleMoves = sBoard.getMoves(cKing, sBoard.pieces, true);
-                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
-                
+                let list = [];
+                for (const pos of sBoard.getMoves(cKing.clone(), sBoard.pieces, true)) {
+                    list.push(pos);
+                }
+                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
             }
         }
     }
@@ -181,9 +181,27 @@ export class Board {
 
                 // Filter out any moves of the current player's piece that would leave the king in check
                 if (piece.isKing) {
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => opponent.possibleMoves?.some(m => !m.equalsTo(move)) || move.equalsTo(opponent.position));
+                    let list = [];
+                    for (const pos of sBoard.getMoves(opponent.clone(), sBoard.clone().pieces, true, true)) {
+                        list.push(pos);
+                    }
+
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => {
+                        const validOpponentMoves = !opponent.possibleMoves?.some(m => m.equalsTo(move));
+                        const validOpponentPosition = move.equalsTo(opponent.position);
+                        return validOpponentMoves || validOpponentPosition;
+                    }).filter(move => {
+                        const isValidMove = list.find(m => m.equalsTo(move));
+                        return !isValidMove;
+                    });
+
                 } else {
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && cKing.possibleMoves?.some(m => m.equalsTo(move))));
+                    let list = [];
+                    for (const pos of sBoard.getMoves(cKing.clone(), sBoard.clone().pieces, true)) {
+                        list.push(pos);
+                    }
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
+                
                 }
 
             }
@@ -201,8 +219,32 @@ export class Board {
         .filter(p => p.color === sBoard.currentTeam)
         .every(p => p.possibleMoves === undefined || p.possibleMoves.length === 0);
 
+        // Insufficient Materials Check
+        const noPawn = this.pieces.filter(p => p.isPawn).length === 0;  // Check if there are no pawns on both sides
+
+        // Checks if other team has sufficient materials
+        const otherTeamCheck = this.pieces.filter(p => p.color !== sBoard.currentTeam).some(p => p.isQueen || p.isRook) 
+        || this.pieces.filter(p => p.color !== sBoard.currentTeam && p.isBishop).length == 2
+        || this.pieces.filter(p => p.color !== sBoard.currentTeam && p.isKnight).length == 2;
+
+        // Check if one side has just a king and the other side have insufficient materials
+        let onlyKings = this.pieces.filter(p => p.color === sBoard.currentTeam).every(p => p.isKing);
+        onlyKings = onlyKings && !otherTeamCheck;
+
+        // Check if one side has just one king and bishop and the other side have insufficient materials
+        const kingBishopArray = this.pieces.filter(p => p.color === sBoard.currentTeam);
+        const kingBishopLength = kingBishopArray.length;
+        const kingBishop = kingBishopLength === 2 && !kingBishopArray.some(p => p.isRook || p.isQueen) && !otherTeamCheck;
+
+        // Check if one side has just one king and knight and the other side have insufficient materials
+        const kingKnightArray = this.pieces.filter(p => p.color === sBoard.currentTeam);
+        const kingKnightLength = kingKnightArray.length;
+        const kingKnight = kingKnightLength === 2 && !kingKnightArray.some(p => p.isRook || p.isQueen) && !otherTeamCheck;
+
+        const insufficentMaterials = noPawn && (onlyKings || kingBishop || kingKnight);
+
         // If there are no legal moves, it's a stalemate
-        if (noLegalMoves) {
+        if (noLegalMoves || insufficentMaterials) {
             stalemate = true;
             this.winningTeam = ColorTeam.DRAW;
         } else {

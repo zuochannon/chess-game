@@ -126,11 +126,12 @@ export default function ChessRulesController({
       const isCapture = existingPiece
         ? existingPiece.color !== playedPiece.color
         : false;
-
+        
       // Append move to move history
       // Ensure all parameters are now correctly boolean
       const moveNotation = generateMoveNotation(
         playedPiece,
+        board,
         startPosition,
         dest,
         isCapture,

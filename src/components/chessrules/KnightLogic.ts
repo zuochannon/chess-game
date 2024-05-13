@@ -34,7 +34,7 @@ export const knightMove = (initialPosition: Position, newPosition: Position, col
 }
 
 // Export all possible knight moves from the selected knight piece
-export const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[]): Position[] => {
+export const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[], includeIllegal: boolean): Position[] => {
     const possibleMoves: Position[] = [];
     const offsets: [number, number][] = [
         [1, 2], [1, -2], [-1, 2], [-1, -2], // Vertical moves first
@@ -48,8 +48,13 @@ export const getPossibleKnightMoves = (knight: ChessPiece, board: ChessPiece[]):
 
         // Check if move is valid
         if (newX < 0 || newX > 7 || newY < 0 || newY > 7) continue;
-  
+
         const dest = new Position(newX, newY);
+        if (includeIllegal) {
+            possibleMoves.push(dest);
+            continue;
+        }
+  
         if ((!isSquareOccupied(dest, board) || isSquareOccupiedByOppositeColor(dest, board, knight.color))) {
             possibleMoves.push(dest);
         }
