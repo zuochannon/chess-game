@@ -45,7 +45,7 @@ export function Play() {
           </button>
         </div>
       </div>
-      <div id="play" className="p-2 w-auto ">
+      <div id="play" className="p-2 w-auto">
         <Game
           offset={NavigationBarHeight}
           boardOrientation={boardOrientation}

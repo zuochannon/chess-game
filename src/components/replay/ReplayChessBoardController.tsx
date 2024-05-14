@@ -106,7 +106,7 @@ export default function ReplayChessBoardController({
         </div>
         <div className="chessboard-container">
           <ReplayChessBoard
-            pieces={board.pieces}
+            pieces={chessboard.pieces}
             boardOrientation={orientation}
           />
         </div>
