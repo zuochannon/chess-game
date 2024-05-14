@@ -1,15 +1,6 @@
 import { cassandraClient } from "../../../connection.mjs";
 import constants from "../../../constants.mjs";
 
-const createBoardType = async () => {
-    const query = `CREATE TYPE IF NOT EXISTS ${constants.KEYSPACE}.Board(
-        pieces list<frozen <Piece>>, 
-        turns int,
-    );`
-    await cassandraClient.execute(query);
-    console.log("created coordinate type");
-}
-
 const createPieceType = async () => {
     const query = `CREATE TYPE IF NOT EXISTS ${constants.KEYSPACE}.Piece(
         position frozen <Position>,
@@ -33,7 +24,6 @@ const createGameReplay = async () => {
 
     await createPositionType();
     await createPieceType();
-    await createBoardType();
 
   const query = `CREATE TABLE IF NOT EXISTS ${constants.KEYSPACE}.GameReplay (
         gameID UUID,

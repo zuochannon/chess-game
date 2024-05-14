@@ -28,6 +28,6 @@ const createGameAnnotations = async () => {
 //         prepare: true,
 //       })
 //     ).rows[0]; 
-}
+// }
 
 export default createGameAnnotations;

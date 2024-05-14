@@ -88,10 +88,8 @@ export function Replay() {
     if (!fetchedBoard) return; 
     if (index < 0 || index >= fetchedBoard.length) {
       setIndex(Math.min(fetchedBoard.length - 1, Math.max(0, index)));
-      console.log("ran");
       return;
     }
-    console.log("2")
     setReplayPGN(gamePGN.slice(0, index));
     setNewBoard(fetchedBoard[index]);
   }, [index]);
