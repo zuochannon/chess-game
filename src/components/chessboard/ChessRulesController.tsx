@@ -33,6 +33,9 @@ interface Props {
   chessboard: Board;
   onlineHandler: any;
   updateBoardState: (board : Board) => void;
+  moveHistory : string[];
+	updateMoveHistory : (move : string) => void;
+  cleanOnRestart : () => void;
 }
 
 // Responsible for handling valid chess moves
@@ -42,10 +45,12 @@ export default function ChessRulesController({
   chessboard,
   onlineHandler,
   updateBoardState,
+  moveHistory,
+  updateMoveHistory,
+  cleanOnRestart
 }: Props) {
   const [board, setBoard] = useState<Board>(chessboard);
   const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
-  const [moveHistory, setMoveHistory] = useState<string[]>([]);
   const [myTurn, setMyTurn] = useState(true);
   const [orientation, setOrientation] = useState<ColorTeam>(boardOrientation);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -255,15 +260,10 @@ export default function ChessRulesController({
     checkmateModalRef.current?.classList.add("hidden");
     stalemateModalRef.current?.classList.add("hidden");
     setBoard(initialBoard.clone());
-    setMoveHistory([]);
+    cleanOnRestart();
     setOrientation((prevOrientation) =>
       prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE
     );
-  }
-
-  // Update move history
-  function updateMoveHistory(move: string) {
-    setMoveHistory((prevHistory) => [...prevHistory, move]);
   }
 
   // Forfeit the game
