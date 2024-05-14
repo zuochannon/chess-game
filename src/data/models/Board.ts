@@ -159,7 +159,15 @@ export class Board {
                 for (const pos of sBoard.getMoves(cKing.clone(), sBoard.pieces, true)) {
                     list.push(pos);
                 }
-                piece.possibleMoves = piece.possibleMoves?.filter(move => !(opponent.possibleMoves?.some(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
+                const line = this.calculateLineBetweenPositions(cKing.position, opponent.position);
+                
+                piece.possibleMoves = piece.possibleMoves?.filter(() => {
+                    return !(opponent.possibleMoves?.some(m => m.equalsTo(piece.position)) &&
+                             list.some(m => m.equalsTo(piece.position)) &&
+                             line.some(m => m.equalsTo(piece.position)));
+                });
+                
+            
             }
         }
     }
@@ -197,10 +205,11 @@ export class Board {
 
                 } else {
                     let list = [];
-                    for (const pos of sBoard.getMoves(cKing.clone(), sBoard.clone().pieces, true)) {
+                    for (const pos of sBoard.getMoves(cKing.clone(), sBoard.pieces, true)) {
                         list.push(pos);
                     }
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move))));
+                    const line = this.calculateLineBetweenPositions(cKing.position, opponent.position);
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.equalsTo(playMove) || (opponent.possibleMoves?.filter(m => m.equalsTo(move)) && list.some(m => m.equalsTo(move)) && line.some(position => position.equalsTo(move))));
                 
                 }
 
@@ -209,6 +218,38 @@ export class Board {
 
         return currentTeamKingInCheck;
     }
+
+    // Function to calculate the line between two positions
+    private calculateLineBetweenPositions(kingPos: Position, opponentPos: Position): Position[] {
+        const line = [];
+
+        const dx = Math.abs(opponentPos.x - kingPos.x);
+        const dy = Math.abs(opponentPos.y - kingPos.y);
+        const sx = kingPos.x < opponentPos.x ? 1 : -1;
+        const sy = kingPos.y < opponentPos.y ? 1 : -1;
+        let err = dx - dy;
+        let x = kingPos.x;
+        let y = kingPos.y;
+
+        while (true) {
+            line.push(new Position(x, y));
+
+            if (x === opponentPos.x && y === opponentPos.y) break;
+
+            const e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y += sy;
+            }
+        }
+
+        return line;
+    }
+
 
     // Return if stalemate occurs
     private isStalemate(sBoard: Board): boolean {
