@@ -32,12 +32,12 @@ const convertPiecesToClass = (pieces): ChessPiece[] =>
   );
 
 const createBoardList = (pieces : ChessPiece[]): Board[] =>
-  pieces.map((el : ChessPiece, index : number) => new Board(convertPiecesToClass(el), index));
+  pieces.map((el : ChessPiece, index : number) => new Board(convertPiecesToClass(el), index - 1));
 
 let fetchedBoard: Board[];
 let totalTurns = 0;
 let winningTeam = "";
-let gamePGN = "";
+let gamePGN : string[] = [];
 
 export function Replay() {
   const { gameid } = useParams();
@@ -45,27 +45,33 @@ export function Replay() {
   // const [totalTurns, setT]
   const [pgn, setPGN] = useState<string[]>([]);
 
+  
+  const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
+  const [index, setIndex] = useState(0);
+  const [newBoard, setNewBoard] = useState<Board>(initialBoard.clone());
+  
+  const [replayPGN, setReplayPGN] = useState<string[]>([]);
+  
+  const [paused, setPaused] = useState(true);
+  
   useEffect(() => {
     getReplay(gameid)
       .then((response) => response.json())
       .then((data) => {
         fetchedBoard = createBoardList(data.pieces);
+        fetchedBoard.shift();
+        setNewBoard(fetchedBoard[0])
         totalTurns = data.totalturns;
         winningTeam = data.winningTeam;
         gamePGN = data.pgn;
       });
   }, [gameid]);
 
-  const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
-  const [index, setIndex] = useState(0);
-  const [newBoard, setNewBoard] = useState<Board>(initialBoard.clone());
-
-  const [paused, setPaused] = useState(true);
-
+  
   const getNextState = () => {
     setIndex((prevIndex) => prevIndex + 1);
   };
-
+  
   const getPrevState = () => {
     setIndex((prevIndex) => prevIndex - 1);
   };
@@ -79,7 +85,15 @@ export function Replay() {
   };
 
   useEffect(() => {
-    if (fetchedBoard && fetchedBoard[index]) setNewBoard(fetchedBoard[index]);
+    if (!fetchedBoard) return; 
+    if (index < 0 || index >= fetchedBoard.length) {
+      setIndex(Math.min(fetchedBoard.length - 1, Math.max(0, index)));
+      console.log("ran");
+      return;
+    }
+    console.log("2")
+    setReplayPGN(gamePGN.slice(0, index));
+    setNewBoard(fetchedBoard[index]);
   }, [index]);
 
   useEffect(() => {
@@ -92,7 +106,7 @@ export function Replay() {
   return (
     <main className="h-screen bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative flex flex-col gap-4 items-center justify-center">
       <div id="play" className="p-2 w-auto">
-        <div>
+        <div className="flex flex-row">
           <ReplayChessBoardController
             boardOrientation={boardOrientation}
             chessboard={newBoard}
@@ -100,17 +114,17 @@ export function Replay() {
           <div className="move-history">
           <h3 className="text-center text-white p-2">PGN</h3>
           <div className="moves-container">
-            {pgn.map((move, index) =>
+            {replayPGN.map((move, index) =>
               index % 2 === 0 ? (
                 // Display both White and Black moves on the same line
                 <span key={index} className="move-pair">
                   <span>
                     {Math.floor(index / 2) + 1}. {move}
                   </span>
-                  {pgn[index + 1] && (
+                  {replayPGN[index + 1] && (
                     <span className="black-move">
                       {" "}
-                      {pgn[index + 1]}
+                      {replayPGN[index + 1]}
                     </span>
                   )}
                 </span>
