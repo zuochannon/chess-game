@@ -14,6 +14,7 @@ import Dev from "@/pages/Dev";
 import GameHistory from "@/pages/GameHistory";
 import Match from "@/pages/Match";
 import UserLeaderboard from "@/pages/Leaderboard";
+import { Replay } from "@/pages/Replay";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/dev" element={<Dev />} />
           <Route path="/match" element={<Match />} />
           <Route path="/leaderboard" element={<UserLeaderboard />} />
+          <Route path="/replay" element={<Replay />} />
           
         </Route>
       </Routes>
