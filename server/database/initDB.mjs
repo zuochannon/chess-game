@@ -50,7 +50,7 @@ const initPostgres = async () => {
 const resetDB = async () => {
   await Promise.all([
     cassandraClient.execute(`DROP KEYSPACE IF EXISTS ${CONSTANTS.KEYSPACE};`),
-    pool.query(`DROP TABLE Users`),
+    pool.query(`DROP TABLE IF EXISTS Users`),
     redisClient.flushall(),
   ]);
 

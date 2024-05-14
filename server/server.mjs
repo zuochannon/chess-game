@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes.mjs";
 import whoamiRoutes from "./routes/whoami.mjs";
 import matchRoutes from "./routes/match.mjs";
 import leaderboardRoutes from "./routes/leaderboardRoutes.mjs";
+import replayRoutes from "./routes/gameReplay.mjs"
 import startWebSocketServer from "./chat/chat-server.mjs";
 
 if (!process.env.JWT_SECRET) {
@@ -33,6 +34,7 @@ app.use("/gamelog", verifyToken, gamelogRoutes);
 app.use("/onlinePlay", onlinePlayRoutes);
 app.use("/match", matchRoutes);
 app.use("/leaderboard", leaderboardRoutes);
+app.use("/replay", replayRoutes);
 
 app.listen(ENV.PORT, () => {
   console.log(`Server running on port ${ENV.PORT}`);

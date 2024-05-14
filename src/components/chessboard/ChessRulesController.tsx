@@ -57,7 +57,6 @@ export default function ChessRulesController({
     updateBoardState(board);
   }, [board]);
 
-
   // Boolean function to check if move was valid
   function playMove(playedPiece: ChessPiece, dest: Position): boolean {
     let isValidMove = false;

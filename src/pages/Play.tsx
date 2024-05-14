@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { initialBoard } from "@/data/constants/ChessConstants";
 import Chat from "@/components/chat/Chat";
 import { Board } from "@/data/models/Board";
+import { archiveGame } from "@/services/GameService";
 
 export function Play() {
   const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
@@ -15,6 +16,11 @@ export function Play() {
 
   const updateBoardState = (newBoardState: Board) => {
     setBoardState((prevStates) => [...prevStates, newBoardState]);
+    
+    if (newBoardState.winningTeam) {
+      console.log("Game has ended. Saving.");
+      archiveGame(boardState);
+    }
   };
 
   function changeOrientation() {

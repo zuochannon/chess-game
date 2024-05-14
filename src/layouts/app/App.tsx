@@ -36,7 +36,7 @@ function App() {
           <Route path="/dev" element={<Dev />} />
           <Route path="/match" element={<Match />} />
           <Route path="/leaderboard" element={<UserLeaderboard />} />
-          <Route path="/replay" element={<Replay />} />
+          <Route path="/replay/:gameid" element={<Replay />} />
           
         </Route>
       </Routes>

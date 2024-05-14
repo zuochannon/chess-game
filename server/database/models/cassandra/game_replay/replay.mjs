@@ -4,7 +4,7 @@ import constants from "../../../constants.mjs";
 const createBoardType = async () => {
     const query = `CREATE TYPE IF NOT EXISTS ${constants.KEYSPACE}.Board(
         pieces list<frozen <Piece>>, 
-        turns int
+        turns int,
     );`
     await cassandraClient.execute(query);
     console.log("created coordinate type");
@@ -39,63 +39,27 @@ const createGameReplay = async () => {
   const query = `CREATE TABLE IF NOT EXISTS ${constants.KEYSPACE}.GameReplay (
         gameID UUID,
         states list<frozen <Board>>,
+        winningTeam text,
         PRIMARY KEY (gameID)
     );`;
   await cassandraClient.execute(query);
   console.log("created game replay table");
 };
 
-// const getDrawGames = async (userID) => {
-//   const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE players CONTAINS ? AND result='draw' ALLOW FILTERING;`;
-//   return (
-//     await cassandraClient.execute(query, [userID], {
-//       prepare: true,
-//     })
-//   ).rows;
-// };
+export const insertReplay = async (states, winningTeam) => {
+    const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameID, states, winningTeam) VALUES (uuid(), ?, ?);`
+    await cassandraClient.execute(query, [states, winningTeam], {
+        prepare: true,
+    });
+}
 
-// const getWonGames = async (userID) => {
-//   const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE winnerid = ? ALLOW FILTERING;`;
-//   return (
-//     await cassandraClient.execute(query, [userID], {
-//       prepare: true,
-//     })
-//   ).rows;
-// };
-
-// const getLostGames = async (userID) => {
-//   const query = `SELECT gameid, timestamp, game_type, playerNames, turns, comments FROM ${constants.KEYSPACE}.GameHistory WHERE loserid = ? ALLOW FILTERING;`;
-//   return (
-//     await cassandraClient.execute(query, [userID], {
-//       prepare: true,
-//     })
-//   ).rows;
-// };
-
-// export const getGames = async (userID) => {
-//   const [won, lost, draw] = await Promise.all([
-//     getWonGames(userID),
-//     getLostGames(userID),
-//     getDrawGames(userID),
-//   ]);
-
-//   won.forEach(el => el.result = "won");
-//   lost.forEach(el => el.result = "lost");
-//   draw.forEach(el => el.result = "draw");
-
-//   return {
-//     won,
-//     lost,
-//     draw,
-//   };
-// };
-
-// export const updateComment = async (gameID, comment) => {
-//   await cassandraClient.execute(
-//     `UPDATE ${constants.KEYSPACE}.GameHistory SET comments = ? WHERE gameid=?`,
-//     [comment, gameID],
-//     { prepare: true }
-//   );
-// }
+export const getReplay = async (gameID) => {
+    const query = `SELECT * FROM ${constants.KEYSPACE}.GameReplay WHERE gameid = ?;`;
+    return (
+      await cassandraClient.execute(query, [gameID], {
+        prepare: true,
+      })
+    ).rows[0]; 
+}
 
 export default createGameReplay;

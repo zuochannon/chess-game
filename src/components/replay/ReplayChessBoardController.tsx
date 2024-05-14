@@ -38,11 +38,8 @@ interface Props {
 
 // Responsible for handling valid chess moves
 export default function ReplayChessBoardController({
-  offset,
   boardOrientation,
   chessboard,
-  onlineHandler,
-  updateBoardState,
 }: Props) {
   const [board, setBoard] = useState<Board>(chessboard);
   const [promotionPawn, setPromotionPawn] = useState<ChessPiece>();
@@ -99,12 +96,12 @@ export default function ReplayChessBoardController({
         <div className="flex flex-col items-center justify-between py-10">
           <div className="turn-count-box">
             <label className="text-white turn-label">
-              Turn: {board.totalTurns}
+              Turn: {chessboard.totalTurns}
             </label>
           </div>
           <Button onClick={changeOrientation}>Change Orientation</Button>
         </div>
-        <div className="chessboard-container">
+        <div className="chessboard-container pointer-events-none">
           <ReplayChessBoard
             pieces={chessboard.pieces}
             boardOrientation={orientation}
