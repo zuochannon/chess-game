@@ -14,8 +14,7 @@ const createPieceType = async () => {
     const query = `CREATE TYPE IF NOT EXISTS ${constants.KEYSPACE}.Piece(
         position frozen <Position>,
         type text,
-        color text,
-        hasMoved boolean
+        color text
     );`
     await cassandraClient.execute(query);
     console.log("created piece type");
@@ -38,17 +37,19 @@ const createGameReplay = async () => {
 
   const query = `CREATE TABLE IF NOT EXISTS ${constants.KEYSPACE}.GameReplay (
         gameID UUID,
-        states list<frozen <Board>>,
+        pieces list<frozen <list<frozen <Piece>>>>,
+        totalTurns int,
         winningTeam text,
+        pgn list<text>,
         PRIMARY KEY (gameID)
     );`;
   await cassandraClient.execute(query);
   console.log("created game replay table");
 };
 
-export const insertReplay = async (states, winningTeam) => {
-    const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameID, states, winningTeam) VALUES (uuid(), ?, ?);`
-    await cassandraClient.execute(query, [states, winningTeam], {
+export const insertReplay = async (pieces, totalTurns, winningTeam, pgn) => {
+    const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameID, pieces, totalTurns, winningTeam, pgn) VALUES (uuid(), ?, ?, ?, ?);`
+    await cassandraClient.execute(query, [pieces, totalTurns, winningTeam, pgn], {
         prepare: true,
     });
 }
