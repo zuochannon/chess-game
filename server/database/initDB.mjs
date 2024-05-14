@@ -2,6 +2,7 @@ import { cassandraClient, pool, redisClient } from "./connection.mjs";
 import { default as CONSTANTS, default as constants } from "./constants.mjs";
 import initData from "./initData.mjs";
 import createGameHistory from "./models/cassandra/game/gameHistory.mjs";
+import createGameReplay from "./models/cassandra/game_replay/replay.mjs";
 import createUserInfo from "./models/cassandra/users/userInfo.mjs";
 import createUserTable from "./models/postgres/users/userAuth.mjs";
 
@@ -27,7 +28,7 @@ const createExtension = async () => {
 };
 
 const createColumnFamilies = async () => {
-  await Promise.all([createUserInfo(), createGameHistory()]);
+  await Promise.all([createUserInfo(), createGameHistory(), createGameReplay()]);
 };
 
 const createTables = async () => {
