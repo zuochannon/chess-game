@@ -27,24 +27,32 @@ const convertPiecesToClass = (pieces): ChessPiece[] =>
         new Position(el.position.x, el.position.y),
         el.type,
         el.color,
-        el.hasMoved
+        false
       )
   );
 
-const createBoardList = (states): Board[] =>
-  states.map((el) => new Board(convertPiecesToClass(el.pieces), el.totalTurns));
+const createBoardList = (pieces : ChessPiece[]): Board[] =>
+  pieces.map((el : ChessPiece, index : number) => new Board(convertPiecesToClass(el), index));
 
-let test: Board[];
-let boardStates;
+let fetchedBoard: Board[];
+let totalTurns = 0;
+let winningTeam = "";
+let gamePGN = "";
 
 export function Replay() {
   const { gameid } = useParams();
 
+  // const [totalTurns, setT]
+  const [pgn, setPGN] = useState<string[]>([]);
+
   useEffect(() => {
-    boardStates = getReplay(gameid)
+    getReplay(gameid)
       .then((response) => response.json())
       .then((data) => {
-        test = createBoardList(data.states);
+        fetchedBoard = createBoardList(data.pieces);
+        totalTurns = data.totalturns;
+        winningTeam = data.winningTeam;
+        gamePGN = data.pgn;
       });
   }, [gameid]);
 
@@ -67,11 +75,11 @@ export function Replay() {
   };
 
   const gotoEnd = () => {
-    setIndex(test.length - 1);
+    setIndex(fetchedBoard.length - 1);
   };
 
   useEffect(() => {
-    if (test && test[index]) setNewBoard(test[index]);
+    if (fetchedBoard && fetchedBoard[index]) setNewBoard(fetchedBoard[index]);
   }, [index]);
 
   useEffect(() => {
@@ -89,6 +97,30 @@ export function Replay() {
             boardOrientation={boardOrientation}
             chessboard={newBoard}
           />
+          <div className="move-history">
+          <h3 className="text-center text-white p-2">PGN</h3>
+          <div className="moves-container">
+            {pgn.map((move, index) =>
+              index % 2 === 0 ? (
+                // Display both White and Black moves on the same line
+                <span key={index} className="move-pair">
+                  <span>
+                    {Math.floor(index / 2) + 1}. {move}
+                  </span>
+                  {pgn[index + 1] && (
+                    <span className="black-move">
+                      {" "}
+                      {pgn[index + 1]}
+                    </span>
+                  )}
+                </span>
+              ) : (
+                // Add a line break after every black move
+                <br key={index} />
+              )
+            )}
+          </div>
+        </div>
         </div>
       </div>
       <div className="flex flex-row w-fit items-center justify-center gap-16 text-white bg-black bg-opacity-50 p-4 rounded-full">
