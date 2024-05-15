@@ -2,12 +2,10 @@ import { cassandraClient } from "../../../connection.mjs";
 import constants from "../../../constants.mjs";
 
 const createGameAnnotations = async () => {
-  
   const query = `CREATE TABLE IF NOT EXISTS ${constants.KEYSPACE}.GameAnnotations (
         gameID UUID,
         userID UUID,
-        pgn list<text>,
-        annotations map<text, text>,
+        annotations map< frozen<tuple<int, text>>, text>,
         PRIMARY KEY (gameID, userID)
     );`;
   await cassandraClient.execute(query);
@@ -21,13 +19,13 @@ const createGameAnnotations = async () => {
 //     });
 // }
 
-// export const getReplay = async (gameID) => {
-//     const query = `SELECT * FROM ${constants.KEYSPACE}.GameReplay WHERE gameid = ?;`;
-//     return (
-//       await cassandraClient.execute(query, [gameID], {
-//         prepare: true,
-//       })
-//     ).rows[0]; 
-// }
+export const getAnnotations = async (gameID, userID) => {
+    const query = `SELECT annotations FROM ${constants.KEYSPACE}.GameAnnotations WHERE gameid = ? AND userid = ?;`;
+    return (
+      await cassandraClient.execute(query, [gameID, userID], {
+        prepare: true,
+      })
+    ).rows[0].annotations;
+}
 
 export default createGameAnnotations;

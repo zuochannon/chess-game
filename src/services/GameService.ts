@@ -25,3 +25,10 @@ export const archiveGame = async (state : Board[], pgn : string[]) => {
 export const getReplay = async (gameID : string) => {
   return await fetch(`${import.meta.env.VITE_SERVER}/replay/getReplay?gameid=${gameID}`);
 }
+
+export const getAnnotations = async (gameID : string) => {
+  return await fetch(`${import.meta.env.VITE_SERVER}/annotate/getAnnotations?gameid=${gameID}`, {
+    method: "GET",
+    credentials: "include"
+  });
+}

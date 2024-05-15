@@ -50,12 +50,6 @@ export default function ReplayChessBoardController({
   const checkmateModalRef = useRef<HTMLDivElement>(null);
   const stalemateModalRef = useRef<HTMLDivElement>(null);
 
-  function changeOrientation() {
-    setOrientation((prevOrientation) =>
-      prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE
-    );
-  }
-
   // Return Promotion Prompt
   return (
     <>
@@ -92,22 +86,12 @@ export default function ReplayChessBoardController({
           </div>
         </div>
       </div> */}
-      <div className="container">
-        <div className="flex flex-col items-center justify-between py-10">
-          <div className="turn-count-box">
-            <label className="text-white turn-label">
-              Turn: {chessboard.totalTurns}
-            </label>
-          </div>
-          <Button onClick={changeOrientation}>Change Orientation</Button>
-        </div>
-        <div className="chessboard-container pointer-events-none">
+        <div className="pointer-events-none">
           <ReplayChessBoard
             pieces={chessboard.pieces}
-            boardOrientation={orientation}
+            boardOrientation={boardOrientation}
           />
         </div>
-      </div>
     </>
   );
 }
