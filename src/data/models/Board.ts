@@ -155,20 +155,40 @@ export class Board {
                     });
                 }
             } else { /* Filter out moves that can leave the king vulnerable to immediate check */
-                let list = [];
-                for (const pos of sBoard.getMoves(cKing.clone(), sBoard.pieces, true)) {
-                    list.push(pos);
-                }
-                const line = this.calculateLineBetweenPositions(cKing.position, opponent.position);
-                
-                piece.possibleMoves = piece.possibleMoves?.filter(() => {
-                    return !(opponent.possibleMoves?.some(m => m.equalsTo(piece.position)) &&
-                             list.some(m => m.equalsTo(piece.position)) &&
-                             line.some(m => m.equalsTo(piece.position)));
-                });
-                
+                const line = sBoard.calculateLineBetweenPositions(cKing.position, opponent.position);
+                let positionsBetween = [];
             
+                // Iterate over positions along the line
+                for (const pos of line) {
+                    // Get the piece at the current position
+                    const pieceAtPosition = sBoard.getPieceAtPosition(pos);
+                    
+                    // If there is no piece or the piece is the king or the opponent, skip it
+                    if (!pieceAtPosition || (pieceAtPosition.isKing && pieceAtPosition.color === piece.color)|| pieceAtPosition.hasSamePiecePositionAs(opponent)) {
+                        continue;
+                    }
+                    
+                    // Add the position to the list of positions between the king and opponent
+                    positionsBetween.push(pos);
+                }
+
+                // Filter out moves that could put the king in immediate danger
+                piece.possibleMoves = piece.possibleMoves?.filter(move => {
+                    // Check if any opponent's possible move corresponds to the piece's position
+                    return !(opponent.possibleMoves?.some(m => m.equalsTo(move)) &&
+                            positionsBetween.some(m => m.equalsTo(move)) &&
+                            positionsBetween.length === 1 &&
+                            line.some(m => m.equalsTo(move)));
+                });
+
+                let illegalOpMoves = sBoard.getMoves(opponent, sBoard.pieces, true);
+                
+                // If there's only one piece between the king and opponent, limit moves to capturing that piece or along the capturing line of the opponent
+                if (positionsBetween.length === 1 && opponent.possibleMoves?.some(m => m.equalsTo(piece.position)) && line.some(m => m.equalsTo(piece.position)) && illegalOpMoves.some(m => m.equalsTo(cKing.position))) {
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => move.equalsTo(opponent.position) || line.some(m => m.equalsTo(move)));
+                }
             }
+        
         }
     }
  
@@ -249,7 +269,6 @@ export class Board {
 
         return line;
     }
-
 
     // Return if stalemate occurs
     private isStalemate(sBoard: Board): boolean {
