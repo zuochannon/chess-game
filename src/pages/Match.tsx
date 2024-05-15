@@ -21,6 +21,8 @@ const Match = () => {
 	const [roomid, setRoomid] = useState(-1);
 
 	const { whoAmI } = useWhoAmIContext();
+	
+	const [matchedPlayer, setMatch] = useState("");
 
 	const navigate = useNavigate();
 
@@ -32,6 +34,18 @@ const Match = () => {
 			},
 			credentials: "include",
 		});
+	}
+
+	const fetchMatch = async () => {
+		fetch(`${import.meta.env.VITE_SERVER}/match/getMatches`, {
+			method: "GET",
+			credentials: "include",
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log(data);
+				setMatch(JSON.stringify(data));
+			});
 	}
 
 	const fetchQueueLength = async () => {
@@ -50,7 +64,8 @@ const Match = () => {
 	useEffect(() => {
 		fetchQueueLength();
 
-		const interval = setInterval(fetchQueueLength, 5000);
+
+		const interval = setInterval(() => { fetchQueueLength(); fetchMatch(); }, 5000);
 		return () => clearInterval(interval);
 	}, []);
 
@@ -91,6 +106,9 @@ const Match = () => {
 					Please log in to create a game.
 				</div>
 			)}
+			<h3 className="text-white">
+				{matchedPlayer}
+			</h3>
 		</main>
 	);
 };

@@ -61,29 +61,31 @@ router.post("/queue", verifyToken, async (req, res) => {
 
 });
 
+const matches = {};
+
 router.post("/match", async (req, res) => {
   console.log("players", await getPlayers());
   console.log("queue", await get());
   let currentPlayerKey = await queueNext();
 
-  // const matches = {};
 
   while (currentPlayerKey) {
     const currentPlayer = await getUser(currentPlayerKey);
-    // matches[currentPlayer] = await match(currentPlayer);
-    console.log(
-      "currentPlayer",
-      currentPlayer,
-      "matched with",
-      await match(currentPlayer)
-    );
+    
+    const matchedPlayer = await match(currentPlayer);
+    matches[currentPlayer.IP] = matchedPlayer;
+    matches[matchedPlayer.IP] = currentPlayer;
+    
     currentPlayerKey = await queueNext();
   }
   console.log("players still in the queue", await getPlayers());
 
-  // console.log(matches)
-  // res.json(matches);
+  console.log("MATCHES", matches)
 });
+
+router.get("/getMatches", verifyToken, async (req, res) => {
+  res.json({ match: matches[req.user.userID] });
+})
 
 
 
