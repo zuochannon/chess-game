@@ -2,7 +2,6 @@ import "../layouts/pages/Play.css";
 import { ColorTeam } from "@/data/enums/ChessEnums";
 import { useEffect, useRef, useState } from "react";
 import { initialBoard } from "@/data/constants/ChessConstants";
-import Chat from "@/components/chat/Chat";
 import { Board } from "@/data/models/Board";
 import ReplayChessBoardController from "@/components/replay/ReplayChessBoardController";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,11 @@ import { GrLinkPrevious } from "react-icons/gr";
 import { FaPlay } from "react-icons/fa";
 import { FaStop } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { addAnnotation, getAnnotations, getReplay } from "@/services/GameService";
+import {
+  addAnnotation,
+  getAnnotations,
+  getReplay,
+} from "@/services/GameService";
 import { toast } from "sonner";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -41,7 +44,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
@@ -67,7 +70,8 @@ let winningTeam = "";
 let gamePGN: string[] = [];
 let annotations = {};
 
-const convertToAnnotationKey = (index : number, pgn : string) => `(${index},${pgn})`;
+const convertToAnnotationKey = (index: number, pgn: string) =>
+  `(${index},${pgn})`;
 
 const MAX_SPEED = 3;
 const MIN_SPEED = 0.2;
@@ -92,7 +96,7 @@ export function Replay() {
 
   const inputCreateAnnotationRef = useRef(null);
 
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
 
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
@@ -101,17 +105,17 @@ export function Replay() {
   }
 
   const toggleCollapsible = () => {
-    setIsOpen(prevState => !prevState);
+    setIsOpen((prevState) => !prevState);
   };
 
   const handleCreateAnnotationSave = () => {
     const inputValue = inputCreateAnnotationRef?.current.value;
     const turn = index;
-    const movePGN = gamePGN[index-1];
+    const movePGN = gamePGN[index - 1];
     annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
     addAnnotation(gameid, turn, movePGN, inputValue);
 
-    console.log(annotations)
+    console.log(annotations);
     toggleCollapsible();
   };
 
@@ -167,7 +171,7 @@ export function Replay() {
     }
     setReplayPGN(gamePGN.slice(0, index));
     setNewBoard(fetchedBoard[index]);
-    setAnnotationKey(convertToAnnotationKey(index, gamePGN[index-1]));
+    setAnnotationKey(convertToAnnotationKey(index, gamePGN[index - 1]));
   }, [index]);
 
   useEffect(() => {
@@ -226,40 +230,50 @@ export function Replay() {
         </Select>
         <div className="text-white gap-4 flex flex-col">
           <h2>Speed: {speed}x</h2>
-          <Button onClick={changeOrientation} variant="ghost" className="bg-white text-black bg-opacity-80">
+          <Button
+            onClick={changeOrientation}
+            variant="ghost"
+            className="bg-white text-black bg-opacity-80"
+          >
             Change Orientation
           </Button>
           <Collapsible open={isOpen}>
-  <CollapsibleTrigger className="w-full">
-  
-          <Button className="w-full" onClick={toggleCollapsible}>
-            Create Annotation
-          </Button>
-  </CollapsibleTrigger>
-  <CollapsibleContent className="bg-black bg-opacity-25 p-2 mt-2 border-white border-opacity-50 border-2 rounded-lg">
-  <Textarea
-              ref={inputCreateAnnotationRef}
-              id="inputComment"
-              placeholder="Enter annotation"
-              className="my-4 text-black"
-            />
-            <div className="flex flex-row w-full justify-between">
-
-            <Button variant="secondary" onClick={handleCreateAnnotationCancel}>Cancel</Button>
-                    
+            <CollapsibleTrigger className="w-full">
+              <Button className="w-full" onClick={toggleCollapsible}>
+                Create Annotation
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="bg-black bg-opacity-25 p-2 mt-2 border-white border-opacity-50 border-2 rounded-lg">
+              <Textarea
+                ref={inputCreateAnnotationRef}
+                id="inputComment"
+                placeholder="Enter annotation"
+                className="my-4 text-black"
+              />
+              <div className="flex flex-row w-full justify-between">
                 <Button
-                  type="submit"
-                  onClick={handleCreateAnnotationSave}
-                  >
+                  variant="secondary"
+                  onClick={handleCreateAnnotationCancel}
+                >
+                  Cancel
+                </Button>
+
+                <Button type="submit" onClick={handleCreateAnnotationSave}>
                   Save
                 </Button>
-                    </div>
-  </CollapsibleContent>
-</Collapsible>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
           <div className="flex items-center space-x-2">
-      <Switch id="autostop" checked={autostop} onCheckedChange={(e) => setAutostop(e)} />
-      <Label htmlFor="autostop" className="text-sm" >Stop on Annotate</Label>
-    </div>
+            <Switch
+              id="autostop"
+              checked={autostop}
+              onCheckedChange={(e) => setAutostop(e)}
+            />
+            <Label htmlFor="autostop" className="text-sm">
+              Stop on Annotate
+            </Label>
+          </div>
         </div>
       </div>
       <div className="w-fit flex-1 flex flex-col items-center justify-center gap-4 py-2 px-6 h-fit bg-black bg-opacity-35 rounded-xl border-white border-2">
@@ -328,40 +342,9 @@ export function Replay() {
                     </TableRow>
                   )
                 );
-
-                // console.log(move, index)
-                // return <TableRow className="flex flex-row justify-evenly">
-                //   <TableCell>{Math.ceil(index / 2) + (index % 2 === 0 ? 1 : 0)}</TableCell>
-                //   <TableCell>{move}</TableCell>
-                //   <TableCell>{replayPGN[index+1]}</TableCell>
-                // </TableRow>
               })}
-              {/* <TableRow>
-      <TableCell className="font-medium">INV001</TableCell>
-      <TableCell>Paid</TableCell>
-      <TableCell className="text-right">$250.00</TableCell>
-    </TableRow> */}
             </TableBody>
           </Table>
-          {/* {replayPGN.map((move, index) =>
-                index % 2 === 0 ? (
-                  // Display both White and Black moves on the same line
-                  <span key={index} className="move-pair">
-                    <span>
-                      {Math.floor(index / 2) + 1}. {move}
-                    </span>
-                    {replayPGN[index + 1] && (
-                      <span className="black-move">
-                        {" "}
-                        {replayPGN[index + 1]}
-                      </span>
-                    )}
-                  </span>
-                ) : (
-                  // Add a line break after every black move
-                  <br key={index} />
-                )
-              )} */}
         </div>
       </div>
     </main>

@@ -1,31 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { initialBoard } from "../../data/constants/ChessConstants";
-import { ColorTeam, PieceType } from "../../data/enums/ChessEnums";
+import { useRef, useState } from "react";
+import { ColorTeam } from "../../data/enums/ChessEnums";
 import { Board } from "../../data/models/Board";
-import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
-import { Position } from "../../data/models/Position";
-import { generateMoveNotation } from "../ChessNotation/ChessNotation";
-import {
-  bishopMove,
-  kingMove,
-  knightMove,
-  pawnMove,
-  queenMove,
-  rookMove,
-} from "../chessrules";
-import Chessboard from "./ChessBoard";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { ChessPiece } from "../../data/models/ChessPiece";
 import ReplayChessBoard from "./ReplayChessBoard";
 
 interface Props {

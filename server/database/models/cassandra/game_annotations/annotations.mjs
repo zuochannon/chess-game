@@ -12,13 +12,6 @@ const createGameAnnotations = async () => {
   console.log("created game annotation table");
 };
 
-// export const insertReplay = async (states, winningTeam) => {
-//     const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameID, states, winningTeam) VALUES (uuid(), ?, ?);`
-//     await cassandraClient.execute(query, [states, winningTeam], {
-//         prepare: true,
-//     });
-// }
-
 export const getAnnotations = async (gameID, userID) => {
   const query = `SELECT annotations FROM ${constants.KEYSPACE}.GameAnnotations WHERE gameid = ? AND userid = ?;`;
   return (

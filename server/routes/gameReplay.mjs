@@ -1,10 +1,4 @@
 import express from "express";
-import { cassandraClient } from "../database/connection.mjs";
-import constants from "../database/constants.mjs";
-import {
-  getGames,
-  updateComment,
-} from "../database/models/cassandra/game/gameHistory.mjs";
 import {
   getReplay,
   insertReplay,
