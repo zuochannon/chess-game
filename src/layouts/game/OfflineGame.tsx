@@ -20,14 +20,23 @@ function OfflineGame({ offset, boardOrientation, board, onlineHandler }: Props) 
     setBoardState((prevStates) => [...prevStates, newBoardState]);
   };
 
+  const addGame = async (winningTeam, turns, game_type) => {
+
+      const gameID = await addOfflineGame(winningTeam, turns, "Practice")
+      .then(response => response.json())
+      .then(data => data.gameID)
+    
+      await archiveGame(gameID, boardState, moveHistory); // save replay
+  }
+
   useEffect(() => {
     if (boardState[boardState.length - 1]?.winningTeam) {
       console.log("Game has ended. Saving.");
-      archiveGame(boardState, moveHistory); // save replay
       const lastState = boardState[boardState.length - 1];
       const winningTeam = lastState.winningTeam ?? ColorTeam.ILLEGAL;
       const turns = lastState.totalTurns;
-      addOfflineGame(winningTeam, turns, "Practice");
+
+      addGame(winningTeam, turns, "Practice");
     }
     console.log(boardState);
   }, [boardState, moveHistory]);

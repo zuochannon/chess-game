@@ -70,19 +70,18 @@ router.post("/addOfflineGame", async (req, res) => {
   }
 
   try {
-    res.json(
-      await insertGameHistory(
-        gameID,
-        players,
-        playerNames,
-        result,
-        winnerID,
-        loserID,
-        Date.now(),
-        turns,
-        game_type
-      )
-    );
+    await insertGameHistory(
+      gameID,
+      players,
+      playerNames,
+      result,
+      winnerID,
+      loserID,
+      Date.now(),
+      turns,
+      game_type
+    )
+    res.json({ gameID });
   } catch (error) {
     console.error("Error executing Cassandra query:", error);
     res.status(500).json({ error: "Internal server error" });

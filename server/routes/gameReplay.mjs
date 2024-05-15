@@ -7,7 +7,7 @@ import {
 const router = express.Router();
 
 router.post("/archiveGame", async (req, res) => {
-  const { state, pgn } = req.body;
+  const { gameID, state, pgn } = req.body;
 
   const pieces = state.map((el) => el.pieces);
 
@@ -16,7 +16,7 @@ router.post("/archiveGame", async (req, res) => {
   const winningTeam = state[state.length - 1].winningTeam;
 
   try {
-    res.json(await insertReplay(pieces, totalTurns, winningTeam, pgn));
+    res.json(await insertReplay(gameID, pieces, totalTurns, winningTeam, pgn));
   } catch (error) {
     console.error("Error executing Cassandra query:", error);
     res.status(500).json({ error: "Internal server error" });

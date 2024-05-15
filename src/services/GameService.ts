@@ -12,13 +12,13 @@ export const updateComment = async (gameID : string, comment : string) => {
       });  
 }
 
-export const archiveGame = async (state : Board[], pgn : string[]) => {
+export const archiveGame = async (gameID : string, state : Board[], pgn : string[]) => {
   return await fetch(`${import.meta.env.VITE_SERVER}/replay/archiveGame`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ state, pgn }),
+    body: JSON.stringify({ gameID, state, pgn }),
     credentials: "include",
   }); 
 }
