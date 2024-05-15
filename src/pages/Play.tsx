@@ -1,10 +1,10 @@
 import { NavigationBarHeight } from "@/data/constants/NavItems";
-import Game from "../layouts/game/Game";
 import "../layouts/pages/Play.css";
 import { ColorTeam } from "@/data/enums/ChessEnums";
 import { useState } from "react";
 import { initialBoard } from "@/data/constants/ChessConstants";
 import Chat from "@/components/chat/Chat";
+import OfflineGame from "@/layouts/game/OfflineGame";
 
 export function Play() {
   const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
@@ -39,7 +39,7 @@ export function Play() {
         </div>
       </div>
       <div id="play" className="p-2 w-auto">
-        <Game
+        <OfflineGame
           offset={NavigationBarHeight}
           boardOrientation={boardOrientation}
           board={newBoard}

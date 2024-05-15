@@ -3,7 +3,7 @@ import { Board } from "@/data/models/Board";
 import ChessRulesController from "../../components/chessboard/ChessRulesController";
 import "../pages/Play.css";
 import { useEffect, useState } from "react";
-import { archiveGame } from "@/services/GameService";
+import { addOfflineGame, archiveGame } from "@/services/GameService";
 
 interface Props {
   offset: number;
@@ -12,7 +12,7 @@ interface Props {
   onlineHandler: any;
 }
 
-function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
+function OfflineGame({ offset, boardOrientation, board, onlineHandler }: Props) {
   const [boardState, setBoardState] = useState<Board[]>([]);
   const [moveHistory, setMoveHistory] = useState<string[]>([]);
 
@@ -20,11 +20,23 @@ function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
     setBoardState((prevStates) => [...prevStates, newBoardState]);
   };
 
+  const addGame = async (winningTeam, turns, game_type) => {
+
+      const gameID = await addOfflineGame(winningTeam, turns, "Practice")
+      .then(response => response.json())
+      .then(data => data.gameID)
+    
+      await archiveGame(gameID, boardState, moveHistory); // save replay
+  }
+
   useEffect(() => {
     if (boardState[boardState.length - 1]?.winningTeam) {
       console.log("Game has ended. Saving.");
-      archiveGame(boardState, moveHistory); // save replay
-      // save into history
+      const lastState = boardState[boardState.length - 1];
+      const winningTeam = lastState.winningTeam ?? ColorTeam.ILLEGAL;
+      const turns = lastState.totalTurns;
+
+      addGame(winningTeam, turns, "Practice");
     }
     console.log(boardState);
   }, [boardState, moveHistory]);
@@ -54,4 +66,4 @@ function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
   );
 }
 
-export default Game;
+export default OfflineGame;

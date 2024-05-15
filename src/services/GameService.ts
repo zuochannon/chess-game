@@ -1,3 +1,4 @@
+import { ColorTeam } from "@/data/enums/ChessEnums";
 import { Board } from "@/data/models/Board";
 
 export const updateComment = async (gameID : string, comment : string) => {
@@ -11,13 +12,13 @@ export const updateComment = async (gameID : string, comment : string) => {
       });  
 }
 
-export const archiveGame = async (state : Board[], pgn : string[]) => {
+export const archiveGame = async (gameID : string, state : Board[], pgn : string[]) => {
   return await fetch(`${import.meta.env.VITE_SERVER}/replay/archiveGame`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ state, pgn }),
+    body: JSON.stringify({ gameID, state, pgn }),
     credentials: "include",
   }); 
 }
@@ -42,4 +43,15 @@ export const addAnnotation = async (gameID : string, turn : number, pgn : string
     body: JSON.stringify({ gameID, turn, pgn, annotation }),
     credentials: "include",
   }); 
+}
+
+export const addOfflineGame = async (winningteam : ColorTeam, turns : number, game_type : string) => {
+  return await fetch(`${import.meta.env.VITE_SERVER}/gamelog/addOfflineGame`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ winningteam, turns, game_type }),
+    credentials: "include",
+  });  
 }
