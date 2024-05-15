@@ -149,7 +149,7 @@ const Profile = () => {
       accessorKey: "comments",
       header: "Comments",
       cell: ({ row }) => (
-        <div className="max-w-fit overflow-hidden">{`${row
+        <div className="max-w-fit overflow-hidden">{row.getValue("comments") && `${row
           .getValue("comments")
           .substring(0, 60)}${
           row.getValue("comments").length > 50 && "..."

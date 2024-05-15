@@ -1,3 +1,4 @@
+import { ColorTeam } from "@/data/enums/ChessEnums";
 import { Board } from "@/data/models/Board";
 
 export const updateComment = async (gameID : string, comment : string) => {
@@ -42,4 +43,15 @@ export const addAnnotation = async (gameID : string, turn : number, pgn : string
     body: JSON.stringify({ gameID, turn, pgn, annotation }),
     credentials: "include",
   }); 
+}
+
+export const addOfflineGame = async (winningteam : ColorTeam, turns : number, game_type : string) => {
+  return await fetch(`${import.meta.env.VITE_SERVER}/gamelog/addOfflineGame`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ winningteam, turns, game_type }),
+    credentials: "include",
+  });  
 }
