@@ -34,7 +34,7 @@ export const getAnnotations = async (gameID : string) => {
 }
 
 export const addAnnotation = async (gameID : string, turn : number, pgn : string, annotation : string) => {
-  await fetch(`${import.meta.env.VITE_SERVER}/annotate/addAnnotation`, {
+  return await fetch(`${import.meta.env.VITE_SERVER}/annotate/addAnnotation`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

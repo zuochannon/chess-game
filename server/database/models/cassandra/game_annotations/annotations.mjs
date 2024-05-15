@@ -18,7 +18,7 @@ export const getAnnotations = async (gameID, userID) => {
     await cassandraClient.execute(query, [gameID, userID], {
       prepare: true,
     })
-  ).rows[0].annotations;
+  ).rows[0]?.annotations;
 };
 
 export const updateAnnotation = async (gameID, userID, moveTuple, annotation) => {

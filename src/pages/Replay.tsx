@@ -20,7 +20,7 @@ import {
   getAnnotations,
   getReplay,
 } from "@/services/GameService";
-import { toast } from "sonner";
+import { toast as SonnerToast } from "sonner";
 import { Slider } from "@/components/ui/slider";
 import {
   Select,
@@ -46,10 +46,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-import { SiRocketdotchat } from "react-icons/si";
 import ReplayAlert from "@/components/alerts/ReplayAlert";
+import { useToast } from "@/components/ui/use-toast"
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
   pieces.map(
@@ -84,6 +82,8 @@ const STEP_SPEED = 0.2;
 export function Replay() {
   const { gameid } = useParams();
 
+  const { toast } = useToast();
+
   const [boardOrientation, setBoardOrientation] = useState(ColorTeam.WHITE);
   const [index, setIndex] = useState(0);
   const [newBoard, setNewBoard] = useState<Board>(initialBoard.clone());
@@ -113,13 +113,17 @@ export function Replay() {
     setIsOpen((prevState) => !prevState);
   };
 
+  const saveAnnotation = (gameid, turn, movePGN, inputValue) => {
+    addAnnotation(gameid, turn, movePGN, inputValue);
+  }
+
   const handleCreateAnnotationSave = () => {
     if (index < gamePGN.length) {
       const inputValue = inputCreateAnnotationRef?.current.value;
       const turn = index;
       const movePGN = gamePGN[index - 1];
       annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
-      addAnnotation(gameid, turn, movePGN, inputValue);
+      saveAnnotation(gameid, turn, movePGN, inputValue);
     }
 
     toggleCollapsible();
@@ -127,7 +131,7 @@ export function Replay() {
 
   const handleUpdateAnnotation = (turn, pgn, newAnnotation) => {
     annotations[convertToAnnotationKey(turn, pgn)] = newAnnotation;
-    addAnnotation(gameid, turn, pgn, newAnnotation);
+    saveAnnotation(gameid, turn, pgn, newAnnotation); 
   };
 
   const handleCreateAnnotationCancel = () => {
@@ -148,7 +152,11 @@ export function Replay() {
       .catch((err) => console.warn("Could not fetch replay."));
 
     getAnnotations(gameid)
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok) return response.json();
+        annotations = {};
+        toas
+      })
       .then((data) => {
         // Object.entries(data.annotations).forEach(([key, val]) => annotations[key] = val);
         annotations = data.annotations;
@@ -156,6 +164,11 @@ export function Replay() {
       })
       .catch((err) => {
         console.warn("No annotations are defined.");
+        toast({
+          variant: "destructive",
+          title: "Please login to save your annotations.",
+          description: "You are currently not logged in. Your annotations will not be saved.",
+        })
       });
   }, [gameid]);
 
@@ -216,7 +229,7 @@ export function Replay() {
 
       const current = `Turn ${turn}. PGN Move ${movePGN}`;
 
-      toast(annotate, {
+      SonnerToast(annotate, {
         description: current,
         action: {
           label: "Edit",
