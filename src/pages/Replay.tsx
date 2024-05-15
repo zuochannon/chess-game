@@ -177,7 +177,7 @@ export function Replay() {
       })
       .then((data) => {
         // Object.entries(data.annotations).forEach(([key, val]) => annotations[key] = val);
-        annotations = data.annotations;
+        annotations = data.annotations ?? {};
         console.log(annotations);
       })
       .catch((err) => {
