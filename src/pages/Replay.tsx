@@ -39,6 +39,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
   pieces.map(
@@ -81,6 +83,8 @@ export function Replay() {
   const [paused, setPaused] = useState(true);
 
   const [speed, setSpeed] = useState(1);
+
+  const [autostop, setAutostop] = useState(false);
 
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
@@ -154,6 +158,8 @@ export function Replay() {
     if (!annotations) return;
     const annotate = annotations[annotationKey];
     if (annotate) {
+      if (autostop) setPaused(true);
+
       toast(annotate, {
         description: `Turn ${index}. PGN Move ${gamePGN[index - 1]}`,
         action: {
@@ -193,9 +199,16 @@ export function Replay() {
         </Select>
         <div className="text-white gap-4 flex flex-col">
           <h2>Speed: {speed}x</h2>
-          <Button onClick={changeOrientation} variant="default">
+          <Button onClick={changeOrientation} variant="ghost" className="bg-white text-black bg-opacity-80">
             Change Orientation
           </Button>
+          <Button variant="">
+            Create Annotation
+          </Button>
+          <div className="flex items-center space-x-2">
+      <Switch id="autostop" checked={autostop} onCheckedChange={(e) => setAutostop(e)} />
+      <Label htmlFor="autostop" className="text-sm" >Stop on Annotate</Label>
+    </div>
         </div>
       </div>
       <div className="w-fit flex-1 flex flex-col items-center justify-center gap-4 py-2 px-6 h-fit bg-black bg-opacity-35 rounded-xl border-white border-2">
