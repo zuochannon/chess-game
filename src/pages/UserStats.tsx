@@ -14,7 +14,12 @@ import { analyzeData } from "@/utils/scripts/analyzeData";
 export function UserStats({ data }) {
   console.log(data);
 
-  const userData = analyzeData(data);
+  const [userData, setUserData] = React.useState({});
+  
+  React.useEffect(() => {
+    setUserData(analyzeData(data));
+  }, [data])
+
   console.log(userData);
 
   const [api, setApi] = React.useState<CarouselApi>();
