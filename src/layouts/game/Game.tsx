@@ -23,7 +23,9 @@ function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
   useEffect(() => {
     if (boardState[boardState.length - 1]?.winningTeam) {
       console.log("Game has ended. Saving.");
-      archiveGame(boardState, moveHistory);
+      archiveGame(boardState, moveHistory); // save replay
+      // save into history
+      // update elo
     }
     console.log(boardState);
   }, [boardState, moveHistory]);
