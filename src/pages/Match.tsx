@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useWhoAmIContext } from "@/context/WhoAmIContext";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function enqueue(): void {
@@ -21,7 +21,7 @@ const Match = () => {
 	const [roomid, setRoomid] = useState(-1);
 
 	const { whoAmI } = useWhoAmIContext();
-	
+
 	const [matchedPlayer, setMatch] = useState("");
 
 	const navigate = useNavigate();
@@ -43,10 +43,39 @@ const Match = () => {
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				console.log(data);
+				if (Object.keys(data).length === 0) {
+					console.log("No match found");
+				} else {
+					console.log(data);
+					const createRoom = async () => {
+						const info = await fetch(
+							`${
+								import.meta.env.VITE_SERVER
+							}/onlinePlay/createRoom`,
+							{
+								method: "POST",
+								body: JSON.stringify({ user: whoAmI }),
+								credentials: "include",
+								headers: {
+									"Content-Type": "application/json",
+								},
+							}
+						);
+						const room = (await info.json())["roomid"];
+						setRoomid(room);
+						console.log("Room: ", room);
+						navigate("/onlinePlay/" + room, { replace: true });
+					};
+
+					createRoom();
+					console.log("Room created in match.tsx");
+				}
 				setMatch(JSON.stringify(data));
+				if (roomid !== -1) {
+					navigate("/onlinePlay/" + roomid, { replace: true });
+				}
 			});
-	}
+	};
 
 	const fetchQueueLength = async () => {
 		try {
@@ -64,8 +93,10 @@ const Match = () => {
 	useEffect(() => {
 		fetchQueueLength();
 
-
-		const interval = setInterval(() => { fetchQueueLength(); fetchMatch(); }, 5000);
+		const interval = setInterval(() => {
+			fetchQueueLength();
+			fetchMatch();
+		}, 5000);
 		return () => clearInterval(interval);
 	}, []);
 
@@ -106,9 +137,7 @@ const Match = () => {
 					Please log in to create a game.
 				</div>
 			)}
-			<h3 className="text-white">
-				{matchedPlayer}
-			</h3>
+			<h3 className="text-white">{matchedPlayer}</h3>
 		</main>
 	);
 };
