@@ -16,7 +16,7 @@ import { GrLinkPrevious } from "react-icons/gr";
 import { FaPlay } from "react-icons/fa";
 import { FaStop } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { getAnnotations, getReplay } from "@/services/GameService";
+import { addAnnotation, getAnnotations, getReplay } from "@/services/GameService";
 import { toast } from "sonner";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -106,8 +106,10 @@ export function Replay() {
 
   const handleCreateAnnotationSave = () => {
     const inputValue = inputCreateAnnotationRef?.current.value;
-    
-    annotations[convertToAnnotationKey(index, gamePGN[index - 1])] = inputValue;
+    const turn = index;
+    const movePGN = gamePGN[index-1];
+    annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
+    addAnnotation(gameid, turn, movePGN, inputValue);
 
     console.log(annotations)
     toggleCollapsible();

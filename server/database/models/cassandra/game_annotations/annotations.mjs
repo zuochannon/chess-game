@@ -20,12 +20,20 @@ const createGameAnnotations = async () => {
 // }
 
 export const getAnnotations = async (gameID, userID) => {
-    const query = `SELECT annotations FROM ${constants.KEYSPACE}.GameAnnotations WHERE gameid = ? AND userid = ?;`;
-    return (
-      await cassandraClient.execute(query, [gameID, userID], {
-        prepare: true,
-      })
-    ).rows[0].annotations;
-}
+  const query = `SELECT annotations FROM ${constants.KEYSPACE}.GameAnnotations WHERE gameid = ? AND userid = ?;`;
+  return (
+    await cassandraClient.execute(query, [gameID, userID], {
+      prepare: true,
+    })
+  ).rows[0].annotations;
+};
+
+export const updateAnnotation = async (gameID, userID, moveTuple, annotation) => {
+  await cassandraClient.execute(
+    `UPDATE ${constants.KEYSPACE}.GameAnnotations SET annotations[${moveTuple}] = ? WHERE gameid = ? AND userid = ?;`,
+    [annotation, gameID, userID],
+    { prepare: true }
+  );
+};
 
 export default createGameAnnotations;
