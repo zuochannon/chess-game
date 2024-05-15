@@ -75,17 +75,17 @@ let annotations = {};
 const convertToAnnotationKey = (index: number, pgn: string) =>
   `(${index},${pgn})`;
 
-const convertKeyToString = (key : string) => {
+const extractTurnAndMove = (key: string) => {
   const regex = /^\((\d+),(\w+)\)/;
 
   const match = key.match(regex);
 
   if (match && match[1] && match[2]) {
-      const turnNumber = parseInt(match[1]);
-      const moveString = match[2];
-      return `Turn ${turnNumber}. PGN Move ${moveString}`;
+    const turnNumber = parseInt(match[1]);
+    const moveString = match[2];
+    return { turnNumber, moveString };
   } else {
-      return null;
+    return null;
   }
 };
 
@@ -235,11 +235,17 @@ export function Replay() {
 
   useEffect(() => {
     if (!annotations || !annotations[annotationKey]) return;
-    setReplayAnnotate(prevState => ({
-      ...prevState,
-      [annotationKey]: annotations[annotationKey],
-    }))
-  }, [annotationKey, annotations, realTimeAnnotate])
+    const turn = extractTurnAndMove(annotationKey)?.turnNumber ?? 0;
+    if (index >= turn) {
+      setReplayAnnotate((prevState) => ({
+        ...prevState,
+        [annotationKey]: annotations[annotationKey],
+      }));
+    } else {
+      const { [annotationKey]: tmp, ...rest } = replayAnnotate;
+      setReplayAnnotate(rest);
+    }
+  }, [annotationKey, index, realTimeAnnotate, replayAnnotate]);
 
   useEffect(() => {
     if (!annotations) return;
@@ -464,11 +470,15 @@ export function Replay() {
             </div>
           </h2>
           <div>
-            {
-            Object.entries(realTimeAnnotate ? replayAnnotate : annotations).map( ([key, val]) => {
-              return <div><span className="font-semibold">{key}</span>: {val}</div>
-            })
-            }
+            {Object.entries(
+              realTimeAnnotate ? replayAnnotate : annotations
+            ).map(([key, val]) => {
+              return (
+                <div>
+                  <span className="font-semibold">{key}</span>: {val}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
