@@ -1,12 +1,12 @@
 import express from "express";
-import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
-import { GameInfo } from "../models/GameInfo.mjs";
-import { dequeue, enqueue, get, length, remove } from "../utils/redisQueue.mjs";
-import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
+import { verifyToken } from "../middlewares/authMiddleware.mjs";
+import { GameInfo } from "../models/GameInfo.mjs";
 import { User } from "../models/User.mjs";
-import { delUser, getUser, setUser } from "../utils/redisUser.mjs";
 import Constants from "../utils/constants/Constants.mjs";
+import { dequeue, enqueue, get, length, remove } from "../utils/redisQueue.mjs";
+import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
+import { delUser, getUser, setUser } from "../utils/redisUser.mjs";
 
 const router = express.Router();
 // const gameMap = new Map(); // Tracks all the running games with room id. Can be replaced with DB later
@@ -62,16 +62,15 @@ router.post("/queue", verifyToken, async (req, res) => {
 });
 
 router.post("/match", async (req, res) => {
-
   console.log("players", await getPlayers());
   console.log("queue", await get());
   let currentPlayerKey = await queueNext();
 
-  const matches = {};
+  // const matches = {};
 
   while (currentPlayerKey) {
     const currentPlayer = await getUser(currentPlayerKey);
-    matches[currentPlayer] = await match(currentPlayer);
+    // matches[currentPlayer] = await match(currentPlayer);
     console.log(
       "currentPlayer",
       currentPlayer,
@@ -82,8 +81,8 @@ router.post("/match", async (req, res) => {
   }
   console.log("players still in the queue", await getPlayers());
 
-
-  res.json(matches);
+  // console.log(matches)
+  // res.json(matches);
 });
 
 

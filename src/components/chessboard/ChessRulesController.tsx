@@ -17,14 +17,6 @@ import { Board } from "../../data/models/Board";
 import { ChessPiece, Pawn } from "../../data/models/ChessPiece";
 import { Position } from "../../data/models/Position";
 import { generateMoveNotation } from "../ChessNotation/ChessNotation";
-import {
-	bishopMove,
-	kingMove,
-	knightMove,
-	pawnMove,
-	queenMove,
-	rookMove,
-} from "../chessrules";
 import Chessboard from "./ChessBoard";
 
 interface Props {

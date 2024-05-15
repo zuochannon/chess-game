@@ -14,7 +14,6 @@ router.post("/createRoom", verifyToken, async (req, res) => {
   let user = req.user.userID;
   await setGameInfo(roomid, new GameInfo(user));
   res.json({ roomid: roomid });
-  // console.log("iN CREATE ROOM, created room: " + roomid);
 });
 
 router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
