@@ -36,6 +36,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { UserStats } from "./UserStats";
+import { Link } from "react-router-dom";
 
 enum GameResultFilter {
   ALL = "ALL",
@@ -61,7 +62,13 @@ const Profile = () => {
     {
       accessorKey: "id",
       header: "GameID",
-      cell: ({ row }) => <div>{row.original.gameid}</div>,
+      cell: ({ row }) => (
+        <Button variant="link">
+          <Link to={`/replay/${row.original.gameid}`}>
+            {row.original.gameid}
+          </Link>
+        </Button>
+      ),
     },
     {
       accessorKey: "result",
@@ -206,29 +213,28 @@ const Profile = () => {
               </DialogHeader>
 
               <Textarea
-              ref={inputCommentRef}
-              id="inputComment"
-              defaultValue={game.comments}
-              placeholder="Enter comments..."
-            />
+                ref={inputCommentRef}
+                id="inputComment"
+                defaultValue={game.comments}
+                placeholder="Enter comments..."
+              />
 
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="outline">Cancel</Button>
-                  </DialogClose>
-                  <DialogClose asChild>
-                    
-                <Button
-                  type="submit"
-                  onClick={() => {
-                    const inputValue = inputCommentRef?.current.value; 
-                    saveComment(game.gameid, inputValue);
-                    game.comments = inputValue;
-                  }}
+                </DialogClose>
+                <DialogClose asChild>
+                  <Button
+                    type="submit"
+                    onClick={() => {
+                      const inputValue = inputCommentRef?.current.value;
+                      saveComment(game.gameid, inputValue);
+                      game.comments = inputValue;
+                    }}
                   >
-                  Save
-                </Button>
-                    </DialogClose>
+                    Save
+                  </Button>
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -266,7 +272,7 @@ const Profile = () => {
 
     getGameHistorySummary().then((data) => setGamesPlayed(data ?? []));
   }, [whoAmI?.email, whoAmI?.username]);
-  
+
   return (
     <main className="min-h-screen auto overflow-auto p-2">
       <div
@@ -318,9 +324,7 @@ const Profile = () => {
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="item-2">
-            <AccordionTrigger className="max-w-44">
-              Statistics
-            </AccordionTrigger>
+            <AccordionTrigger className="max-w-44">Statistics</AccordionTrigger>
             <AccordionContent>
               <UserStats data={gamesPlayed} />
             </AccordionContent>

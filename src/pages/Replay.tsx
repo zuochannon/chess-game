@@ -46,6 +46,10 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+import { SiRocketdotchat } from "react-icons/si";
+import ReplayAlert from "@/components/alerts/ReplayAlert";
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
   pieces.map(
@@ -85,7 +89,6 @@ export function Replay() {
   const [newBoard, setNewBoard] = useState<Board>(initialBoard.clone());
 
   const [replayPGN, setReplayPGN] = useState<string[]>([]);
-  const [currentAnnotation, setCurrentAnnotation] = useState<string>("");
   const [annotationKey, setAnnotationKey] = useState<string>("");
 
   const [paused, setPaused] = useState(true);
@@ -98,6 +101,8 @@ export function Replay() {
 
   const [isOpen, setIsOpen] = useState(false);
 
+  const [ongoing, setOngoing] = useState(true);
+
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
       prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE
@@ -109,11 +114,13 @@ export function Replay() {
   };
 
   const handleCreateAnnotationSave = () => {
-    const inputValue = inputCreateAnnotationRef?.current.value;
-    const turn = index;
-    const movePGN = gamePGN[index - 1];
-    annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
-    addAnnotation(gameid, turn, movePGN, inputValue);
+    if (index < gamePGN.length) {
+      const inputValue = inputCreateAnnotationRef?.current.value;
+      const turn = index;
+      const movePGN = gamePGN[index - 1];
+      annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
+      addAnnotation(gameid, turn, movePGN, inputValue);
+    }
 
     toggleCollapsible();
   };
@@ -135,9 +142,10 @@ export function Replay() {
         fetchedBoard.shift();
         setNewBoard(fetchedBoard[0]);
         totalTurns = data.totalturns;
-        winningTeam = data.winningTeam;
+        winningTeam = data.winningteam;
         gamePGN = data.pgn;
-      });
+      })
+      .catch((err) => console.warn("Could not fetch replay."));
 
     getAnnotations(gameid)
       .then((response) => response.json())
@@ -169,10 +177,18 @@ export function Replay() {
 
   useEffect(() => {
     if (!fetchedBoard) return;
-    if (index < 0 || index >= fetchedBoard.length) {
-      setIndex(Math.min(fetchedBoard.length - 1, Math.max(0, index)));
+
+    if (index < 0 || index > fetchedBoard.length) {
+      setIndex(Math.max(0, Math.min(fetchedBoard.length, index)));
       return;
     }
+
+    if (index === fetchedBoard.length) {
+      setOngoing(false);
+      return;
+    }
+
+    setOngoing(true);
     setReplayPGN(gamePGN.slice(0, index));
     setNewBoard(fetchedBoard[index]);
     setAnnotationKey(convertToAnnotationKey(index, gamePGN[index - 1]));
@@ -217,7 +233,7 @@ export function Replay() {
     console.log(annotations, annotationKey);
   }, [annotationKey]);
 
-  return (
+  return fetchedBoard ? (
     <main className="h-screen bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative flex flex-row gap-4 items-center justify-center">
       <div className="flex-2 flex-col flex m-8 px-8 py-6 justify-between h-5/6 bg-black bg-opacity-50 items-center w-fit rounded-2xl border-white border-2">
         <Select
@@ -240,6 +256,13 @@ export function Replay() {
                   </SelectItem>
                 );
               })}
+
+              <SelectItem
+                key={gamePGN.length + 1}
+                value={(gamePGN.length + 1).toString()}
+              >
+                End
+              </SelectItem>
             </SelectGroup>
           </SelectContent>
         </Select>
@@ -302,6 +325,23 @@ export function Replay() {
           boardOrientation={boardOrientation}
           chessboard={newBoard}
         />
+        {!ongoing && (
+          <ReplayAlert
+            title={(() => {
+              switch (winningTeam) {
+                case ColorTeam.WHITE:
+                  return "White wins!";
+                case ColorTeam.BLACK:
+                  return "Black wins!";
+                case ColorTeam.DRAW:
+                  return "Draw!";
+                default:
+                  return "Illegal";
+              }
+            })()}
+            desc="You've reached the end of the replay."
+          />
+        )}
         <div className="h-fit w-fit flex flex-col gap-4 text-white bg-black bg-opacity-50 p-4 rounded-3xl">
           <div className="flex flex-row w-fit items-center justify-center gap-16">
             <MdSkipPrevious onClick={gotoStart} className="cursor-pointer" />
@@ -369,5 +409,9 @@ export function Replay() {
         </div>
       </div>
     </main>
+  ) : (
+    <h2 className="h-screen w-full flex flex-col items-center justify-center">
+      Sorry! This replay is missing!
+    </h2>
   );
 }
