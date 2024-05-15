@@ -1,8 +1,6 @@
-import { NavigationBarHeight } from "@/data/constants/NavItems";
 import Game from "../layouts/game/Game";
-import "../layouts/pages/Play.css";
-import { ColorTeam } from "@/data/enums/ChessEnums";
 import { useState } from "react";
+import { ColorTeam } from "@/data/enums/ChessEnums";
 import { initialBoard } from "@/data/constants/ChessConstants";
 import Chat from "@/components/chat/Chat";
 
@@ -40,7 +38,7 @@ export function Play() {
       </div>
       <div id="play" className="p-2 w-auto">
         <Game
-          offset={NavigationBarHeight}
+          offset={0}
           boardOrientation={boardOrientation}
           board={newBoard}
         />

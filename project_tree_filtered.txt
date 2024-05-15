@@ -1,0 +1,191 @@
+.
+├── README.md
+├── components.json
+├── docker-compose.yaml
+├── index.html
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── public
+│   ├── bB.png
+│   ├── bK.png
+│   ├── bN.png
+│   ├── bP.png
+│   ├── bQ.png
+│   ├── bR.png
+│   ├── chess.svg
+│   ├── landscape.png
+│   ├── vite.svg
+│   ├── wB.png
+│   ├── wK.png
+│   ├── wN.png
+│   ├── wP.png
+│   ├── wQ.png
+│   └── wR.png
+├── server
+│   ├── Dockerfile
+│   ├── EnvVars.mjs
+│   ├── chat
+│   │   ├── chat-server.mjs
+│   │   └── constants.mjs
+│   ├── database
+│   │   ├── connection.mjs
+│   │   ├── constants.mjs
+│   │   ├── dbConfig.mjs
+│   │   ├── initDB.mjs
+│   │   ├── initData.mjs
+│   │   └── models
+│   │       ├── cassandra
+│   │       ├── postgres
+│   │       └── users.mjs
+│   ├── expressSetup.mjs
+│   ├── middlewares
+│   │   └── authMiddleware.mjs
+│   ├── models
+│   │   ├── GameInfo.mjs
+│   │   └── User.mjs
+│   ├── routes
+│   │   ├── authRoutes.mjs
+│   │   ├── gamelogRoutes.mjs
+│   │   ├── leaderboardRoutes.mjs
+│   │   ├── match.mjs
+│   │   ├── onlinePlay.mjs
+│   │   ├── userRoutes.mjs
+│   │   └── whoami.mjs
+│   ├── server.mjs
+│   └── utils
+│       ├── constants
+│       │   └── Constants.mjs
+│       ├── redisQueue.mjs
+│       ├── redisRooms.mjs
+│       ├── redisUser.mjs
+│       └── scripts
+│           └── matching
+├── src
+│   ├── assets
+│   │   ├── chess.jpg
+│   │   ├── default_pfp.png
+│   │   ├── react.svg
+│   │   └── tiles
+│   │       ├── DRAGON
+│   │       ├── MAN
+│   │       ├── PIN
+│   │       ├── SOU
+│   │       └── WIND
+│   ├── components
+│   │   ├── ChessNotation
+│   │   │   └── ChessNotation.tsx
+│   │   ├── alerts
+│   │   │   └── Error.tsx
+│   │   ├── avatar
+│   │   │   └── UserAvatar.tsx
+│   │   ├── chat
+│   │   │   └── Chat.tsx
+│   │   ├── chessboard
+│   │   │   ├── ChessBoard.tsx
+│   │   │   ├── ChessRulesController.tsx
+│   │   │   └── ChessSquare.tsx
+│   │   ├── chessrules
+│   │   │   ├── BishopLogic.ts
+│   │   │   ├── GeneralLogic.ts
+│   │   │   ├── KingLogic.ts
+│   │   │   ├── KnightLogic.ts
+│   │   │   ├── PawnLogic.ts
+│   │   │   ├── QueenLogic.ts
+│   │   │   ├── RookLogic.ts
+│   │   │   └── index.ts
+│   │   ├── discard
+│   │   │   ├── Discard.tsx
+│   │   │   └── DiscardPile.tsx
+│   │   ├── gameHistory
+│   │   │   └── GameHistorySummary.tsx
+│   │   ├── hand
+│   │   │   ├── Hand.tsx
+│   │   │   └── Tile.tsx
+│   │   ├── leaderboard
+│   │   │   └── Leaderboard.tsx
+│   │   ├── navbar
+│   │   │   ├── NavbarItem.tsx
+│   │   │   ├── NavbarList.tsx
+│   │   │   ├── NavbarLogo.tsx
+│   │   │   └── NavigationBar.tsx
+│   │   └── ui
+│   │       ├── accordion.tsx
+│   │       ├── alert-dialog.tsx
+│   │       ├── alert.tsx
+│   │       ├── avatar.tsx
+│   │       ├── button.tsx
+│   │       ├── card.tsx
+│   │       ├── carousel.tsx
+│   │       ├── collapsible.tsx
+│   │       ├── dialog.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── navigation-menu.tsx
+│   │       ├── separator.tsx
+│   │       ├── table.tsx
+│   │       ├── textarea.tsx
+│   │       ├── toast.tsx
+│   │       ├── toaster.tsx
+│   │       └── use-toast.ts
+│   ├── context
+│   │   ├── ChessContext.ts
+│   │   ├── GameState.ts
+│   │   └── WhoAmIContext.tsx
+│   ├── features
+│   ├── hooks
+│   │   └── useWhoAmI.ts
+│   ├── index.css
+│   ├── layouts
+│   │   ├── app
+│   │   │   ├── App.css
+│   │   │   └── App.tsx
+│   │   ├── components
+│   │   │   ├── ChessNotation.css
+│   │   │   ├── ChessSquare.css
+│   │   │   └── Chessboard.css
+│   │   ├── game
+│   │   │   └── Game.tsx
+│   │   ├── main
+│   │   │   └── MainLayout.tsx
+│   │   └── pages
+│   │       ├── Play.css
+│   │       └── RulesAndTutorial.module.css
+│   ├── lib
+│   │   └── utils.ts
+│   ├── main.tsx
+│   ├── pages
+│   │   ├── CreateRoom.tsx
+│   │   ├── Dev.tsx
+│   │   ├── GameHistory.tsx
+│   │   ├── Home.tsx
+│   │   ├── JoinRoom.tsx
+│   │   ├── Leaderboard.tsx
+│   │   ├── Login.tsx
+│   │   ├── Match.tsx
+│   │   ├── OnlinePlay.tsx
+│   │   ├── Play.tsx
+│   │   ├── Profile.tsx
+│   │   ├── RulesAndTutorial.tsx
+│   │   ├── SignUp.tsx
+│   │   └── UserStats.tsx
+│   ├── services
+│   │   ├── GameService.ts
+│   │   ├── UserService.ts
+│   │   └── accessControl
+│   │       └── AuthService.ts
+│   ├── utils
+│   │   ├── TilePool.ts
+│   │   └── scripts
+│   │       ├── analyzeData.ts
+│   │       └── createTiles.ts
+│   └── vite-env.d.ts
+├── tailwind.config.js
+├── tests
+│   └── chess.spec.ts
+├── tsconfig.json
+├── tsconfig.node.json
+└── vite.config.ts
+
+52 directories, 141 files

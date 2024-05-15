@@ -1,6 +1,7 @@
 import { initialBoard } from "@/data/constants/ChessConstants";
 import { ButtonOffset, NavigationBarHeight } from "@/data/constants/NavItems";
 import { ColorTeam } from "@/data/enums/ChessEnums";
+import { Board } from "@/data/models/Board"; // Ensure Board is imported
 import { ChessPiece } from "@/data/models/ChessPiece";
 import { Position } from "@/data/models/Position";
 import { useEffect, useState } from "react";
@@ -21,74 +22,78 @@ export function OnlinePlay() {
   const { whoAmI } = useWhoAmIContext();
   const [moveHistory, setMoveHistory] = useState<any[]>([]);
 
+  // Ensure Board is imported and used correctly
   const [boardState, setBoardState] = useState<Board[]>([]);
 
   const updateBoardState = (newBoardState: Board) => {
     setBoardState((prevStates) => [...prevStates, newBoardState]);
   };
 
-  const [onlineHandler, setOnlineHandler] = useState(
-    // Handles updating the state of the game
-    {
-      restartGame: null,
-      playMove: null,
-      playMoveLocal: (playMove: any, myTurn: boolean) => {
-        return (playedPiece: ChessPiece, dest: Position): boolean => {
-          if (!myTurn) return false; // If it's not the player's turn, don't allow them to move any pieces
+  const onlineHandler = {
+    restartGame: null,
+    playMove: null,
+    playMoveLocal: (playMove: any, myTurn: boolean) => {
+      return (playedPiece: ChessPiece, dest: Position): boolean => {
+        if (!myTurn) return false; // If it's not the player's turn, don't allow them to move any pieces
 
-          let moveSuccess = playMove(playedPiece, dest); // Attempt to move the piece
-          if (moveSuccess) {
-            // If the move was successful, send the move to the server
-            fetch(
-              `${import.meta.env.VITE_SERVER}/onlinePlay/${roomid}/makeMove`,
-              {
-                method: "POST",
-                credentials: "include",
-                body: JSON.stringify({
-                  playedPiece: playedPiece,
-                  dest: dest,
-                }),
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
-            moveHistory.push({
-              playedPiece: playedPiece,
-              dest: dest,
-            }); // Add the move to the move history
-          }
-          return moveSuccess;
-        };
-      },
-      playMoveFromOnline: (
-        playMove: any,
-        playedPiece: ChessPiece,
-        dest: Position
-      ) => {
-        playMove(playedPiece, dest);
-      },
-      restartGameLocal: (restartGame: any) => {
-        // If any of the players choose to restart the game, send a request to the server to restart the game
-        return () => {
-          restartGame();
+        let moveSuccess = playMove(playedPiece, dest); // Attempt to move the piece
+        if (moveSuccess) {
+          // If the move was successful, send the move to the server
           fetch(
-            `${import.meta.env.VITE_SERVER}/onlinePlay/${roomid}/restartGame`,
+            `${import.meta.env.VITE_SERVER}/onlinePlay/${roomid}/makeMove`,
             {
               method: "POST",
               credentials: "include",
+              body: JSON.stringify({
+                playedPiece: playedPiece,
+                dest: dest,
+              }),
               headers: {
                 "Content-Type": "application/json",
               },
             }
-          );
-        };
-      },
-      restartGameOnline: (restartGame: any) => {
+          ).then(response => {
+            if (response.ok) {
+              console.log("Move sent to server successfully");
+              setMoveHistory((prev) => [
+                ...prev,
+                { playedPiece: playedPiece, dest: dest },
+              ]);
+            } else {
+              console.log("Failed to send move to server");
+            }
+          });
+        }
+        return moveSuccess;
+      };
+    },
+    playMoveFromOnline: (
+      playMove: any,
+      playedPiece: ChessPiece,
+      dest: Position
+    ) => {
+      playMove(playedPiece, dest);
+    },
+    restartGameLocal: (restartGame: any) => {
+      // If any of the players choose to restart the game, send a request to the server to restart the game
+      return () => {
         restartGame();
-      },
-    }
-  );
+        fetch(
+          `${import.meta.env.VITE_SERVER}/onlinePlay/${roomid}/restartGame`,
+          {
+            method: "POST",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      };
+    },
+    restartGameOnline: (restartGame: any) => {
+      restartGame();
+    },
+  };
 
   useEffect(() => {
     // Fetch the moves from the server every 500ms
@@ -103,6 +108,8 @@ export function OnlinePlay() {
         if (response.status === 200) {
           const data = await response.json();
           console.log(data);
+
+          // Ensure that the moves are processed only if there are new moves
           if (data.moves.length > moveHistory.length) {
             let lastMove = data.moves[moveHistory.length];
 
@@ -128,20 +135,24 @@ export function OnlinePlay() {
               lastMove.playedPiece.hasMoved,
               lastMove.playedPiece.possibleMoves
             );
-            moveHistory.push(lastMove);
+            setMoveHistory((prev) => [...prev, lastMove]);
+          } else {
+            console.log("No new moves");
           }
           if (moveHistory.length > data.moves.length) {
             // If the game is restarted, update the board to reflect it
             setMoveHistory([]);
             onlineHandler.restartGameOnline(onlineHandler.restartGame);
           }
+        } else {
+          console.log(`Error: ${response.status}`);
         }
       });
     }, 500);
     return () => {
       clearInterval(interval);
     };
-  }, [roomid]);
+  }, [roomid, moveHistory, onlineHandler]);
 
   useEffect(() => {
     // Display the correct orientation of the board depending on who created the board and who joined the board
@@ -175,7 +186,7 @@ export function OnlinePlay() {
       });
     }
     run();
-  }, [roomid]);
+  }, [roomid, whoAmI]);
 
   const copyRoomIdToClipboard = () => {
     // Copy the room id to clipboard

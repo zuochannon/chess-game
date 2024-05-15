@@ -9,11 +9,11 @@ import userRoutes from "./routes/userRoutes.mjs";
 import whoamiRoutes from "./routes/whoami.mjs";
 import matchRoutes from "./routes/match.mjs";
 import leaderboardRoutes from "./routes/leaderboardRoutes.mjs";
-import replayRoutes from "./routes/gameReplay.mjs"
-import annotateRoutes from "./routes/gameAnnotation.mjs"
+import replayRoutes from "./routes/gameReplay.mjs";
+import annotateRoutes from "./routes/gameAnnotation.mjs";
 import startWebSocketServer from "./chat/chat-server.mjs";
 
-if (!process.env.JWT_SECRET) {
+if (!ENV.JWT_SECRET) {
   console.error('JWT secret is not defined. Set the JWT_SECRET environment variable.');
   process.exit(1);
 }

@@ -4,7 +4,7 @@ import { useWhoAmIContext } from "../context/WhoAmIContext";
 
 export function CreateRoom() {
     let navigate = useNavigate();
-    const [roomid, setRoomid] = useState(-1);
+    const [roomid, setRoomid] = useState<string | null>(null);
     const { whoAmI } = useWhoAmIContext();
     const [displayErrorMessage, setErrorMessage] = useState(false);
 
@@ -18,19 +18,19 @@ export function CreateRoom() {
             `${import.meta.env.VITE_SERVER}/onlinePlay/createRoom`,
             {
                 method: "POST",
-                    credentials: "include",
-                    body: JSON.stringify({ user: whoAmI }),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+                credentials: "include",
+                body: JSON.stringify({ user: whoAmI }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
             }
         );
-        console.log(response);
-        setRoomid((await response.json())['roomid']);
+        const data = await response.json();
+        setRoomid(data.roomid);
     }
 
-    if (roomid !== -1) {
-        navigate('/onlinePlay/'+ roomid, {replace: true});
+    if (roomid !== null) {
+        navigate(`/onlinePlay/${roomid}`, { replace: true });
     }
 
     return (
@@ -44,6 +44,11 @@ export function CreateRoom() {
             {displayErrorMessage && (
                 <div className="error-message text-white mt-4">
                     Please log in to create a game.
+                </div>
+            )}
+            {roomid !== null && (
+                <div className="room-id text-white mt-4">
+                    Room ID: {roomid}
                 </div>
             )}
         </main>
