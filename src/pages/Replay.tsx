@@ -47,7 +47,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Textarea } from "@/components/ui/textarea";
 import ReplayAlert from "@/components/alerts/ReplayAlert";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
   pieces.map(
@@ -74,6 +74,20 @@ let annotations = {};
 
 const convertToAnnotationKey = (index: number, pgn: string) =>
   `(${index},${pgn})`;
+
+const convertKeyToString = (key : string) => {
+  const regex = /^\((\d+),(\w+)\)/;
+
+  const match = key.match(regex);
+
+  if (match && match[1] && match[2]) {
+      const turnNumber = parseInt(match[1]);
+      const moveString = match[2];
+      return `Turn ${turnNumber}. PGN Move ${moveString}`;
+  } else {
+      return null;
+  }
+};
 
 const MAX_SPEED = 3;
 const MIN_SPEED = 0.2;
@@ -103,6 +117,10 @@ export function Replay() {
 
   const [ongoing, setOngoing] = useState(true);
 
+  const [realTimeAnnotate, setRealTimeAnnotate] = useState(true);
+
+  const [replayAnnotate, setReplayAnnotate] = useState({});
+
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
       prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE
@@ -115,7 +133,7 @@ export function Replay() {
 
   const saveAnnotation = (gameid, turn, movePGN, inputValue) => {
     addAnnotation(gameid, turn, movePGN, inputValue);
-  }
+  };
 
   const handleCreateAnnotationSave = () => {
     if (index < gamePGN.length) {
@@ -131,7 +149,7 @@ export function Replay() {
 
   const handleUpdateAnnotation = (turn, pgn, newAnnotation) => {
     annotations[convertToAnnotationKey(turn, pgn)] = newAnnotation;
-    saveAnnotation(gameid, turn, pgn, newAnnotation); 
+    saveAnnotation(gameid, turn, pgn, newAnnotation);
   };
 
   const handleCreateAnnotationCancel = () => {
@@ -155,7 +173,7 @@ export function Replay() {
       .then((response) => {
         if (response.ok) return response.json();
         annotations = {};
-        toas
+        toas;
       })
       .then((data) => {
         // Object.entries(data.annotations).forEach(([key, val]) => annotations[key] = val);
@@ -167,8 +185,9 @@ export function Replay() {
         toast({
           variant: "destructive",
           title: "Please login to save your annotations.",
-          description: "You are currently not logged in. Your annotations will not be saved.",
-        })
+          description:
+            "You are currently not logged in. Your annotations will not be saved.",
+        });
       });
   }, [gameid]);
 
@@ -214,9 +233,13 @@ export function Replay() {
     }
   }, [paused, speed]);
 
-  // useEffect(() => {
-  //   setCurrentAnnotation(annotations[annotationKey]);
-  // }, [annotationKey, currentAnnotation]);
+  useEffect(() => {
+    if (!annotations || !annotations[annotationKey]) return;
+    setReplayAnnotate(prevState => ({
+      ...prevState,
+      [annotationKey]: annotations[annotationKey],
+    }))
+  }, [annotationKey, annotations, realTimeAnnotate])
 
   useEffect(() => {
     if (!annotations) return;
@@ -248,7 +271,7 @@ export function Replay() {
 
   return fetchedBoard ? (
     <main className="h-screen bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative flex flex-row gap-4 items-center justify-center">
-      <div className="flex-2 flex-col flex m-8 px-8 py-6 justify-between h-5/6 bg-black bg-opacity-50 items-center w-fit rounded-2xl border-white border-2">
+      <div className="flex-2 flex-col flex m-8 px-8 py-6 justify-between h-[92%] bg-black bg-opacity-50 items-center w-fit rounded-2xl border-white border-2">
         <Select
           value={index.toString()}
           onValueChange={(e) => setIndex(parseInt(e))}
@@ -279,7 +302,7 @@ export function Replay() {
             </SelectGroup>
           </SelectContent>
         </Select>
-        <div className="text-white gap-4 flex flex-col">
+        <div className="text-white gap-5 flex flex-col">
           <h2>Speed: {speed}x</h2>
           <Button
             onClick={changeOrientation}
@@ -384,9 +407,9 @@ export function Replay() {
           )}
         </div>
       </div>
-      <div className="flex-col flex m-8 px-8 py-6 justify-between h-5/6 bg-black bg-opacity-50 items-center w-fit rounded-2xl border-white border-2">
+      <div className="flex-col flex gap-6 m-8 justify-between h-[92%] items-center w-fit">
         <div
-          className="flex w-full flex-col gap-2 max-h-full overflow-y-auto overflow-x-hidden scrollbar"
+          className="flex-1 flex w-full px-8 py-6 flex-col gap-2 max-h-full overflow-y-auto overflow-x-hidden scrollbar bg-black bg-opacity-50 rounded-2xl border-white border-2"
           style={{
             scrollbarColor: "#bf1841 transparent",
             scrollbarWidth: "thin",
@@ -419,6 +442,34 @@ export function Replay() {
               })}
             </TableBody>
           </Table>
+        </div>
+        <div
+          className="text-white flex-1 flex w-full px-8 py-6 flex-col gap-2 max-h-full overflow-y-auto overflow-x-hidden scrollbar bg-black bg-opacity-50 rounded-2xl border-white border-2"
+          style={{
+            scrollbarColor: "#bf1841 transparent",
+            scrollbarWidth: "thin",
+          }}
+        >
+          <h2 className="text-center flex flex-col items-center justify-center gap-2">
+            Annotations
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="realTimeAnnotate"
+                checked={realTimeAnnotate}
+                onCheckedChange={(e) => setRealTimeAnnotate(e)}
+              />
+              <Label htmlFor="realTimeAnnotate" className="text-base">
+                Real-time
+              </Label>
+            </div>
+          </h2>
+          <div>
+            {
+            Object.entries(realTimeAnnotate ? replayAnnotate : annotations).map( ([key, val]) => {
+              return <div><span className="font-semibold">{key}</span>: {val}</div>
+            })
+            }
+          </div>
         </div>
       </div>
     </main>
