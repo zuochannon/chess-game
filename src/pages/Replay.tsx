@@ -1,8 +1,6 @@
-import { NavigationBarHeight } from "@/data/constants/NavItems";
-import Game from "../layouts/game/Game";
 import "../layouts/pages/Play.css";
 import { ColorTeam } from "@/data/enums/ChessEnums";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { initialBoard } from "@/data/constants/ChessConstants";
 import Chat from "@/components/chat/Chat";
 import { Board } from "@/data/models/Board";
@@ -26,14 +24,12 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -41,6 +37,12 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { Textarea } from "@/components/ui/textarea";
 
 const convertPiecesToClass = (pieces): ChessPiece[] =>
   pieces.map(
@@ -65,6 +67,8 @@ let winningTeam = "";
 let gamePGN: string[] = [];
 let annotations = {};
 
+const convertToAnnotationKey = (index : number, pgn : string) => `(${index},${pgn})`;
+
 const MAX_SPEED = 3;
 const MIN_SPEED = 0.2;
 const STEP_SPEED = 0.2;
@@ -86,11 +90,32 @@ export function Replay() {
 
   const [autostop, setAutostop] = useState(false);
 
+  const inputCreateAnnotationRef = useRef(null);
+
+  const [isOpen, setIsOpen] = useState(false); 
+
   function changeOrientation() {
     setBoardOrientation((prevOrientation) =>
       prevOrientation === ColorTeam.WHITE ? ColorTeam.BLACK : ColorTeam.WHITE
     );
   }
+
+  const toggleCollapsible = () => {
+    setIsOpen(prevState => !prevState);
+  };
+
+  const handleCreateAnnotationSave = () => {
+    const inputValue = inputCreateAnnotationRef?.current.value;
+    
+    annotations[convertToAnnotationKey(index, gamePGN[index - 1])] = inputValue;
+
+    console.log(annotations)
+    toggleCollapsible();
+  };
+
+  const handleCreateAnnotationCancel = () => {
+    toggleCollapsible();
+  };
 
   useEffect(() => {
     getReplay(gameid)
@@ -140,7 +165,7 @@ export function Replay() {
     }
     setReplayPGN(gamePGN.slice(0, index));
     setNewBoard(fetchedBoard[index]);
-    setAnnotationKey(`(${index},${gamePGN[index - 1]})`);
+    setAnnotationKey(convertToAnnotationKey(index, gamePGN[index-1]));
   }, [index]);
 
   useEffect(() => {
@@ -163,7 +188,7 @@ export function Replay() {
       toast(annotate, {
         description: `Turn ${index}. PGN Move ${gamePGN[index - 1]}`,
         action: {
-          label: "Undo",
+          label: "View",
           onClick: () => console.log("Undo"),
         },
       });
@@ -202,9 +227,33 @@ export function Replay() {
           <Button onClick={changeOrientation} variant="ghost" className="bg-white text-black bg-opacity-80">
             Change Orientation
           </Button>
-          <Button variant="">
+          <Collapsible open={isOpen}>
+  <CollapsibleTrigger className="w-full">
+  
+          <Button className="w-full" onClick={toggleCollapsible}>
             Create Annotation
           </Button>
+  </CollapsibleTrigger>
+  <CollapsibleContent className="bg-black bg-opacity-25 p-2 mt-2 border-white border-opacity-50 border-2 rounded-lg">
+  <Textarea
+              ref={inputCreateAnnotationRef}
+              id="inputComment"
+              placeholder="Enter annotation"
+              className="my-4 text-black"
+            />
+            <div className="flex flex-row w-full justify-between">
+
+            <Button variant="secondary" onClick={handleCreateAnnotationCancel}>Cancel</Button>
+                    
+                <Button
+                  type="submit"
+                  onClick={handleCreateAnnotationSave}
+                  >
+                  Save
+                </Button>
+                    </div>
+  </CollapsibleContent>
+</Collapsible>
           <div className="flex items-center space-x-2">
       <Switch id="autostop" checked={autostop} onCheckedChange={(e) => setAutostop(e)} />
       <Label htmlFor="autostop" className="text-sm" >Stop on Annotate</Label>
