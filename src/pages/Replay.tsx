@@ -115,8 +115,12 @@ export function Replay() {
     annotations[convertToAnnotationKey(turn, movePGN)] = inputValue;
     addAnnotation(gameid, turn, movePGN, inputValue);
 
-    console.log(annotations);
     toggleCollapsible();
+  };
+
+  const handleUpdateAnnotation = (turn, pgn, newAnnotation) => {
+    annotations[convertToAnnotationKey(turn, pgn)] = newAnnotation;
+    addAnnotation(gameid, turn, pgn, newAnnotation);
   };
 
   const handleCreateAnnotationCancel = () => {
@@ -191,11 +195,22 @@ export function Replay() {
     if (annotate) {
       if (autostop) setPaused(true);
 
+      const turn = index;
+      const movePGN = gamePGN[index - 1];
+
+      const current = `Turn ${turn}. PGN Move ${movePGN}`;
+
       toast(annotate, {
-        description: `Turn ${index}. PGN Move ${gamePGN[index - 1]}`,
+        description: current,
         action: {
-          label: "View",
-          onClick: () => console.log("Undo"),
+          label: "Edit",
+          onClick: () => {
+            const newAnnotation = prompt(
+              `Edit annotation on ${current}`,
+              annotate
+            );
+            handleUpdateAnnotation(turn, movePGN, newAnnotation);
+          },
         },
       });
     }
@@ -239,7 +254,13 @@ export function Replay() {
           </Button>
           <Collapsible open={isOpen}>
             <CollapsibleTrigger className="w-full">
-              <Button className="w-full" onClick={toggleCollapsible}>
+              <Button
+                className="w-full"
+                onClick={() => {
+                  toggleCollapsible();
+                  if (autostop) setPaused(true);
+                }}
+              >
                 Create Annotation
               </Button>
             </CollapsibleTrigger>
