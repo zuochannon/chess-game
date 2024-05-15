@@ -267,7 +267,9 @@ export default function ChessRulesController({
 	function forfeitGame() {
 		// Determine the winning team based on the current turn
 		const winningTeam =
-			board.totalTurns % 2 === 1 ? ColorTeam.BLACK : ColorTeam.WHITE;
+			boardOrientation === ColorTeam.WHITE
+				? ColorTeam.BLACK
+				: ColorTeam.WHITE;
 
 		// Update the winning team and display the checkmate modal
 		setBoard((prevBoard) => {
