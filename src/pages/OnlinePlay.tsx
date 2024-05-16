@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { useWhoAmIContext } from "../context/WhoAmIContext";
 import Game from "../layouts/game/Game";
 import "../layouts/pages/Play.css";
+import PrivateChat from "@/components/chat/PrivateChat";
 
 export function OnlinePlay() {
   const newBoard = initialBoard.clone();
@@ -234,18 +235,24 @@ export function OnlinePlay() {
         >
           Copy Room ID
         </button>
+        <div className="h-full flex flex-row gap-12 items-center justify-center bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative">
+
         <div
           id="play"
-          className="p-2 w-auto bg-gradient-to-t from-blue-700 via-85% via-blue-950 to-100% to-black relative"
-        >
+          className="p-2"
+          >
           <Game
             offset={NavigationBarHeight + ButtonOffset + 80}
             boardOrientation={color}
             board={newBoard}
             onlineHandler={onlineHandler}
             updateBoardState={updateBoardState}
-          />
+            />
         </div>
+        <div className="h-[75vh] w-1/4">
+        <PrivateChat styles="overflow-y-auto h-full w-full bg-opacity-50" />
+      </div>
+            </div>
       </main>
     );
   }

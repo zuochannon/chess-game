@@ -2,34 +2,11 @@ import { useWhoAmIContext } from "@/context/WhoAmIContext";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "../ui/button";
 import clsx from "clsx";
+import { useWebSocket } from "@/context/WebSocketContext";
 
 function Chat({ styles }) {
-  const [messages, setMessages] = useState([]);
-  const [messageInput, setMessageInput] = useState("");
-  const socket = useRef<WebSocket | null>();
-
-  const { whoAmI } = useWhoAmIContext();
-
-  useEffect(() => {
-    socket.current = new WebSocket(import.meta.env.VITE_CHAT_URL);
-
-    socket.current.addEventListener("open", (_event) => {
-      console.log("\x1b[32mconnection opened\x1b[0m");
-    });
-
-    socket.current.addEventListener("message", (event) => {
-      const newMessage = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
-
-    socket.current.addEventListener("close", (event) => {
-      console.log("\x1b[31mconnection closed\x1b[0m");
-    });
-
-    return () => {
-      socket.current?.close();
-    };
-  }, []);
+  const { messages, sendMessage } = useWebSocket();
+  const [messageInput, setMessageInput] = useState('');
 
   const handleMessageChange = (e) => {
     setMessageInput(e.target.value);
@@ -37,17 +14,8 @@ function Chat({ styles }) {
 
   const handleMessageSubmit = (e) => {
     e.preventDefault();
-    if (
-      socket.current &&
-      socket.current.readyState === WebSocket.OPEN &&
-      messageInput.trim() !== ""
-    ) {
-      socket.current.send(
-        JSON.stringify({ name: whoAmI?.username, text: messageInput })
-      );
-      setMessages((prevMessages) => [...prevMessages, { name: "You", text: messageInput }]);
-      setMessageInput("");
-    }
+    sendMessage(messageInput);
+    setMessageInput('');
   };
 
   return (

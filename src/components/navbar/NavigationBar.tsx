@@ -83,11 +83,6 @@ const NavigationBar = () => {
         <div className="py-4 h-full w-full">
           <Chat styles="overflow-y-auto h-[98%] w-full bg-opacity-50" />
         </div>
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button>Close</Button>
-          </SheetClose>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
       <NavigationMenu>
