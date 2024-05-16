@@ -45,9 +45,6 @@ export function Play() {
           board={newBoard}
         />
       </div>
-      <div className="h-3/4 w-1/4">
-        <Chat styles="overflow-y-auto h-full w-full bg-opacity-50" />
-      </div>
     </main>
   );
 }

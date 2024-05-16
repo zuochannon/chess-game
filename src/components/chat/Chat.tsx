@@ -53,17 +53,16 @@ function Chat({ styles }) {
   return (
     <div
       className={clsx(
-        "container mx-auto px-8 py-4 flex flex-col border-white border-2 bg-opacity-75 bg-black rounded-2xl",
+        "pb-4 flex flex-col",
         styles
       )}
     >
       <div className="overflow-auto max-h-screen h-full">
-        <h2 className="text-3xl font-bold mb-4 text-slate-200">Chat</h2>
         <div className="mb-4">
           {messages.map((message, index) => (
             <div
               key={index}
-              className="text-white p-2 rounded mb-2 flex flex-row"
+              className="py-1 rounded mb-2 flex flex-row"
             >
               <div className="font-bold">{message.name ?? "Guest"}</div>:{" "}
               {message.text}
@@ -72,7 +71,7 @@ function Chat({ styles }) {
         </div>
       </div>
       <form onSubmit={handleMessageSubmit}>
-        <div className="flex flex-row gap-5 max-h-fit">
+        <div className="flex flex-row gap-5 w-full max-h-fit px-1">
           <input
             type="text"
             value={messageInput}
