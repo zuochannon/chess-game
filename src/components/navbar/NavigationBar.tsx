@@ -18,6 +18,18 @@ import NavbarItem from "./NavbarItem";
 import { useNavigate } from "react-router-dom";
 import NavbarLogo from "./NavbarLogo";
 import NavbarList from "./NavbarList";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import { MdOutlineChat } from "react-icons/md";
+import Chat from "../chat/Chat";
 
 const activeState = ({ isActive }: { isActive: boolean }) => {
   return {
@@ -56,7 +68,23 @@ const NavigationBar = () => {
 <NavbarList title="COMMUNITY" items={navCommunityItems}/>
 </NavigationMenuList>
 </NavigationMenu>
-
+                <div className="flex flex-row gap-2 pr-4">
+                <Sheet>
+      <SheetTrigger>
+        <Button variant="outline" className="rounded-full h-3/5"><MdOutlineChat /></Button>
+      </SheetTrigger>
+      <SheetContent side="left">
+        <SheetHeader>
+          <SheetTitle>Public Chat</SheetTitle>
+          <SheetDescription>
+            {whoAmI?.username ? `You are currently signed in as ${whoAmI.username}.` : "You are currently not signed in."}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="py-4 h-full w-full">
+          <Chat styles="overflow-y-auto h-[98%] w-full bg-opacity-50" />
+        </div>
+      </SheetContent>
+    </Sheet>
       <NavigationMenu>
         <NavigationMenuList>
           {whoAmI ? (
@@ -98,6 +126,7 @@ const NavigationBar = () => {
         </NavigationMenuList>
       </NavigationMenu>
     </div>
+      </div>
   );
 };
 

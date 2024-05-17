@@ -36,7 +36,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { UserStats } from "./UserStats";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 enum GameResultFilter {
   ALL = "ALL",
@@ -51,6 +51,8 @@ const Profile = () => {
   const [elo, setElo] = useState(-1);
   const [gamesPlayed, setGamesPlayed] = useState({});
   const inputCommentRef = useRef(null);
+
+  const navigate = useNavigate();
 
   const [resultFilter, setResultFilter] = useState<GameResultFilter>(
     GameResultFilter.ALL
@@ -149,7 +151,7 @@ const Profile = () => {
       accessorKey: "comments",
       header: "Comments",
       cell: ({ row }) => (
-        <div className="max-w-fit overflow-hidden">{`${row
+        <div className="max-w-fit overflow-hidden">{row.getValue("comments") && `${row
           .getValue("comments")
           .substring(0, 60)}${
           row.getValue("comments").length > 50 && "..."
@@ -191,8 +193,7 @@ const Profile = () => {
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() => {
-                    alert("To be implemented");
-                    console.log("Clicked on", game);
+                    navigate(`/replay/${row.original.gameid}`)
                   }}
                 >
                   Replay game

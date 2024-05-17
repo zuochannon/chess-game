@@ -12,9 +12,8 @@ router.post("/createRoom", verifyToken, async (req, res) => {
   // need to be logged in in order to create a room
   let roomid = nanoid(10); // check out stats from this site https://zelark.github.io/nano-id-cc/
   let user = req.user.userID;
-  await setGameInfo(roomid, new GameInfo(user));
+  await setGameInfo(roomid, new GameInfo(user)); // sets WhiteUserID
   res.json({ roomid: roomid });
-  // console.log("iN CREATE ROOM, created room: " + roomid);
 });
 
 router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
@@ -29,7 +28,7 @@ router.post("/:roomid/joinRoom", verifyToken, async (req, res) => {
     console.log(gameInfo);
     if (gameInfo.blackUserID === "-1" && gameInfo.whiteUserID !== user) {
       // Person creating room sent game invite and got a response
-      gameInfo.blackUserID = user;
+      gameInfo.blackUserID = user; // sets BlackUserID
       await setGameInfo(roomid, gameInfo);
     }
     if (gameInfo.blackUserID === user || gameInfo.whiteUserID === user) {
@@ -60,6 +59,7 @@ router.post("/:roomid/makeMove", async (req, res) => {
   if (await has(roomid)) {
     let gameInfo = await getGameInfo(roomid);
     gameInfo.moves.push(req.body)
+    gameInfo.lastMove = new Date();
     await setGameInfo(roomid, gameInfo);
     res.status(200);
   } else {

@@ -8,13 +8,15 @@ const navItems = {
     profile: {id: 8, text: 'Profile', url: '/profile', desc: 'View your profile'},
     blog: {id: 9, text: 'Blog', url: '/dev', desc: 'Explore our developer blog'},
     leaderboard: {id: 10, text: 'Leaderboard', url: '/leaderboard', desc: 'See where you stand among other players'},
+    match: {id: 11, text: 'Random Match', url: '/match', desc: 'Randomly match against other players'},
 };
 
 
 export const navPlayItems = [
     navItems.create,
     navItems.join,
-    navItems.practice
+    navItems.practice,
+    navItems.match
 ]
 
 export const navTutorialItems = [

@@ -1,5 +1,5 @@
 const totalGames = (data) => {
-  return Object.values(data).length;
+  return Object.values(data).reduce((acc, el) => acc + el.length, 0);
 };
 
 const winRate = (data) => {
@@ -17,20 +17,20 @@ const drawRate = (data) => {
 export const analyzeData = (data) => {
   return {
     winRate: {
-        name: "Win Rate",
-        data: `${winRate(data).toPrecision(3)*100}%`,
+      name: "Win Rate",
+      data: `${(winRate(data) * 100).toPrecision(3)}%`,
     },
     lossRate: {
-        name: "Loss Rate",
-        data: `${lossRate(data).toPrecision(3)*100}%`,
+      name: "Loss Rate",
+      data: `${(lossRate(data) * 100).toPrecision(3)}%`,
     },
     drawRate: {
-        name: "Draw Rate",
-        data: `${drawRate(data).toPrecision(3)*100}%`,
+      name: "Draw Rate",
+      data: `${(drawRate(data) * 100).toPrecision(3)}%`,
     },
     totalGames: {
-        name: "Games Played",
-        data: totalGames(data),
+      name: "Games Played",
+      data: totalGames(data),
     },
   };
 };

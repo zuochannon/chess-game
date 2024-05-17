@@ -1,12 +1,12 @@
 import express from "express";
-import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
-import { GameInfo } from "../models/GameInfo.mjs";
-import { dequeue, enqueue, get, length, remove } from "../utils/redisQueue.mjs";
-import { verifyToken } from "../middlewares/authMiddleware.mjs";
 import { nanoid } from "nanoid";
+import { verifyToken } from "../middlewares/authMiddleware.mjs";
+import { GameInfo } from "../models/GameInfo.mjs";
 import { User } from "../models/User.mjs";
-import { delUser, getUser, setUser } from "../utils/redisUser.mjs";
 import Constants from "../utils/constants/Constants.mjs";
+import { dequeue, enqueue, get, length, remove } from "../utils/redisQueue.mjs";
+import { getAll, getGameInfo, has, setGameInfo } from "../utils/redisRooms.mjs";
+import { delUser, getUser, setUser } from "../utils/redisUser.mjs";
 
 const router = express.Router();
 // const gameMap = new Map(); // Tracks all the running games with room id. Can be replaced with DB later
@@ -15,6 +15,7 @@ const router = express.Router();
 const getPlayers = async () =>
   await Promise.all((await get()).map(async (key) => await getUser(key)));
 
+  // Matching based on elo
 const calculateDiff = (player1, player2) => Math.abs(player1.elo - player2.elo);
 
 const match = async (currentPlayer) => {
@@ -51,8 +52,8 @@ router.get("/queue_length", async (req, res) => {
   }
 });
 
-router.post("/queue", async (req, res) => {
-  const name = req.ip + `::${nanoid(5)}`;
+router.post("/queue", verifyToken, async (req, res) => {
+  const name = req.user.userID;
   const user = new User(name, 1000 + Math.random() * 500);
 
   await enqueue(name);
@@ -60,24 +61,31 @@ router.post("/queue", async (req, res) => {
 
 });
 
-router.post("/match", async (req, res) => {
+const matches = {};
 
+router.post("/match", async (req, res) => {
   console.log("players", await getPlayers());
   console.log("queue", await get());
   let currentPlayerKey = await queueNext();
 
+
   while (currentPlayerKey) {
     const currentPlayer = await getUser(currentPlayerKey);
-    console.log(
-      "currentPlayer",
-      currentPlayer,
-      "matched with",
-      await match(currentPlayer)
-    );
+    
+    const matchedPlayer = await match(currentPlayer);
+    matches[currentPlayer.IP] = matchedPlayer;
+    matches[matchedPlayer.IP] = currentPlayer;
+    
     currentPlayerKey = await queueNext();
   }
   console.log("players still in the queue", await getPlayers());
+
+  console.log("MATCHES", matches)
 });
+
+router.get("/getMatches", verifyToken, async (req, res) => {
+  res.json({ match: matches[req.user.userID] });
+})
 
 
 

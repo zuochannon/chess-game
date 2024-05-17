@@ -6,18 +6,46 @@ const createGameHistory = async () => {
         gameID UUID,
         players SET<UUID>,
         playerNames SET<TEXT>,
+        result TEXT,
         winnerID UUID,
         loserID UUID,
-        result TEXT,
         timestamp TIMESTAMP,
         turns INT,
-        moves LIST<TEXT>,
         game_type TEXT,
         comments TEXT,
         PRIMARY KEY (gameID)
     );`;
   await cassandraClient.execute(query);
   console.log("created game history table");
+};
+
+export const insertGameHistory = async (
+  gameID,
+  players,
+  playerNames,
+  result,
+  winnerID,
+  loserID,
+  timestamp,
+  turns,
+  game_type
+) => {
+  await cassandraClient.execute(
+    `INSERT INTO ${constants.KEYSPACE}.GameHistory (gameID, players, playerNames, result, winnerID, loserID, timestamp, turns, game_type)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+    [
+      gameID,
+      players,
+      playerNames,
+      result,
+      winnerID,
+      loserID,
+      timestamp,
+      turns,
+      game_type,
+    ],
+    { prepare: true }
+  );
 };
 
 const getDrawGames = async (userID) => {
@@ -54,9 +82,9 @@ export const getGames = async (userID) => {
     getDrawGames(userID),
   ]);
 
-  won.forEach(el => el.result = "won");
-  lost.forEach(el => el.result = "lost");
-  draw.forEach(el => el.result = "draw");
+  won.forEach((el) => (el.result = "won"));
+  lost.forEach((el) => (el.result = "lost"));
+  draw.forEach((el) => (el.result = "draw"));
 
   return {
     won,
@@ -71,6 +99,6 @@ export const updateComment = async (gameID, comment) => {
     [comment, gameID],
     { prepare: true }
   );
-}
+};
 
 export default createGameHistory;

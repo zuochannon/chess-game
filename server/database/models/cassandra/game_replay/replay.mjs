@@ -37,9 +37,9 @@ const createGameReplay = async () => {
   console.log("created game replay table");
 };
 
-export const insertReplay = async (pieces, totalTurns, winningTeam, pgn) => {
-    const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameID, pieces, totalTurns, winningTeam, pgn) VALUES (uuid(), ?, ?, ?, ?);`
-    await cassandraClient.execute(query, [pieces, totalTurns, winningTeam, pgn], {
+export const insertReplay = async (gameID, pieces, totalTurns, winningTeam, pgn) => {
+    const query = `INSERT INTO ${constants.KEYSPACE}.GameReplay (gameid, pieces, totalTurns, winningTeam, pgn) VALUES (?, ?, ?, ?, ?);`
+    await cassandraClient.execute(query, [gameID, pieces, totalTurns, winningTeam, pgn], {
         prepare: true,
     });
 }
