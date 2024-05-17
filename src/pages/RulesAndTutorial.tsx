@@ -31,6 +31,20 @@ export function RulesAndTutorial() {
 						each player.
 					</p>
 					<br />
+					<h2 className={styles.h2}>Chessboard Notation:</h2>
+					<p className={styles.p}>
+						The chessboard is an 8x8 grid with alternating light and dark squares. 
+						Each square is uniquely identified by a coordinate system:
+					</p>
+					<ul className={styles.ul}>
+						<li className={styles.p}>
+							Files (columns) are labeled a through h from left to right from White's perspective.
+						</li>
+						<li className={styles.p}>
+							Ranks (rows) are numbered 1 through 8 from bottom to top from White's perspective.
+						</li>	
+					</ul>
+					<br/>
 					<h2 className={styles.h2}>Piece Movement:</h2>
 					<ul className={styles.ul}>
 						<li className={styles.p}>

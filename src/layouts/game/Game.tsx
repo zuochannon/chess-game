@@ -23,7 +23,7 @@ function Game({ offset, boardOrientation, board, onlineHandler }: Props) {
   useEffect(() => {
     if (boardState[boardState.length - 1]?.winningTeam) {
       console.log("Game has ended. Saving.");
-      archiveGame(boardState, moveHistory); // save replay
+      // archiveGame(boardState, moveHistory); // save replay
       // save into history
     }
     console.log(boardState);
