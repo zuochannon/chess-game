@@ -1,30 +1,40 @@
-# React + TypeScript + Vite
+# Spartan Chess
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Description
 
-Currently, two official plugins are available:
+This CS160 project is a web application where chess enthusiasts are able to play chess against each other.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Installation
 
-## Expanding the ESLint configuration
+### Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+-   **Node.js**: Check if Node.js is installed. If not, download and install Node.js from [their website](https://nodejs.org/)
+-   **Docker**: Check if Docker is installed. If not, download and install Docker from [their website](https://www.docker.com/get-started/)
 
-- Configure the top-level `parserOptions` property like this:
+### Server (backend)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+First, in the project directory, run the following command in terminal:
+
+```bash
+docker-compose up
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Then run the following command to install dependencies:
+
+```bash
+npm install
+```
+
+After installing dependencies, run the following command to run the backend server:
+
+```bash
+npm run server
+```
+
+### Client (frontend)
+
+Finally, to run the client server, run the following command:
+
+```bash
+npm run dev
+```
